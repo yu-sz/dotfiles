@@ -1,0 +1,73 @@
+# `sheldon` configuration file
+# ----------------------------
+#
+# You can modify this file directly or you can use one of the following
+# `sheldon` commands which are provided to assist in editing the config file:
+#
+# - `sheldon add` to add a new plugin to the config file
+# - `sheldon edit` to open up the config file in the default editor
+# - `sheldon remove` to remove a plugin from the config file
+#
+# See the documentation for more https://github.com/rossmacarthur/sheldon#readme
+
+shell = "zsh"
+
+apply = ["defer"]
+
+[templates]
+defer = "{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}"
+
+[plugins]
+
+############################
+### Eager Loading
+############################
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+apply = ["source"]
+
+[plugins.eager]
+local = "~/.config/zsh"
+use = ["eager/*.zsh"]
+apply = ["source"]
+
+[plugins.starship]
+inline = """
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
+eval "$(starship init zsh)"
+"""
+
+############################
+### Lazy Loading
+############################
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+dir = "src"
+apply = ["fpath"]
+
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+
+[plugins.zsh-syntax-highlighting]
+github = "zsh-users/zsh-syntax-highlighting"
+
+[plugins.zsh-autopair]
+github = "hlissner/zsh-autopair"
+
+[plugins.zsh-replace-multiple-dots]
+github = "momo-lab/zsh-replace-multiple-dots"
+
+[plugins.zoxide]
+inline = """
+export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
+zsh-defer -a -t0.01 eval "$(zoxide init zsh)"
+"""
+
+[plugins.zabrze]
+inline = """
+zsh-defer -a -t0.01 eval "$(zabrze init --bind-keys)"
+"""
+
+[plugins.lazy]
+local = "~/.config/zsh"
+use = ["lazy/*.zsh"]

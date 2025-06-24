@@ -1,0 +1,15 @@
+### mac OS ###
+.DS_Store
+._*
+
+### Node.js ###
+node_modules/
+
+### Logs ###
+*.log
+
+### Bundle ###
+.bundle/
+
+### local settings
+*.local

@@ -1,0 +1,32 @@
+abbrevs:
+  - name: nvim
+    abbr: v
+    snippet: nvim
+
+  - name: clear
+    abbr: c
+    snippet: clear
+
+  - name: history
+    abbr: h
+    snippet: history
+
+  - name: touch
+    abbr: t
+    snippet: touch
+
+  - name: which
+    abbr: w
+    snippet: which
+
+  - name: echo path
+    abbr: path
+    snippet: echo $PATH
+
+  - name: echo fpath
+    abbr: fpath
+    snippet: echo $FPATH
+
+  - name: search process without grep
+    abbr: pss
+    snippet: ps aux | grep -E "PID|{}" | grep -v grep

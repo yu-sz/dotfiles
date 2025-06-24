@@ -1,0 +1,178 @@
+abbrevs:
+  # General docker commands
+  - name: docker
+    abbr: d
+    snippet: docker
+
+  - name: docker login
+    abbr: dl
+    snippet: docker login
+
+  - name: docker info
+    abbr: di
+    snippet: docker info
+
+  - name: docker ps
+    abbr: dps
+    snippet: docker ps
+
+  - name: docker container ls
+    abbr: dls
+    snippet: docker container ls
+
+  - name: docker image ls
+    abbr: dimgs
+    snippet: docker image ls
+
+  - name: docker volume ls
+    abbr: dvls
+    snippet: docker volume ls
+
+  - name: docker network ls
+    abbr: dnls
+    snippet: docker network ls
+
+  # Docker Compose commands
+  - name: docker compose
+    abbr: dc
+    snippet: docker compose
+
+  - name: docker compose up -d
+    abbr: dcu
+    snippet: docker compose up -d
+
+  - name: (docker compose) up -d
+    abbr: u
+    snippet: up -d
+    global: true
+    context: 'docker\scompose\s'
+
+  - name: docker compose down
+    abbr: dcd
+    snippet: docker compose down
+
+  - name: (docker compose) down
+    abbr: d
+    snippet: down
+    global: true
+    context: 'docker\scompose\s'
+
+  - name: docker compose build
+    abbr: dcb
+    snippet: docker compose build
+
+  - name: (docker compose) build
+    abbr: b
+    snippet: build
+    global: true
+    context: 'docker\scompose\s'
+
+  - name: docker compose exec
+    abbr: dce
+    snippet: docker compose exec
+
+  - name: (docker compose) exec
+    abbr: e
+    snippet: exec
+    global: true
+    context: 'docker\scompose\s'
+
+  - name: docker compose logs
+    abbr: dcl
+    snippet: docker compose logs
+
+  - name: docker compose restart
+    abbr: dcr
+    snippet: docker compose restart
+
+  - name: (docker compose) restart
+    abbr: r
+    snippet: restart
+    global: true
+    context: 'docker\scompose\s'
+
+  - name: docker compose stop
+    abbr: dcs
+    snippet: docker compose stop
+
+  - name: (docker compose) stop
+    abbr: s
+    snippet: stop
+    global: true
+    context: 'docker\scompose\s'
+
+  # Docker container operations
+  - name: docker run
+    abbr: dr
+    snippet: docker run
+
+  - name: docker stop
+    abbr: dst
+    snippet: docker stop
+
+  - name: docker start
+    abbr: ds
+    snippet: docker start
+
+  - name: docker restart
+    abbr: drest
+    snippet: docker restart
+
+  - name: docker exec
+    abbr: de
+    snippet: docker exec
+
+  - name: docker rm
+    abbr: drm
+    snippet: docker rm
+
+  - name: docker logs
+    abbr: dlg
+    snippet: docker logs
+
+  # Docker image operations
+  - name: docker pull
+    abbr: dpull
+    snippet: docker pull
+
+  - name: docker push
+    abbr: dpush
+    snippet: docker push
+
+  - name: docker rmi
+    abbr: drmi
+    snippet: docker rmi
+
+  - name: docker tag
+    abbr: dt
+    snippet: docker tag
+
+  # Docker Desktop operations
+  - name: start Docker Desktop in background
+    abbr: dds
+    snippet: open --background -a Docker
+
+  - name: stop Docker Desktop
+    abbr: ddk
+    snippet: pkill -f Docker
+
+  - name: restart Docker Desktop
+    abbr: ddr
+    snippet: pkill -f Docker && open -a Docker
+
+  # Other useful commands
+  - name: docker prune
+    abbr: dprune
+    snippet: docker system prune -f
+
+  - name: docker system df
+    abbr: dsdf
+    snippet: docker system df
+
+  - name: docker network inspect
+    abbr: dni
+    snippet: docker network inspect
+
+  - name: docker volume inspect
+    abbr: dvi
+    snippet: docker volume inspect

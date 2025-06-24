@@ -1,0 +1,53 @@
+#####################
+# Homebrew formulae
+#####################
+# taps
+tap "daipeihust/tap" # im-select
+tap "ryooooooga/tap" # zabrze
+
+# git
+brew "git"
+brew "gh"         # command line
+brew "git-delta"  # diff highlight 
+brew "lazygit"    # tui
+
+# editor
+brew "neovim"
+brew "im-select"  # switch ime in shell
+
+# shell
+brew "starship"   # customize prompt
+brew "sheldon"    # plugin manager
+brew "fzf"			  # fuzzy finder
+brew "ripgrep"    # search text
+brew "bat"        # cat clone(used by fzf)
+brew "eza"        # alternative to ls
+brew "fd"         # alternative to find
+brew "zoxide"     # alternative to cd
+brew "zabrze"     # expand abbreviatioin
+
+# languages
+brew "mise"       # dev tool manager
+brew "luarocks"   # lua package manager
+brew "shellcheck" # shell lint
+
+# others
+brew "jq"         # json parser
+brew "lazydocker" # docker tui
+
+#######################
+# Homebrew casks
+#######################
+# gui
+cask "raycast"
+cask "wezterm"
+cask "docker"
+cask "dbeaver-community"
+
+# fonts
+cask "font-cica"
+cask "font-hackgen"
+cask "font-hackgen-nerd"
+cask "font-plemol-jp"
+cask "font-plemol-jp-nf"
+cask "font-plemol-jp-hs"

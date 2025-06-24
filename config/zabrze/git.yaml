@@ -1,0 +1,186 @@
+abbrevs:
+  - name: git
+    abbr: g
+    snippet: git
+
+  # log
+  - name: git log
+    abbr: gl
+    snippet: git log --pretty=format:"%C(auto)%h (%C(blue)%cd%C(auto))%d %s %Cblue" --date=format:"%Y/%m/%d %H:%M:%S" -n 10
+
+  - name: git log --graph
+    abbr: ggr
+    snippet: git log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+
+  # branch
+  - name: git branch --all
+    abbr: gb
+    snippet: git branch --all
+
+  - name: git branch -D
+    abbr: gbD
+    snippet: git branch -D
+
+  - name: branch name
+    abbr: B
+    snippet: $(git symbolic-ref --short HEAD)
+    evaluate: true
+    global: true
+    context: '^git\s'
+
+  # status
+  - name: git status
+    abbr: gs
+    snippet: git status
+
+  - name: (git status) -uno
+    abbr: u
+    snippet: -uno
+    global: true
+    context: '^git\sstatus\s'
+
+  # diff
+  - name: git diff
+    abbr: gd
+    snippet: git diff
+
+  - name: (git diff) --word-diff
+    abbr: w
+    snippet: --word-diff
+    global: true
+    context: '^git\sdiff\s'
+
+  - name: (git diff) --name-only
+    abbr: n
+    snippet: --name-only
+    global: true
+    context: '^git\sdiff\s'
+
+  # add
+  - name: git add
+    abbr: ga
+    snippet: git add
+
+  - name: git add .
+    abbr: gaa
+    snippet: git add .
+
+  # commit
+  - name: git commit
+    abbr: gc
+    snippet: git commit
+
+  - name: git commit -m
+    abbr: gcm
+    snippet: git commit -m "{}"
+
+  - name: (git) commit -m
+    abbr: cm
+    snippet: commit -m "{}"
+    global: true
+    context: '^git\s'
+
+  - name: git commit --allow-empty -m "(branch-name)"
+    abbr: gcae
+    snippet: git commit --allow-empty -m "(branch-name)"
+
+  - name: (git commit) --allow-empty
+    abbr: ae
+    snippet: --allow-empty
+    global: true
+    context: 'git\scommit\s'
+
+  - name: git start working on current branch
+    abbr: gcfc
+    snippet: git commit --allow-empty -m "start working on $(git rev-parse --abbrev-ref HEAD)"
+
+  # reset
+  - name: git reset
+    abbr: gr
+    snippet: git reset
+
+  - name: (git reset) --soft
+    abbr: s
+    snippet: --soft
+    global: true
+    context: '^git\sreset\s'
+
+  - name: (git reset) --hard
+    abbr: h
+    snippet: --hard
+    global: true
+    context: '^git\sreset\s'
+
+  - name: (git reset) HEAD^
+    abbr: H
+    snippet: HEAD^
+    global: true
+    context: '^git\sreset\s'
+
+  # checkout
+  - name: git checkout
+    abbr: gco
+    snippet: git checkout "{}"
+
+  - name: git checkout -b
+    abbr: gcob
+    snippet: git checkout -b "{}" && git commit --allow-empty -m "start working on $(git rev-parse --abbrev-ref HEAD)"
+
+  - name: git checkout develop
+    abbr: gcod
+    snippet: git checkout develop
+
+  # fetch
+  - name: git fetch
+    abbr: gf
+    snippet: git fetch
+
+  # git merge
+  - name: git merge
+    abbr: gm
+    snippet: git merge origin/{} # 基本的にremote branchからとる主義
+
+  # pull
+  - name: git pull
+    abbr: gp
+    snippet: git pull
+
+  # push
+  - name: git push
+    abbr: gP
+    snippet: git push
+
+  - name: git push origin HEAD
+    abbr: gPoh
+    snippet: git push origin HEAD
+
+  - name: (git push) origin HEAD
+    abbr: oh
+    snippet: origin HEAD
+    global: true
+    context: '^git\spush\s'
+
+  - name: (git push) --force-with-lease
+    abbr: f
+    snippet: --force-with-lease
+    global: true
+    context: '^git\spush\s'
+
+  # その他の git コマンド
+  - name: git clone
+    abbr: gcl
+    snippet: git clone
+
+  - name: git cherry-pick
+    abbr: gcp
+    snippet: git cherry-pick
+
+  # マージされたローカルブランチを削除するコマンド
+  - name: delete merged branches
+    abbr: git-db
+    snippet: git pull && git fetch --tags --prune && git branch --merged=$(git bn) | grep -vE 'develop|master|main|$(git bn)' | xargs git branch -d
+
+  # ローカルブランチのgrep
+  - name: grep local branch
+    abbr: gbls
+    snippet: git branch -a | grep "{}"

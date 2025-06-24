@@ -1,0 +1,26 @@
+[include]
+    # Add user setting files for each PC.
+    path = ~/.config/git/config.local
+
+[init]
+    defaultBranch = main
+
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    side-by-side = true
+    line-number = true
+    navigate = true    # use n and N to move between diff sections
+    plus-style = "syntax #043103"
+    minus-style = "syntax #8D3043"
+    syntax-theme = Monokai Extended
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default

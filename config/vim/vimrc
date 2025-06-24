@@ -1,0 +1,14 @@
+set fenc=utf-8
+
+set title
+set number
+set relativenumber
+set cursorline
+set termguicolors
+
+set tabstop=2
+set softtabstop=4
+set shiftwidth=4
+set showtabline=2
+
+set clipboard=unnamedplus
