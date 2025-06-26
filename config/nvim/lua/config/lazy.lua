@@ -18,9 +18,9 @@ require("lazy").setup({
     { import = "plugins.colorschema" },
     { import = "plugins.editor" },
     { import = "plugins.git" },
-    { import = "plugins.operation" },
     { import = "plugins.treesitter" },
-    { import = "plugins.ui" }
+    { import = "plugins.ui" },
+    { import = "plugins.util" }
   },
   default = {
     lazy = false,
