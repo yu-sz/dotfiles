@@ -15,4 +15,4 @@ gui:
 refresher:
   refreshInterval: 3
 os:
-  editCommand: "nvim"
+  editPreset: "nvim-remote"
