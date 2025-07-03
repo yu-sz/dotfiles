@@ -22,14 +22,21 @@ return {
     require("mason-tool-installer").setup({
       ensure_installed = {
         -- lsp
-        "lua-language-server",
+        "vtsls",                       -- typescript/javascript
+        "lua-language-server",         -- lua
+        "bash-language-server",        -- bash
+        "html-lsp",                    -- html
+        "css-lsp",                     -- css
+        "tailwindcss-language-server", -- tailwindcss
+        "eslint-lsp",                  -- for javascript/typescript
+        "biome",                       -- for javascript/typescript
         -- linter
-        "luacheck",
+        "luacheck",                    -- for lua
+        "shellcheck",                  -- for shell
         -- formatter
-        "stylua",
-        "shfmt",
-        "prettier",
-        "biome",
+        "stylua",                      -- for lua
+        "shfmt",                       -- for shell
+        "prettier",                    -- for javascript/typescript
       }
     })
   end,
