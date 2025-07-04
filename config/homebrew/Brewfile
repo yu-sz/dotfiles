@@ -45,6 +45,7 @@ cask "raycast"
 cask "wezterm"
 cask "docker"
 cask "dbeaver-community"
+cask "karabiner-elements"
 
 # fonts
 cask "font-cica"
