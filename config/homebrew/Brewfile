@@ -2,8 +2,9 @@
 # Homebrew formulae
 #####################
 # taps
-tap "daipeihust/tap" # im-select
-tap "ryooooooga/tap" # zabrze
+tap "daipeihust/tap"    # im-select
+tap "ryooooooga/tap"    # zabrze
+tap "laishulu/homebrew" # macism
 
 # git
 brew "git"
@@ -14,6 +15,7 @@ brew "lazygit"    # tui
 # editor
 brew "neovim"
 brew "im-select"  # switch ime in shell
+brew "macism"     # for im-select.nvim
 
 # shell
 brew "starship"   # customize prompt
