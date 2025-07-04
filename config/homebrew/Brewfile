@@ -29,6 +29,16 @@ brew "gomi"       # alternative to rm
 brew "zoxide"     # alternative to cd
 brew "zabrze"     # expand abbreviatioin
 
+# database
+brew "libpq"      # PostgresQL library
+brew "pgcli"      # REPL for PostgresQL 
+brew "sqldiff"    # atabase schema diff
+
+# infra
+brew "awscli"
+brew "lazydocker" # docker tui
+brew "hadolint"   # linter for docker
+
 # languages
 brew "mise"       # dev tool manager
 brew "luarocks"   # lua package manager
@@ -36,7 +46,6 @@ brew "shellcheck" # shell lint
 
 # others
 brew "jq"         # json parser
-brew "lazydocker" # docker tui
 
 #######################
 # Homebrew casks
@@ -44,9 +53,13 @@ brew "lazydocker" # docker tui
 # gui
 cask "raycast"
 cask "wezterm"
+cask "warp"
 cask "docker"
 cask "dbeaver-community"
 cask "karabiner-elements"
+cask "visual-studio-code"
+cask "cursor"
+cask "google-cloud-sdk"
 
 # fonts
 cask "font-cica"
