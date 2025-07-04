@@ -28,6 +28,8 @@ return {
         "html-lsp",                    -- html
         "css-lsp",                     -- css
         "tailwindcss-language-server", -- tailwindcss
+        "json-lsp",                    -- json
+        "yaml-language-server",        -- yaml
         "eslint-lsp",                  -- for javascript/typescript
         "biome",                       -- for javascript/typescript
         -- linter

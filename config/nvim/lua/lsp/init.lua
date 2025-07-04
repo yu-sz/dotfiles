@@ -7,6 +7,9 @@ local lsp_name = {
   "tailwindcss",
   "eslint",
   "biome",
+  "jsonls",
+  "yamlls",
 }
 
 vim.lsp.enable(lsp_name)
+require("lsp.lsp-settings")
