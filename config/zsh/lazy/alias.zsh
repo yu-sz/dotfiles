@@ -12,3 +12,6 @@ alias la=ea
 alias ll=ee
 alias lt=et
 alias lta=eta
+
+### gomi ###
+alias rm=gomi

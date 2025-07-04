@@ -25,6 +25,7 @@ brew "ripgrep"    # search text
 brew "bat"        # cat clone(used by fzf)
 brew "eza"        # alternative to ls
 brew "fd"         # alternative to find
+brew "gomi"       # alternative to rm
 brew "zoxide"     # alternative to cd
 brew "zabrze"     # expand abbreviatioin
 
