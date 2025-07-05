@@ -37,7 +37,7 @@ return {
 				},
 				["biome-check"] = {
 					command = "biome", -- 固定パスを削除 (Masonは 'biome' と表示しているのでこれに合わせる)
-					args = { "format", "--stdin-filepath", "$FILENAME", "-" },
+					args = { "format", "--stdin-file-path", "$FILENAME", "-" },
 					stdin = true,
 				},
 				prettier = {
