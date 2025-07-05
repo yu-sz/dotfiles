@@ -20,6 +20,7 @@ require("lazy").setup({
     { import = "plugins.editor" },
     { import = "plugins.git" },
     { import = "plugins.lsp" },
+    { import = "plugins.markdown" },
     { import = "plugins.treesitter" },
     { import = "plugins.ui" },
     { import = "plugins.util" }
