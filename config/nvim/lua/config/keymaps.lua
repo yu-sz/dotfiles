@@ -4,12 +4,13 @@ local keymap = vim.keymap
 local opts = { noremap = true, silent = true }
 
 -- Disable default key
-vim.api.nvim_set_keymap("n", "s", "<NOP>", opts)
+keymap.set("n", "s", "<NOP>", opts)
+-- jamp start or end
+keymap.set("n", "gg", "gg0", opts)
+keymap.set("n", "G", "G$", opts)
 
--- Custom ESC key
-vim.keymap.set("i", "jk", "<ESC>", opts)
 -- Custom ESC for terminal mode
-vim.keymap.set("t", "<C-e>", [[<C-\><C-n>]], opts)
+keymap.set("t", "<C-ESC>", [[<C-\><C-n>]], opts)
 -- Clear search highlights
 keymap.set("n", "<leader>n", ":nohlsearch<CR>", opts)
 -- Paste without overwriting register in visual mode
