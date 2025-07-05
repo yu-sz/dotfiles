@@ -4,6 +4,43 @@
             "complex_modifications": {
                 "rules": [
                     {
+                        "description": "replace right option and shift",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "right_shift",
+                                    "modifiers": {
+                                        "mandatory": [],
+                                        "optional": ["any"]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_option",
+                                        "modifiers": []
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "right_option",
+                                    "modifiers": {
+                                        "mandatory": [],
+                                        "optional": ["any"]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_shift",
+                                        "modifiers": []
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "enter (ctrl+quote)",
                         "manipulators": [
                             {
@@ -25,11 +62,11 @@
                         ]
                     },
                     {
-                        "description": "delete(Ctrl+n)",
+                        "description": "delete(Ctrl+semicolon)",
                         "manipulators": [
                             {
                                 "from": {
-                                    "key_code": "n",
+                                    "key_code": "semicolon",
                                     "modifiers": {
                                         "mandatory": ["left_control"],
                                         "optional": ["any"]
@@ -46,7 +83,7 @@
                         ]
                     },
                     {
-                        "description": "vim keymap simulator",
+                        "description": "vim keymap simulator(hjkl + caps to ctrl)",
                         "manipulators": [
                             {
                                 "from": { "key_code": "caps_lock" },
