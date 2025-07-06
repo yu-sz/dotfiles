@@ -4,8 +4,14 @@ set -eu # Exit on error, exit on unset variables, print commands
 echo "--- Dotfiles Setup Started ---"
 
 # Define script and repository paths
-export CUR_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1; pwd)"
-export REPO_DIR="$(cd "${CUR_DIR}/.." || exit 1; pwd)"
+export CUR_DIR="$(
+  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+  pwd
+)"
+export REPO_DIR="$(
+  cd "${CUR_DIR}/.." || exit 1
+  pwd
+)"
 
 # Set XDG Base Directory Specification variables
 # These default to ~/.config, ~/.local/share, ~/.local/state, ~/.cache if not already set.
@@ -16,11 +22,11 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 # Create XDG directories if they don't exist
 mkdir -p \
-    "$XDG_CONFIG_HOME" \
-    "$XDG_DATA_HOME" \
-    "$XDG_STATE_HOME" \
-    "$XDG_CACHE_HOME" \
-    "$XDG_DATA_HOME/vim"
+  "$XDG_CONFIG_HOME" \
+  "$XDG_DATA_HOME" \
+  "$XDG_STATE_HOME" \
+  "$XDG_CACHE_HOME" \
+  "$XDG_DATA_HOME/vim"
 echo "XDG directories created."
 
 # Symbolic Links Setup
@@ -31,6 +37,10 @@ echo "--- Setting up Symbolic Links ---"
 ln -sfv "$REPO_DIR/config/"* "$XDG_CONFIG_HOME"
 ln -sfv "$XDG_CONFIG_HOME/zsh/.zshenv" "$HOME/.zshenv"
 ln -sfv "$XDG_CONFIG_HOME/vim" "$HOME/.vim"
+# HACK:一時期xdgがサポートされたが、謎に廃止されたのでclaude配下にシンボリックリンクを貼る
+# xdgがサポートされたら、シンボリックリンクは廃止する
+ln -s "$XDG_CONFIG_HOME/claude/settings.json" "$HOME/.claude/settings.json"
+ln -s "$XDG_CONFIG_HOME/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
 
 echo "Symbolic links setup complete."
 
@@ -40,14 +50,14 @@ echo "--- Starting Homebrew Setup ---"
 
 # Check if Homebrew is installed. If not, install it.
 if type brew >/dev/null; then
-    echo "Homebrew is already installed."
+  echo "Homebrew is already installed."
 else
-    echo "Installing Homebrew..."
+  echo "Installing Homebrew..."
 
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-		eval "$(/opt/homebrew/bin/brew shellenv)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 
-    echo "Homebrew installation complete."
+  echo "Homebrew installation complete."
 fi
 
 # Install applications and dependencies listed in Brewfile.
@@ -62,12 +72,12 @@ echo "Homebrew setup complete."
 
 # mise setup and install
 echo "--- Installing mise managed tools ---"
-if command -v mise &> /dev/null; then
-    # use config/mise/config.toml
-    mise install
-    echo "mise tools installed."
+if command -v mise &>/dev/null; then
+  # use config/mise/config.toml
+  mise install
+  echo "mise tools installed."
 else
-    echo "Warning: mise is not installed via Homebrew. Skipping mise tool installation."
+  echo "Warning: mise is not installed via Homebrew. Skipping mise tool installation."
 fi
 
 echo "--- Dotfiles Setup Complete ---"

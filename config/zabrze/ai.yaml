@@ -1,0 +1,28 @@
+abbrevs:
+  - name: claude
+    abbr: cl
+    snippet: claude
+
+  - name: claude yolo mode (skip command permission)
+    abbr: cly
+    snippet: claude --dangerously-skip-permissions
+
+  - name: claude yolo mode (option only)
+    abbr: y
+    snippet: --dangerously-skip-permissions
+    global: true
+    context: '^claude\s'
+
+  - name: ccusage
+    abbr: cc
+    snippet: npx ccusage
+
+  - name: ccusage live monitor
+    abbr: ccm
+    snippet: npx ccusage blocks --live
+
+  - name: ccusage live monitor (option only)
+    abbr: m
+    snippet: blocks --live
+    global: true
+    context: '^npx ccusage\s'

@@ -19,14 +19,14 @@ return {
 				javascript = web_formatter_config,
 				typescriptreact = web_formatter_config,
 				javascriptreact = web_formatter_config,
-				json = web_formatter_config,
-				jsonc = web_formatter_config,
-				yaml = { "prettier" },
 				html = web_formatter_config,
 				css = web_formatter_config,
 				scss = web_formatter_config,
 				less = web_formatter_config,
-				markdown = web_formatter_config,
+				json = web_formatter_config,
+				jsonc = web_formatter_config,
+				yaml = { "prettier" },
+				markdown = { "prettier" },
 			},
 			formatters = {
 				stylua = {

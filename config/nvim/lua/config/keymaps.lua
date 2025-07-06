@@ -6,8 +6,8 @@ local opts = { noremap = true, silent = true }
 -- Disable default key
 keymap.set("n", "s", "<NOP>", opts)
 -- jamp start or end
-keymap.set("n", "gg", "gg0", opts)
-keymap.set("n", "G", "G$", opts)
+keymap.set({ "n", "v", "x", "s", "o" }, "gg", "gg0", opts)
+keymap.set({ "n", "v", "x", "s", "o" }, "G", "G$", opts)
 
 -- Custom ESC for terminal mode
 keymap.set("t", "<C-ESC>", [[<C-\><C-n>]], opts)
