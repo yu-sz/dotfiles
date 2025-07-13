@@ -16,7 +16,7 @@ sheldon::load() {
     local cache_file="$XDG_CACHE_HOME/sheldon/$profile.zsh"
 
     if [[ ! -f "$cache_file" || "$plugins_file" -nt "$cache_file" ]]; then
-        mkdipath r -p "$XDG_CACHE_HOME/sheldon"
+        mkdir -p "$XDG_CACHE_HOME/sheldon"
         sheldon --profile="$profile" source > "$cache_file"
         zcompile "$cache_file" 
     fi
