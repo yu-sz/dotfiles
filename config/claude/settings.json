@@ -25,5 +25,5 @@
 			"Bash(mysql:*)",
 			"Bash(mongod:*)"
 		]
-	},
+	}
 }
