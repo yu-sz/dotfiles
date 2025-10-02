@@ -5,6 +5,7 @@
 tap "daipeihust/tap"    # im-select
 tap "ryooooooga/tap"    # zabrze
 tap "laishulu/homebrew" # macism
+tap "hashicorp/tap"     # terraform
 
 # git
 brew "git"
@@ -36,6 +37,7 @@ brew "sqldiff"    # atabase schema diff
 
 # infra
 brew "awscli"
+brew "terraform"
 brew "lazydocker" # docker tui
 brew "hadolint"   # linter for docker
 
@@ -68,3 +70,6 @@ cask "font-hackgen-nerd"
 cask "font-plemol-jp"
 cask "font-plemol-jp-nf"
 cask "font-plemol-jp-hs"
+
+# others
+cask "session-manager-plugin" # aws session manager

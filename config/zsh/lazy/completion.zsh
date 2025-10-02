@@ -1,9 +1,11 @@
 ### setup ###
 autoload -Uz compinit
-zsh-defer -a -t0.01 compinit -d "$XDG_STATE_HOME/zcompdump"
+compinit -d "$XDG_STATE_HOME/zcompdump"
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /opt/homebrew/bin/terraform terraform
 
 zmodload -i zsh/complist
-
 zstyle ':completion:*:default' menu select=1
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
