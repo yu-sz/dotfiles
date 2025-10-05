@@ -5,6 +5,7 @@ local lsp_name = {
   "html",
   "cssls",
   "tailwindcss",
+  "terraform-ls",
   "eslint",
   "biome",
   "jsonls",
