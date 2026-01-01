@@ -31,8 +31,6 @@ return {
         "terraform-ls",
         "json-lsp", -- json
         "yaml-language-server", -- yaml
-        "eslint-lsp", -- for javascript/typescript
-        "biome", -- for javascript/typescript
         -- linter
         "luacheck", -- for lua
         "shellcheck", -- for shell
