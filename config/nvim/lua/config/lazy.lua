@@ -1,5 +1,5 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
--- vim.loop is deprecated
+
 if not (vim.loop or vim.uv).fs_stat(lazypath) then
   vim.fn.system({
     "git",
@@ -16,15 +16,6 @@ require("lazy").setup({
   spec = {
     { import = "plugins" },
   },
-  default = {
-    lazy = false,
-    version = false,
-  },
+  diff = { cmd = "terminal_git" },
   checker = { enabled = true },
-  performance = {
-    cache = {
-      enable = true,
-    },
-  },
-  debag = false,
 })
