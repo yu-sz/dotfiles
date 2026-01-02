@@ -1,3 +1,4 @@
+-- color schema
 return {
   "folke/tokyonight.nvim",
   config = function()
