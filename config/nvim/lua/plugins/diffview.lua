@@ -27,9 +27,6 @@ return {
       mode = "n",
       desc = "Toggle Git File History",
     },
-    {
-      "<leader>hc",
-    },
   },
   opts = {
     keymaps = {
