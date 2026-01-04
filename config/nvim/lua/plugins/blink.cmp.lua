@@ -1,9 +1,10 @@
 -- complations
 return {
   "saghen/blink.cmp",
-  version = "1.*",
+  version = "*",
+  event = { "InsertEnter", "CmdLineEnter" },
   dependencies = {
-    "L3MON4D3/LuaSnip"
+    "L3MON4D3/LuaSnip",
   },
   ---@module 'blink.cmp'
   ---@type blink.cmp.Config
@@ -14,10 +15,10 @@ return {
     },
     completion = { documentation = { auto_show = true } },
     sources = {
-      default = { "lsp", "path", "snippets", "buffer" },
+      default = { "snippets", "lsp", "path", "buffer" },
     },
     snippets = {
-      preset = "luasnip"
+      preset = "luasnip",
     },
     fuzzy = {
       -- versionを指定してないとバイナリが特定できずLuaにfallbackするwarningが表示される
