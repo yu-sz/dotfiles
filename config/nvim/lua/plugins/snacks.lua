@@ -1,4 +1,4 @@
--- toolset (fuzzy finder)
+-- toolset (fuzzy finder / dashboard / gh)
 
 -- visual mode時に選択範囲を取得する
 local function get_text()
@@ -44,11 +44,13 @@ return {
       silent = true,
     },
 
+    -- picker
     {
       "<leader>ff",
       function()
         project_files(false)
       end,
+      mode = { "n", "x" },
       silent = true,
       desc = "Find Files (モノレポの各ディレクトリ毎)",
     },
@@ -58,6 +60,7 @@ return {
         project_files(true)
       end,
       silent = true,
+      mode = { "n", "x" },
       desc = "Find Files (モノレポでプロジェクト全体)",
     },
     {
@@ -70,6 +73,7 @@ return {
           end,
         })
       end,
+      mode = { "n", "x" },
       silent = true,
       desc = "Live Grep (default grep)",
     },
@@ -115,6 +119,37 @@ return {
       desc = "find Keymaps",
     },
 
+    -- gh
+    {
+      "<leader>gi",
+      function()
+        Snacks.picker.gh_issue()
+      end,
+      desc = "GitHub Issues (open)",
+    },
+    {
+      "<leader>gI",
+      function()
+        Snacks.picker.gh_issue({ state = "all" })
+      end,
+      desc = "GitHub Issues (all)",
+    },
+    {
+      "<leader>gp",
+      function()
+        Snacks.picker.gh_pr()
+      end,
+      desc = "GitHub Pull Requests (open)",
+    },
+    {
+      "<leader>gP",
+      function()
+        Snacks.picker.gh_pr({ state = "all" })
+      end,
+      desc = "GitHub Pull Requests (all)",
+    },
+
+    -- file explorer
     {
       "<leader>fe",
       function()
@@ -130,6 +165,7 @@ return {
     picker = { enabled = true },
     explorer = { enabled = true },
     git = { enabled = true },
+    gh = { enable = true },
     dashboard = {
       preset = {
         ---@type snacks.dashboard.Item[]

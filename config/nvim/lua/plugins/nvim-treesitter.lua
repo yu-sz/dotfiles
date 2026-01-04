@@ -24,6 +24,7 @@ return {
           "html",
           "sql",
           "prisma",
+          "regex",
         },
         sync_install = false,
         auto_install = true,
