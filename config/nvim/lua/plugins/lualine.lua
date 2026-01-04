@@ -7,12 +7,12 @@ return {
       theme = "tokyonight",
       globalstatus = true,
     },
-    -- winbar = {
-    --   lualine_z = { "filename" },
-    -- },
-    -- inactive_winbar = {
-    --   lualine_z = { "filename" },
-    -- },
+    winbar = {
+      lualine_z = { { "filename", symbols = { unnamed = "" } } },
+    },
+    inactive_winbar = {
+      lualine_z = { { "filename", symbols = { unnamed = "" } } },
+    },
     sections = {
       lualine_a = { "mode" },
       lualine_b = { "branch", "diff", "diagnostics" },

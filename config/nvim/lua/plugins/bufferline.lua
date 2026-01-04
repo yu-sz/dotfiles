@@ -11,7 +11,6 @@ return {
       mode = "tabs",
       show_buffer_close_icons = true,
       show_close_icon = true,
-      -- separator_style = "slant",
       separator_style = "thin",
       show_tab_indicators = true,
       indicator = {
