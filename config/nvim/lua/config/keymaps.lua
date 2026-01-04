@@ -40,7 +40,7 @@ keymap.set("n", "sl", "<C-w>l", opts)
 keymap.set("n", ">", "<C-w><", opts)
 keymap.set("n", "<", "<C-w>>", opts)
 keymap.set("n", "+", "<C-w>+", opts)
-keymap.set("n", "<S>-", "<C-w>-", opts)
+keymap.set("n", "-", "<C-w>-", opts)
 
 -- Change window positions
 keymap.set("n", "sr", "<C-w>r", opts)
