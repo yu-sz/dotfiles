@@ -1,7 +1,7 @@
 -- extends snipet
 return {
   "L3MON4D3/LuaSnip",
-  event = "InsertEnter",
+  lazy = true,
   config = function()
     require("luasnip").setup({})
     require("luasnip.loaders.from_lua").lazy_load()
