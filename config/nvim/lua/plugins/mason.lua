@@ -38,6 +38,8 @@ return {
         "stylua", -- for lua
         "shfmt", -- for shell
         "prettier", -- for javascript/typescript
+        -- ai
+        "copilot-language-server",
       },
     })
   end,

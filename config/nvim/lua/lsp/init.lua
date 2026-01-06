@@ -10,6 +10,7 @@ vim.lsp.enable({
   "biome",
   "jsonls",
   "yamlls",
+  "copilot",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
