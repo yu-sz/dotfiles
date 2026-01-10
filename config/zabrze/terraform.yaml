@@ -1,0 +1,18 @@
+abbrevs:
+  - name: terraform
+    abbr: te
+    snippet: terraform
+
+  - name: terraform init
+    abbr: tei
+    snippet: terraform init
+
+  - name: terraform validate
+    abbr: tev
+    snippet: terraform validate
+
+  - name: (tenv) install terrform
+    abbr: i
+    snippet: tf install
+    global: true
+    context: '^tenv\s'

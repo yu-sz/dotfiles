@@ -5,7 +5,6 @@
 tap "daipeihust/tap"    # im-select
 tap "ryooooooga/tap"    # zabrze
 tap "laishulu/homebrew" # macism
-tap "hashicorp/tap"     # terraform
 
 # git
 brew "git"
@@ -36,8 +35,8 @@ brew "pgcli"      # REPL for PostgresQL
 brew "sqldiff"    # atabase schema diff
 
 # infra
-brew "awscli"
-brew "terraform"
+brew "awscli"     # aws cli tool
+brew "tenv"      # terraform version manager
 brew "lazydocker" # docker tui
 brew "hadolint"   # linter for docker
 
@@ -61,7 +60,6 @@ cask "dbeaver-community"
 cask "karabiner-elements"
 cask "visual-studio-code"
 cask "cursor"
-cask "google-cloud-sdk"
 
 # fonts
 cask "font-cica"
@@ -71,8 +69,11 @@ cask "font-plemol-jp"
 cask "font-plemol-jp-nf"
 cask "font-plemol-jp-hs"
 
+# infra
+cask "google-cloud-sdk"
+
 # ai
-brew "cursor-cli"
+cask "cursor-cli"
 
 # others
 cask "session-manager-plugin" # aws session manager
