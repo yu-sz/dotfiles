@@ -54,6 +54,7 @@ brew "jq"         # json parser
 # gui
 cask "raycast"
 cask "wezterm"
+cask "ghostty"
 cask "warp"
 cask "docker"
 cask "dbeaver-community"
