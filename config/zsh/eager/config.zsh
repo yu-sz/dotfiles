@@ -1,3 +1,5 @@
+export EDITOR=nvim
+
 ### history ###
 export HISTFILE="$XDG_STATE_HOME/history"
 export HISTSIZE=12000
