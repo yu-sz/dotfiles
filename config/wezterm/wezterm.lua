@@ -1,7 +1,8 @@
+---@type Wezterm
 local wezterm = require("wezterm")
-
 ---@type WeztermMyUtils
 local utils = require("my_utils")
+require("hooks")
 
 local config = wezterm.config_builder()
 config = utils.merge_tables(config, require("styles"))

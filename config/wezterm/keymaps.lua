@@ -7,7 +7,10 @@ local keys = {
 	-- full screen
 	{ key = "f", mods = "LEADER", action = act.ToggleFullScreen },
 
-	-- font_size
+	{ key = "b", mods = "LEADER", action = act.EmitEvent("toggle-blur") },
+	{ key = "o", mods = "LEADER", action = act.EmitEvent("toggle-opacity") },
+
+	-- font size
 	{ key = "+", mods = "LEADER", action = act.IncreaseFontSize },
 	{ key = "-", mods = "LEADER", action = act.DecreaseFontSize },
 
@@ -26,7 +29,7 @@ local keys = {
 	-- 右方向にPane分割
 	{ key = ".", mods = "LEADER", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
 	-- 中身を入れ替える
-	{ key = "o", mods = "LEADER", action = wezterm.action.RotatePanes("Clockwise") },
+	{ key = "g", mods = "LEADER", action = wezterm.action.RotatePanes("Clockwise") },
 	-- move on pane
 	{ key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
 	{ key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },

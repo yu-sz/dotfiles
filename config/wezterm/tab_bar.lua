@@ -48,7 +48,7 @@ wezterm.on("update-right-status", function(win, _pane)
 
 	win:set_right_status(wezterm.format({
 		{ Foreground = { Color = "#123A8A" } },
-		{ Background = { Color = "#212332" } },
+		{ Background = { Color = "#000000" } },
 		{ Text = "" },
 		{ Foreground = { Color = "#ffffff" } },
 		{ Background = { Color = "#123A8A" } },
@@ -103,8 +103,5 @@ return {
 				strikethrough = false,
 			},
 		},
-	},
-	window_background_gradient = {
-		colors = { "#212332" },
 	},
 }
