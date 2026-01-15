@@ -4,6 +4,7 @@ local wezterm = require("wezterm")
 local utils = require("my_utils")
 
 local title_cache = {}
+
 -- set cache
 wezterm.on("update-status", function(_win, pane)
 	local dir = utils.get_current_dir(pane)
@@ -11,9 +12,9 @@ wezterm.on("update-status", function(_win, pane)
 
 	local title
 	if repo and dir then
-		title = " " .. dir .. "[" .. repo .. "] "
+		title = dir .. "[" .. repo .. "]"
 	elseif dir then
-		title = " " .. dir .. " "
+		title = dir
 	end
 
 	local pane_id = pane:pane_id()
@@ -28,12 +29,16 @@ end)
 wezterm.on("format-tab-title", function(tab, _tabs, _panes, _config, _hover, _max_width)
 	local pane = tab.active_pane
 	local pane_id = pane.pane_id
+	local tab_number = tab.tab_index + 1
 
+	local base_title
 	if title_cache[pane_id] then
-		return title_cache[pane_id]
+		base_title = title_cache[pane_id]
 	else
-		return tab.active_pane.title
+		base_title = tab.active_pane.title
 	end
+
+	return string.format(" %d:%s ", tab_number, base_title)
 end)
 
 -- tab bar右のstatus lineを設定
@@ -61,7 +66,7 @@ end)
 return {
 	use_fancy_tab_bar = false,
 
-	tab_max_width = 20,
+	tab_max_width = 40,
 	tab_bar_at_bottom = false,
 	hide_tab_bar_if_only_one_tab = true,
 	show_new_tab_button_in_tab_bar = false,

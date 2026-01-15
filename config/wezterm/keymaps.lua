@@ -9,12 +9,17 @@ local keys = {
 
 	-- font_size
 	{ key = "+", mods = "LEADER", action = act.IncreaseFontSize },
-	{ key = "+", mods = "LEADER", action = act.DecreaseFontSize },
+	{ key = "-", mods = "LEADER", action = act.DecreaseFontSize },
 
 	-- create Tab
 	{ key = "t", mods = "LEADER", action = act({ SpawnTab = "CurrentPaneDomain" }) },
+	-- close Tab
+	{ key = "w", mods = "LEADER", action = act.CloseCurrentTab({ confirm = true }) },
+	-- move Tab
+	{ key = "]", mods = "LEADER", action = act.MoveTabRelative(1) },
+	{ key = "[", mods = "LEADER", action = act.MoveTabRelative(-1) },
 
-	-- Paneを閉じる（デフォルトではタブが閉じる）
+	-- create Pane
 	{ key = "w", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
 	-- 下方向にPane分割
 	{ key = ",", mods = "LEADER", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
@@ -22,7 +27,7 @@ local keys = {
 	{ key = ".", mods = "LEADER", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
 	-- 中身を入れ替える
 	{ key = "o", mods = "LEADER", action = wezterm.action.RotatePanes("Clockwise") },
-	-- Pane移動
+	-- move on pane
 	{ key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
 	{ key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
 	{ key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
