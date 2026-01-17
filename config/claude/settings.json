@@ -52,6 +52,28 @@
 	},
 	"enableAllProjectMcpServers": true,
 	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "jq -r 'if .tool_input.command | test(\"rm -rf|dd if=|:(){ :|:& };:\") then {\"decision\": \"block\", \"reason\": \"危険なコマンドは実行できません。別の方法を検討してください。\"} else empty end'"
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "mkdir -p ~/.claude/logs && echo \"[$(date '+%H:%M:%S')] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/logs/command_history_$(date '+%Y-%m-%d').log"
+					}
+				]
+			}
+		],
 		"Stop": [
 			{
 				"matcher": "",
