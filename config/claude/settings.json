@@ -1,6 +1,29 @@
 {
+	"$schema": "https://json.schemastore.org/claude-code-settings.json",
+	"env": {
+		"DISABLE_AUTOUPDATER": "1"
+	},
+	"includeCoAuthoredBy": false,
 	"permissions": {
-		"allow": [],
+		"allow": [
+			"Read(~/Projects/**/*)",
+			"Bash(ls:*)",
+			"Bash(cat:*)",
+			"Bash(find:*)",
+			"Bash(grep:*)",
+			"Bash(echo:*)",
+			"Bash(touch:*)",
+			"Bash(mkdir:*)",
+			"Bash(cp:*)",
+			"Bash(git status)",
+			"Bash(git diff:*)",
+			"Bash(npm run:*)",
+			"Bash(npm test:*)",
+			"Bash(yarn run:*)",
+			"Bash(yarn test:*)",
+			"Bash(bun run:*)",
+			"Bash(bun test:*)"
+		],
 		"deny": [
 			"Bash(sudo:*)",
 			"Bash(rm:*)",
@@ -9,12 +32,12 @@
 			"Bash(git commit:*)",
 			"Bash(git reset:*)",
 			"Bash(git rebase:*)",
-			"Read(.env.*)",
 			"Read(id_rsa)",
 			"Read(id_ed25519)",
 			"Read(**/*token*)",
 			"Read(**/*key*)",
-			"Write(.env*)",
+			"Read(**.env.*)",
+			"Write(**.env*)",
 			"Write(**/secrets/**)",
 			"Bash(curl:*)",
 			"Bash(wget:*)",
@@ -24,6 +47,17 @@
 			"Bash(psql:*)",
 			"Bash(mysql:*)",
 			"Bash(mongod:*)"
-		]
+		],
+		"defaultMode": "plan"
+	},
+	"enableAllProjectMcpServers": true,
+	"hooks": {},
+	"statusLine": {
+		"type": "command",
+		"command": "~/.claude/hooks/statusline.sh"
+	},
+	"alwaysThinkingEnabled": false,
+	"feedbackSurveyState": {
+		"lastShownTime": 1754030471611
 	}
 }

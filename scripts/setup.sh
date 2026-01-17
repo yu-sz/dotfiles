@@ -41,8 +41,7 @@ ln -sfv "$XDG_CONFIG_HOME/vim" "$HOME/.vim"
 # HACK:一時期xdgがサポートされたが、謎に廃止されたのでclaude配下にシンボリックリンクを貼る
 # xdgがサポートされたら、シンボリックリンクは廃止する
 mkdir -p "$HOME/.claude"
-ln -s "$XDG_CONFIG_HOME/claude/settings.json" "$HOME/.claude/settings.json"
-ln -s "$XDG_CONFIG_HOME/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+ln -sfv "$XDG_CONFIG_HOME/claude/"* "$HOME/.claude"
 
 echo "Symbolic links setup complete."
 
