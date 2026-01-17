@@ -162,7 +162,18 @@ return {
 
   ---@type snacks.Config
   opts = {
-    picker = { enabled = true },
+    picker = {
+      sources = {
+        explorer = {
+          hidden = true,
+          ignored = true,
+        },
+        files = {
+          hidden = true,
+          ignored = false,
+        },
+      },
+    },
     explorer = { enabled = true },
     git = { enabled = true },
     gh = { enable = true },
