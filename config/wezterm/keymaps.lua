@@ -36,6 +36,9 @@ local keys = {
 	{ key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
 	{ key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
 
+	-- Shift + Enter で改行を送信（for Claude Code）
+	{ key = "Enter", mods = "SHIFT", action = act.SendString("\n") },
+
 	-- workspace一覧
 	{
 		key = "s",

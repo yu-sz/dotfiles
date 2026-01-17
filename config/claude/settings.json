@@ -51,7 +51,30 @@
 		"defaultMode": "plan"
 	},
 	"enableAllProjectMcpServers": true,
-	"hooks": {},
+	"hooks": {
+		"Stop": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "~/.claude/hooks/notify.sh 'Task Completed!'"
+					}
+				]
+			}
+		],
+		"Notification": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "~/.claude/hooks/notify.sh 'Awaiting Confirmation...'"
+					}
+				]
+			}
+		]
+	},
 	"statusLine": {
 		"type": "command",
 		"command": "~/.claude/hooks/statusline.sh"

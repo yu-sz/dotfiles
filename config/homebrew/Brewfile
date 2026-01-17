@@ -11,54 +11,56 @@ brew "git"
 brew "neovim"
 
 # shell
-brew "ripgrep"        # search text
-brew "bat"            # cat clone(used by fzf)
-brew "eza"            # alternative to ls
-brew "fd"             # alternative to find
-brew "gomi"           # alternative to rm
-brew "zoxide"         # alternative to cd
-brew "zabrze"         # expand abbreviatioin
+brew "ripgrep"           # search text
+brew "bat"               # cat clone(used by fzf)
+brew "eza"               # alternative to ls
+brew "fd"                # alternative to find
+brew "gomi"              # alternative to rm
+brew "zoxide"            # alternative to cd
+brew "zabrze"            # expand abbreviatioin
 
 # views
-brew "starship"       # customize prompt
-brew "git-delta"      # git diff highlight 
+brew "starship"          # customize prompt
+brew "git-delta"         # git diff highlight 
 
 # tui
-brew "lazygit"        # git tui
-brew "lazydocker"     # docker tui
+brew "lazygit"           # git tui
+brew "lazydocker"        # docker tui
 
-brew "yazi"           # filer
-brew "ffmpeg"         # media encoder (for yazi)
-brew "sevenzip"       # zip tool (for yazi)
-brew "poppler"        # pdf reader (for yazi)
-brew "fd"             # alternative to find (for yazi)
-brew "resvg"          # SVG rendering (for yazi) 
-brew "imagemagick"    # editing and manipulating digital images (for yazi)
+brew "yazi"              # filer
+brew "ffmpeg"            # media encoder (for yazi)
+brew "sevenzip"          # zip tool (for yazi)
+brew "poppler"           # pdf reader (for yazi)
+brew "fd"                # alternative to find (for yazi)
+brew "resvg"             # SVG rendering (for yazi) 
+brew "imagemagick"       # editing and manipulating digital images (for yazi)
 
 # cli
-brew "fzf"			      # fuzzy finder
-brew "rg"             # ripgrep (expand grep)
-brew "awscli"         # aws cli tool
-brew "pgcli"          # REPL for PostgresQL 
-brew "gh"             # github cli tool
+brew "fzf"               # fuzzy finder
+brew "rg"                # ripgrep (expand grep)
+brew "awscli"            # aws cli tool
+brew "pgcli"             # REPL for PostgresQL 
+brew "gh"                # github cli tool
 
-# package managers    
-brew "mise"           # dev tool manager
-brew "sheldon"        # plugin manager
-brew "tenv"           # terraform version manager
-brew "luarocks"       # lua package manager
+# package managers
+brew "mise"              # dev tool manager
+brew "sheldon"           # plugin manager
+brew "tenv"              # terraform version manager
+brew "luarocks"          # lua package manager
 
 ## languages
-brew "hadolint"       # linter for docker
-brew "shellcheck"     # shell lint
-brew "libpq"          # PostgresQL library
-brew "sqldiff"        # database schema diff
-brew "jq"             # json parser
+brew "hadolint"          # linter for docker
+brew "shellcheck"        # shell lint
+brew "libpq"             # PostgresQL library
+brew "sqldiff"           # database schema diff
+brew "jq"                # json parser
 
 # ime
-brew "im-select"      # switch ime in shell
-brew "macism"         # for im-select.nvim
+brew "im-select"         # switch ime in shell
+brew "macism"            # for im-select.nvim
 
+# notification
+brew "terminal-notifier" # notification (for macOS)
 
 #######################
 # Homebrew casks

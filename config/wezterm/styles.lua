@@ -21,4 +21,7 @@ return {
 	font_size = 18.0,
 	adjust_window_size_when_changing_font_size = false,
 	use_ime = true,
+
+	-- notification style
+	audible_bell = "SystemBeep",
 }
