@@ -20,7 +20,7 @@ To set up your environment with these Dotfiles, please follow these steps:
     After cloning the repository, execute the following command **from the project root**:
 
     ```bash
-    ./script/install.sh
+    ./scripts/install.sh
     ```
 
 4.  Refresh Zsh Session:

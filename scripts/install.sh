@@ -82,5 +82,4 @@ fi
 echo "--- Dotfiles Setup Complete ---"
 echo "✅ All environment configurations and tools have been installed."
 echo "🚀 To apply changes, please open a new terminal session or run 'exec zsh' in your current shell."
-echo "💡 Remember to run 'sheldon init --shell zsh' once to set up your Zsh plugin manager."
-echo "💡 If you installed Neovim, open it to allow plugin manager (e.g., Packer) to install plugins on first run."
+echo "💡 If you installed Neovim, open it to allow plugin manager to install plugins on first run."
