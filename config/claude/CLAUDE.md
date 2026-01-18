@@ -1,6 +1,12 @@
-# CRAUDE.md
+# CLAUDE.md
 
 ## Conversation Guidelines
 
-- 常に日本語で会話する
-- コード生成を求められた場合は、変更部分のみをわかりやすく説明し、提示する
+- Always respond in Japanese
+- When asked to generate code, explain and present only the changed parts clearly
+
+## Code Style Guidelines
+
+- Do not write obvious code comments
+- Remove unnecessary whitespace
+- Always add a trailing newline when creating new files
