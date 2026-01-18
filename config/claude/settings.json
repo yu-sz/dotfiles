@@ -53,7 +53,9 @@
 		"command": "~/.claude/file-suggestion.sh"
 	},
 	"env": {
-		"DISABLE_AUTOUPDATER": "1"
+		"DISABLE_AUTOUPDATER": "1",
+		"ENABLE_TOOL_SEARCH": "true",
+		"ENABLE_EXPERIMENTAL_MCP_CLI": "false"
 	},
 	"hooks": {
 		"PreToolUse": [
