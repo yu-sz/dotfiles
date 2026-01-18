@@ -1,11 +1,11 @@
 abbrevs:
   - name: claude
     abbr: cl
-    snippet: claude
+    snippet: claude --mcp-config=$HOME/.claude/mcp/.mcp.json
 
   - name: claude yolo mode (skip command permission)
     abbr: cly
-    snippet: claude --dangerously-skip-permissions
+    snippet: claude --mcp-config=$HOME/.claude/mcp/.mcp.json --dangerously-skip-permissions
 
   - name: claude yolo mode (option only)
     abbr: y
