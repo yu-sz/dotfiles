@@ -30,7 +30,6 @@ mkdir -p \
 echo "XDG directories created."
 
 # Symbolic Links Setup
-
 echo "--- Setting up Symbolic Links ---"
 
 # Link individual config directories/files from the repo to XDG_CONFIG_HOME.
@@ -38,7 +37,7 @@ ln -sfv "$REPO_DIR/config/"* "$XDG_CONFIG_HOME"
 ln -sfv "$XDG_CONFIG_HOME/zsh/.zshenv" "$HOME/.zshenv"
 ln -sfv "$XDG_CONFIG_HOME/vim" "$HOME/.vim"
 
-# HACK:一時期xdgがサポートされたが、謎に廃止されたのでclaude配下にシンボリックリンクを貼る
+# HACK:一時期XDG Base Directory Specificationがサポートされたが、謎に廃止されたので~/.claude配下にシンボリックリンクを貼る
 # xdgがサポートされたら、シンボリックリンクは廃止する
 mkdir -p "$HOME/.claude"
 ln -sfv "$XDG_CONFIG_HOME/claude/"* "$HOME/.claude"
@@ -46,7 +45,6 @@ ln -sfv "$XDG_CONFIG_HOME/claude/"* "$HOME/.claude"
 echo "Symbolic links setup complete."
 
 # Homebrew Setup
-
 echo "--- Starting Homebrew Setup ---"
 
 # Check if Homebrew is installed. If not, install it.
@@ -63,7 +61,7 @@ fi
 
 # Install applications and dependencies listed in Brewfile.
 echo "Installing Homebrew apps from Brewfile..."
-brew bundle install --file "${REPO_DIR}/config/homebrew/Brewfile" --verbose
+brew bundle install --file "${REPO_DIR}/config/homebrew/Brewfile" --verbose --no-upgrade
 
 # Clean up Homebrew cache to free up space.
 echo "Cleaning up Homebrew cache..."
