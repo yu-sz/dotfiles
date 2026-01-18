@@ -3,13 +3,14 @@
 return {
   "folke/sidekick.nvim",
   opts = {
-    -- -- add any options here
-    -- cli = {
-    --   mux = {
-    --     backend = "zellij",
-    --     enabled = true,
-    --   },
-    -- },
+    cli = {
+      tools = {
+        claude = {
+          -- 外出ししているmcp設定ファイルを読み込ませる
+          cmd = { "claude", "--mcp-config", vim.fn.expand("$HOME/.claude/mcp/.mcp.json") },
+        },
+      },
+    },
   },
   keys = {
     {
