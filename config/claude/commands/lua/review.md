@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git diff:*), Bash(git status:*), Read, Grep
+allowed-tools: "Bash(git diff:*), Bash(git status:*), Read, Grep"
 description: Review uncommitted Lua changes using Neovim coding standards
 ---
 

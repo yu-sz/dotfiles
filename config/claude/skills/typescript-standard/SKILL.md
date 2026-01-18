@@ -1,6 +1,6 @@
 ---
 name: typescript-standard
-description: TypeScript coding standards. Use when: writing or reviewing TypeScript code (*.ts /*.tsx).
+description: "TypeScript coding standards. Use when: writing or reviewing TypeScript code (*.ts, *.tsx)."
 ---
 
 # TypeScript Standard

@@ -1,6 +1,6 @@
 ---
 name: lua-standard
-description: Lua/Neovim coding standards. Use when: writing or reviewing Lua code (*.lua) for Neovim plugins or configuration.
+description: "Lua/Neovim coding standards. Use when: writing or reviewing Lua code (*.lua) for Neovim plugins or configuration."
 ---
 
 # Lua/Neovim Standard
