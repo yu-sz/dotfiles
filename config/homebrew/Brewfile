@@ -41,6 +41,7 @@ brew "rg"                # ripgrep (expand grep)
 brew "awscli"            # aws cli tool
 brew "pgcli"             # REPL for PostgresQL 
 brew "gh"                # github cli tool
+brew "ghq"               # manage remote repository clones
 
 # package managers
 brew "mise"              # dev tool manager
