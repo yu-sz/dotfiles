@@ -2,9 +2,9 @@
 	"$schema": "https://json.schemastore.org/claude-code-settings.json",
 	"enableAllProjectMcpServers": true,
 	"includeCoAuthoredBy": false,
-	"fileSuggestion": {
-		"type": "command",
-		"command": "~/.claude/file-suggestion.sh"
+	"alwaysThinkingEnabled": false,
+	"feedbackSurveyState": {
+		"lastShownTime": 1754030471611
 	},
 	"env": {
 		"DISABLE_AUTOUPDATER": "1",
@@ -83,6 +83,10 @@
 		],
 		"defaultMode": "plan"
 	},
+	"fileSuggestion": {
+		"type": "command",
+		"command": "~/.claude/file-suggestion.sh"
+	},
 	"hooks": {
 		"PreToolUse": [
 			{
@@ -102,6 +106,15 @@
 					{
 						"type": "command",
 						"command": "mkdir -p ~/.claude/logs && echo \"[$(date '+%H:%M:%S')] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/logs/command_history_$(date '+%Y-%m-%d').log"
+					}
+				]
+			},
+			{
+				"matcher": "Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "~/.claude/hooks/lint-format.sh"
 					}
 				]
 			}
@@ -132,9 +145,5 @@
 	"statusLine": {
 		"type": "command",
 		"command": "~/.claude/statusline.sh"
-	},
-	"alwaysThinkingEnabled": false,
-	"feedbackSurveyState": {
-		"lastShownTime": 1754030471611
 	}
 }
