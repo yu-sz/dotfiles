@@ -15,8 +15,16 @@ sheldon::load() {
     local plugins_file="${SHELDON_CONFIG_FILE:-$HOME/.config/sheldon/plugins.toml}"
     local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/sheldon"
     local cache_file="$cache_dir/$profile.zsh"
+    local lock_file="$XDG_DATA_HOME/sheldon/plugins.$profile.lock"
 
-    if [[ ! -f "$cache_file" || "$plugins_file" -nt "$cache_file" ]]; then
+    if [[ ! -f "$lock_file"
+       || "$plugins_file" -nt "$lock_file"
+       || "$ZDOTDIR/eager" -nt "$lock_file"
+       || "$ZDOTDIR/lazy" -nt "$lock_file" ]]; then
+        sheldon --profile="$profile" lock
+    fi
+
+    if [[ ! -f "$cache_file" || "$lock_file" -nt "$cache_file" ]]; then
         mkdir -p "$cache_dir"
         sheldon --profile="$profile" source > "$cache_file"
         zcompile "$cache_file"
@@ -28,3 +36,4 @@ sheldon::load() {
 if command -v sheldon &> /dev/null; then
     sheldon::load
 fi
+

@@ -48,3 +48,4 @@ _gwt_commands() {
 }
 
 compdef _gwt_commands gwt gwtl gwtp gwtnew gwtnewcd gwtadd gwtrm
+
