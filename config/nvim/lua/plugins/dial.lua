@@ -5,7 +5,6 @@ return {
   config = function()
     local augend = require("dial.augend")
     require("dial.config").augends:register_group({
-      -- default augends used when no group name is specified
       default = {
         augend.integer.alias.decimal,
         augend.integer.alias.hex,
@@ -17,6 +16,16 @@ return {
           cyclic = true,
         }),
         augend.constant.new({ elements = { "let", "const" } }),
+      },
+    })
+    require("dial.config").augends:on_filetype({
+      markdown = {
+        augend.integer.alias.decimal,
+        augend.constant.new({
+          elements = { "[ ]", "[x]" },
+          word = false,
+          cyclic = true,
+        }),
       },
     })
   end,

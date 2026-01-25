@@ -5,6 +5,9 @@ api.nvim_create_autocmd("FileType", {
   pattern = "*",
   group = vim.api.nvim_create_augroup("disable_comment", { clear = true }),
   callback = function()
+    if vim.bo.filetype == "markdown" then
+      return
+    end
     vim.opt_local.formatoptions:remove({ "r", "o" })
     vim.opt_local.formatoptions:append({ "M", "j" })
   end,
