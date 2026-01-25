@@ -36,8 +36,8 @@ return {
           handle:close()
 
           if base_branch ~= "" then
-            vim.cmd("DiffviewOpen " .. base_branch .. "...HEAD")
-            print("Opening Diffview against: " .. base_branch .. "...HEAD")
+            vim.cmd("DiffviewOpen origin/" .. base_branch .. "...HEAD")
+            print("Opening Diffview against: origin/" .. base_branch .. "...HEAD")
           else
             print("PR情報が見つかりません")
           end
