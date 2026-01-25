@@ -27,29 +27,14 @@ detect_web_formatter() {
 	echo "biome"
 }
 
-ERRORS=""
-
 case "$EXT" in
 lua)
-	command -v luacheck &>/dev/null && ERRORS=$(luacheck "$FILE_PATH" --no-color 2>&1) || true
 	command -v stylua &>/dev/null && stylua "$FILE_PATH"
 	;;
 sh | bash | zsh)
 	command -v shfmt &>/dev/null && shfmt -w "$FILE_PATH"
 	;;
-ts | tsx | js | jsx)
-	FORMATTER=$(detect_web_formatter "$FILE_PATH")
-	if [[ "$FORMATTER" == "biome" ]]; then
-		command -v biome &>/dev/null && {
-			ERRORS=$(biome lint "$FILE_PATH" 2>&1) || true
-			biome check --write "$FILE_PATH" 2>/dev/null
-		}
-	else
-		command -v eslint &>/dev/null && { ERRORS=$(eslint "$FILE_PATH" 2>&1) || true; }
-		command -v prettier &>/dev/null && prettier --write "$FILE_PATH" 2>/dev/null
-	fi
-	;;
-html | css | scss | less | json | jsonc)
+ts | tsx | js | jsx | html | css | scss | less | json | jsonc)
 	FORMATTER=$(detect_web_formatter "$FILE_PATH")
 	if [[ "$FORMATTER" == "biome" ]]; then
 		command -v biome &>/dev/null && biome check --write "$FILE_PATH" 2>/dev/null
@@ -61,10 +46,3 @@ yaml | yml | md | mdx)
 	command -v prettier &>/dev/null && prettier --write "$FILE_PATH" 2>/dev/null
 	;;
 esac
-
-if [[ -n "$ERRORS" ]]; then
-	echo "$ERRORS" >&2
-	exit 2
-fi
-
-exit 0

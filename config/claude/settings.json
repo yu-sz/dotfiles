@@ -114,7 +114,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "~/.claude/hooks/lint-format.sh"
+						"command": "~/.claude/hooks/format.sh"
 					}
 				]
 			}
