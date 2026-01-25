@@ -2,8 +2,10 @@
 
 command -v terminal-notifier >/dev/null 2>&1 || exit 0
 
-# stdin を消費（hook input JSON）
-cat >/dev/null
+INPUT=$(cat)
+NOTIFICATION_TYPE=$(echo "$INPUT" | jq -r '.notification_type // empty')
+
+[[ -n "$NOTIFICATION_TYPE" && "$NOTIFICATION_TYPE" != "permission_prompt" ]] && exit 0
 
 MESSAGE="${1:-Claude Codeからの通知}"
 
@@ -24,11 +26,15 @@ else
   SUBTITLE=$(basename "$PWD")
 fi
 
+# -sender: macOS Tahoeで通知が表示されない問題の回避
 terminal-notifier \
   -title "⚡️ Claude Code" \
   -subtitle "$SUBTITLE" \
   -message "$MESSAGE" \
-  -sound "default" \
-  -group "claude-code"
+  -sound "Glass" \
+  -group "claude-code" \
+  -sender com.apple.Terminal \
+  </dev/null >/dev/null 2>&1 &
+disown
 
 exit 0
