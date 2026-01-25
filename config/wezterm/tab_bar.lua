@@ -68,7 +68,7 @@ return {
 
 	tab_max_width = 40,
 	tab_bar_at_bottom = false,
-	hide_tab_bar_if_only_one_tab = true,
+	hide_tab_bar_if_only_one_tab = false,
 	show_new_tab_button_in_tab_bar = false,
 
 	colors = {
