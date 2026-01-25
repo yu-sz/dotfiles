@@ -5,29 +5,23 @@ return {
   opts = {
     options = {
       theme = "tokyonight",
-      globalstatus = true,
-    },
-    winbar = {
-      lualine_z = { { "filename", symbols = { unnamed = "" } } },
-    },
-    inactive_winbar = {
-      lualine_z = { { "filename", symbols = { unnamed = "" } } },
+      globalstatus = false,
     },
     sections = {
-      lualine_a = { "mode" },
-      lualine_b = { "branch", "diff", "diagnostics" },
-      lualine_c = { { "filename", file_status = true, path = 3 } },
-      lualine_x = { "encoding", "fileformat", "filetype" },
-      lualine_y = { "progress" },
-      lualine_z = { "location" },
+      lualine_a = {},
+      lualine_b = {},
+      lualine_c = {},
+      lualine_x = { "diagnostics" },
+      lualine_y = { "filetype" },
+      lualine_z = { { "filename", file_status = true, path = 3 } },
     },
     inactive_sections = {
       lualine_a = {},
       lualine_b = {},
-      lualine_c = { { "filename", file_status = true, path = 3 } },
-      lualine_x = { "location" },
-      lualine_y = {},
-      lualine_z = {},
+      lualine_c = {},
+      lualine_x = {},
+      lualine_y = { "encoding", "fileformat", "filetype" },
+      lualine_z = { { "filename", file_status = true, path = 3 } },
     },
   },
 }
