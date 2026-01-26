@@ -1,12 +1,23 @@
-## homebrew ###
+### homebrew ###
 brew_path="/opt/homebrew/bin/brew"
-if [ -e "$brew_path" ]; then
-  eval "$($brew_path shellenv)"
+if [[ -e "$brew_path" ]]; then
+  brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/brew_shellenv.zsh"
+  if [[ ! -f "$brew_cache" || "$brew_path" -nt "$brew_cache" ]]; then
+    mkdir -p "${brew_cache:h}"
+    "$brew_path" shellenv > "$brew_cache"
+  fi
+  source "$brew_cache"
 fi
 
 ### mise ###
-if command -v mise &> /dev/null; then
-  eval "$(mise activate zsh)"
+mise_path="${XDG_DATA_HOME:-$HOME/.local/share}/mise/bin/mise"
+if [[ -x "$mise_path" ]]; then
+  mise_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/mise_activate.zsh"
+  if [[ ! -f "$mise_cache" || "$mise_path" -nt "$mise_cache" ]]; then
+    mkdir -p "${mise_cache:h}"
+    "$mise_path" activate zsh > "$mise_cache"
+  fi
+  source "$mise_cache"
 fi
 
 ### sheldon ###
@@ -31,6 +42,14 @@ sheldon::load() {
     fi
 
     \builtin source "$cache_file"
+}
+
+sheldon::update() {
+    local profile="${1:-default}"
+    local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/sheldon"
+    sheldon --profile="$profile" lock --update
+    rm -f "$cache_dir/$profile.zsh"*
+    sheldon::load "$profile"
 }
 
 if command -v sheldon &> /dev/null; then
