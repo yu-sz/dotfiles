@@ -1,6 +1,7 @@
 -- Deep buffer integration for Git
 return {
   "lewis6991/gitsigns.nvim",
+  event = { "BufReadPre", "BufNewFile" },
   opts = {
     signs = {
       add = { text = "▎" },

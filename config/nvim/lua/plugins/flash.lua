@@ -1,7 +1,7 @@
 -- fast and smart cursor movement/selection
 return {
   "folke/flash.nvim",
-  evenh = "VeryLazy",
+  event = "VeryLazy",
   ---@type Flash.Config
   opts = {},
   keys = {

@@ -1,7 +1,7 @@
 -- manage session
 return {
   "rmagatti/auto-session",
-  lazy = false,
+  event = "VimEnter",
   keys = {
     -- Will use Telescope if installed or a vim.ui.select picker otherwise
     { "<leader>wr", "<cmd>SessionRestore<CR>" },
