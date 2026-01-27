@@ -158,6 +158,31 @@ return {
       silent = true,
       desc = "Open File Explorer",
     },
+
+    -- smart file searvh
+    {
+      "<leader><leader>",
+      function()
+        local root = require("snacks.git").get_root()
+        local sources = require("snacks.picker.config.sources")
+
+        local files = root == nil and sources.files
+          or vim.tbl_deep_extend("force", sources.git_files, {
+            untracked = true,
+            cwd = vim.uv.cwd(),
+          })
+
+        Snacks.picker({
+          multi = { "buffers", "recent", files },
+          format = "file",
+          matcher = { frecency = true, sort_empty = true },
+          filter = { cwd = true },
+          transform = "unique_file",
+        })
+      end,
+      silent = true,
+      desc = "Smart File Search",
+    },
   },
 
   ---@type snacks.Config
@@ -167,6 +192,8 @@ return {
         explorer = {
           hidden = true,
           ignored = true,
+          cycle = true,
+          auto_close = true,
           layout = {
             { preview = true },
             layout = {
