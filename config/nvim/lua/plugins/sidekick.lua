@@ -2,8 +2,18 @@
 -- After installation sign in with :LspCopilotSignIn
 return {
   "folke/sidekick.nvim",
+  ---@class sidekick.Config
   opts = {
     cli = {
+      ---@class sidekick.win.Opts
+      win = {
+        layout = "right",
+        ---@type vim.api.keyset.win_config
+        split = {
+          width = math.floor(vim.o.columns * 0.4),
+          height = 20,
+        },
+      },
       tools = {
         claude = {
           -- 外出ししているmcp設定ファイルを読み込ませる
