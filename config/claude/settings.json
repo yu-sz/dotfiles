@@ -47,7 +47,9 @@
 			"Bash(yarn run:*)",
 			"Bash(yarn test:*)",
 			"Bash(bun run:*)",
-			"Bash(bun test:*)"
+			"Bash(bun test:*)",
+			"WebSearch",
+			"WebFetch"
 		],
 		"deny": [
 			"Bash(sudo:*)",
