@@ -28,6 +28,7 @@ return {
         "html-lsp", -- html
         "css-lsp", -- css
         "tailwindcss-language-server", -- tailwindcss
+        "prisma-language-server", -- prisma
         "terraform-ls",
         "json-lsp", -- json
         "yaml-language-server", -- yaml
