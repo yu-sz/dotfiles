@@ -192,6 +192,7 @@ return {
         explorer = {
           hidden = true,
           ignored = true,
+          exclude = { "node_modules", "dist", ".git" },
           cycle = true,
           auto_close = true,
           layout = {
