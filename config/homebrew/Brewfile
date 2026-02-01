@@ -84,6 +84,8 @@ cask "font-hackgen-nerd"
 cask "font-plemol-jp"
 cask "font-plemol-jp-nf"
 cask "font-plemol-jp-hs"
+cask "font-moralerspace"
+cask "font-moralerspace-hw"
 
 # cli
 cask "google-cloud-sdk"

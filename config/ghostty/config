@@ -1,0 +1,83 @@
+########################################
+# styles
+########################################
+# theme
+theme = tokyonight
+
+# Font
+font-family = "Moralerspace Xenon HW"
+window-title-font-family = "Moralerspace Xenon HW"
+font-size = 18
+font-thicken = false
+
+# BackGround
+# background = #000000
+background-opacity = 0.85
+background-blur-radius = 20
+unfocused-split-opacity = 0.7
+
+# cursor
+cursor-opacity = 0.8
+cursor-color = #ffffff
+cursor-style = block
+
+# window
+window-theme = auto
+window-padding-color = background
+
+window-padding-x = 2
+window-padding-y = 2
+window-padding-balance = true
+
+window-step-resize = false 
+window-save-state = always
+window-inherit-working-directory = true
+
+# bars
+macos-icon = xray
+macos-titlebar-style = tabs
+
+# clipboard
+clipboard-read = allow
+clipboard-write = allow
+clipboard-trim-trailing-spaces = true
+
+# shell integration
+shell-integration = detect
+
+########################################
+#keybinds (LEADER: ctrl+g)
+########################################
+
+# window
+keybind = ctrl+g>f=toggle_fullscreen
+
+# font size
+keybind = ctrl+g>plus=increase_font_size:1
+keybind = ctrl+g>minus=decrease_font_size:1
+
+# tabs
+keybind = ctrl+g>t=new_tab
+keybind = ctrl+g>w=close_tab
+keybind = ctrl+g>right_bracket=move_tab:1
+keybind = ctrl+g>left_bracket=move_tab:-1
+keybind = ctrl+g>1=goto_tab:1
+keybind = ctrl+g>2=goto_tab:2
+keybind = ctrl+g>3=goto_tab:3
+keybind = ctrl+g>4=goto_tab:4
+keybind = ctrl+g>5=goto_tab:5
+keybind = ctrl+g>6=goto_tab:6
+keybind = ctrl+g>7=goto_tab:7
+keybind = ctrl+g>8=goto_tab:8
+keybind = ctrl+g>9=goto_tab:9
+
+# splits
+keybind = ctrl+g>comma=new_split:down
+keybind = ctrl+g>period=new_split:right
+keybind = ctrl+g>h=goto_split:left
+keybind = ctrl+g>j=goto_split:down
+keybind = ctrl+g>k=goto_split:up
+keybind = ctrl+g>l=goto_split:right
+
+# misc
+keybind = shift+enter=text:\n
