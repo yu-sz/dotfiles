@@ -48,7 +48,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     keymap.set("n", "gl", vim.diagnostic.open_float, opts)
 
     -- reboot LSP
-    keymap.set("n", "<leader><leader>r", "<cmd>LspRestart<CR>", opts)
+    keymap.set("n", "gs", "<cmd>LspRestart<CR>", opts)
 
     -- HACK: デフォルトでlspから返ってくるtypescriptのinlay hintsが長々すぎるので、クライアント側で無理やり切り詰める
     -- lsp設定などでサーバ側で切り詰めるなどは現状できないらしい
@@ -105,7 +105,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
     if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
       -- Toggle inlay hints
-      keymap.set("n", "<leader><leader>i", function()
+      keymap.set("n", "gh", function()
         vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
       end, opts)
 
