@@ -195,8 +195,23 @@ return {
           exclude = { "node_modules", "dist", ".git" },
           cycle = true,
           auto_close = true,
+          actions = {
+            open_in_oil = function(picker)
+              local item = picker:current()
+              if not item then
+                return
+              end
+              picker:close()
+              local path = item.file or item.path
+              if not path then
+                return
+              end
+              local target_dir = vim.fn.isdirectory(path) == 1 and path or vim.fs.dirname(path)
+              require("oil").open(target_dir)
+            end,
+          },
           layout = {
-            { preview = true },
+            preview = true,
             layout = {
               box = "horizontal",
               width = 0.8,
@@ -210,6 +225,13 @@ return {
                 { win = "list", border = "none" },
               },
               { win = "preview", border = "rounded", width = 0.6, title = "{preview}" },
+            },
+          },
+          win = {
+            list = {
+              keys = {
+                ["o"] = { "open_in_oil", desc = "Open in Oil" },
+              },
             },
           },
         },
@@ -226,19 +248,19 @@ return {
       preset = {
         ---@type snacks.dashboard.Item[]
         keys = {
-          { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-          { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
-          { icon = " ", key = "e", desc = "Open Explorer", action = ":lua Snacks.dashboard.pick('explorer')" },
-          { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-          { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+          { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+          { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+          { icon = " ", key = "e", desc = "Open Explorer", action = ":lua Snacks.dashboard.pick('explorer')" },
+          { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+          { icon = " ", key = "s", desc = "Restore Session", section = "session" },
           {
-            icon = " ",
+            icon = " ",
             key = "c",
             desc = "Config",
             action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})",
           },
           { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
-          { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          { icon = " ", key = "q", desc = "Quit", action = ":qa" },
         },
       },
     },
