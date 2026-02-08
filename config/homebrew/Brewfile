@@ -9,6 +9,7 @@ tap "laishulu/homebrew" # macism
 # base
 brew "git"
 brew "neovim"
+brew "tmux"
 
 # shell
 brew "ripgrep"           # search text
@@ -21,7 +22,8 @@ brew "zabrze"            # expand abbreviatioin
 
 # views
 brew "starship"          # customize prompt
-brew "git-delta"         # git diff highlight 
+brew "git-delta"         # git diff highlight
+brew "gitmux"            # git status for tmux
 
 # tui
 brew "lazygit"           # git tui

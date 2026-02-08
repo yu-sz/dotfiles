@@ -5,6 +5,10 @@ return {
   ---@class sidekick.Config
   opts = {
     cli = {
+      mux = {
+        enabled = true,
+        backend = "tmux",
+      },
       ---@class sidekick.win.Opts
       win = {
         layout = "right",

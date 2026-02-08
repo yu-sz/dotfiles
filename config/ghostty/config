@@ -37,6 +37,10 @@ window-inherit-working-directory = true
 macos-icon = xray
 macos-titlebar-style = tabs
 
+########################################
+# operations
+########################################
+
 # clipboard
 clipboard-read = allow
 clipboard-write = allow
@@ -45,39 +49,42 @@ clipboard-trim-trailing-spaces = true
 # shell integration
 shell-integration = detect
 
+# tmux integration
+command = /bin/zsh -c '/opt/homebrew/bin/tmux attach || /opt/homebrew/bin/tmux new-session -s default'
+
 ########################################
-#keybinds (LEADER: ctrl+g)
+# keybinds (LEADER: ctrl+g)
 ########################################
 
-# window
-keybind = ctrl+g>f=toggle_fullscreen
-
-# font size
-keybind = ctrl+g>plus=increase_font_size:1
-keybind = ctrl+g>minus=decrease_font_size:1
-
-# tabs
-keybind = ctrl+g>t=new_tab
-keybind = ctrl+g>w=close_tab
-keybind = ctrl+g>right_bracket=move_tab:1
-keybind = ctrl+g>left_bracket=move_tab:-1
-keybind = ctrl+g>1=goto_tab:1
-keybind = ctrl+g>2=goto_tab:2
-keybind = ctrl+g>3=goto_tab:3
-keybind = ctrl+g>4=goto_tab:4
-keybind = ctrl+g>5=goto_tab:5
-keybind = ctrl+g>6=goto_tab:6
-keybind = ctrl+g>7=goto_tab:7
-keybind = ctrl+g>8=goto_tab:8
-keybind = ctrl+g>9=goto_tab:9
-
-# splits
-keybind = ctrl+g>comma=new_split:down
-keybind = ctrl+g>period=new_split:right
-keybind = ctrl+g>h=goto_split:left
-keybind = ctrl+g>j=goto_split:down
-keybind = ctrl+g>k=goto_split:up
-keybind = ctrl+g>l=goto_split:right
+# # window
+# keybind = ctrl+g>f=toggle_fullscreen
+#
+# # font size
+# keybind = ctrl+g>plus=increase_font_size:1
+# keybind = ctrl+g>minus=decrease_font_size:1
+#
+# # tabs
+# keybind = ctrl+g>t=new_tab
+# keybind = ctrl+g>w=close_tab
+# keybind = ctrl+g>right_bracket=move_tab:1
+# keybind = ctrl+g>left_bracket=move_tab:-1
+# keybind = ctrl+g>1=goto_tab:1
+# keybind = ctrl+g>2=goto_tab:2
+# keybind = ctrl+g>3=goto_tab:3
+# keybind = ctrl+g>4=goto_tab:4
+# keybind = ctrl+g>5=goto_tab:5
+# keybind = ctrl+g>6=goto_tab:6
+# keybind = ctrl+g>7=goto_tab:7
+# keybind = ctrl+g>8=goto_tab:8
+# keybind = ctrl+g>9=goto_tab:9
+#
+# # splits
+# keybind = ctrl+g>comma=new_split:down
+# keybind = ctrl+g>period=new_split:right
+# keybind = ctrl+g>h=goto_split:left
+# keybind = ctrl+g>j=goto_split:down
+# keybind = ctrl+g>k=goto_split:up
+# keybind = ctrl+g>l=goto_split:right
 
 # misc
 keybind = shift+enter=text:\n
