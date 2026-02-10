@@ -6,7 +6,7 @@ return {
   opts = {
     cli = {
       mux = {
-        enabled = true,
+        enabled = false,
         backend = "tmux",
       },
       ---@class sidekick.win.Opts
