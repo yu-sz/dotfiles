@@ -35,7 +35,7 @@ window-inherit-working-directory = true
 
 # bars
 macos-icon = xray
-macos-titlebar-style = tabs
+macos-titlebar-style = hidden
 
 ########################################
 # operations
