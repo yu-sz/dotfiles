@@ -50,7 +50,7 @@ clipboard-trim-trailing-spaces = true
 shell-integration = detect
 
 # tmux integration
-command = /bin/zsh -c '/opt/homebrew/bin/tmux attach || /opt/homebrew/bin/tmux new-session -s default'
+command = /bin/zsh -c 'ghostty +boo; /opt/homebrew/bin/tmux attach || /opt/homebrew/bin/tmux new-session -s default'
 
 ########################################
 # keybinds (LEADER: ctrl+g)
