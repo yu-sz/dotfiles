@@ -79,6 +79,17 @@ else
   echo "Warning: mise is not installed via Homebrew. Skipping mise tool installation."
 fi
 
+# Claude Code setup (Native binary installation)
+echo "--- Installing Claude Code (Native Binary) ---"
+if command -v claude &>/dev/null; then
+  echo "Claude Code is already installed."
+  claude --version
+else
+  echo "Installing Claude Code via official installer..."
+  curl -fsSL https://claude.ai/install.sh | bash
+  echo "Claude Code installation complete."
+fi
+
 echo "--- Dotfiles Setup Complete ---"
 echo "✅ All environment configurations and tools have been installed."
 echo "🚀 To apply changes, please open a new terminal session or run 'exec zsh' in your current shell."
