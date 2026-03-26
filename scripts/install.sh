@@ -35,7 +35,6 @@ echo "--- Setting up Symbolic Links ---"
 # Link individual config directories/files from the repo to XDG_CONFIG_HOME.
 ln -sfv "$REPO_DIR/config/"* "$XDG_CONFIG_HOME"
 ln -sfv "$XDG_CONFIG_HOME/zsh/.zshenv" "$HOME/.zshenv"
-ln -sfv "$XDG_CONFIG_HOME/vim" "$HOME/.vim"
 
 # HACK:一時期XDG Base Directory Specificationがサポートされたが、謎に廃止されたので~/.claude配下にシンボリックリンクを貼る
 # xdgがサポートされたら、シンボリックリンクは廃止する
