@@ -29,20 +29,6 @@ mkdir -p \
   "$XDG_DATA_HOME/vim"
 echo "XDG directories created."
 
-# Symbolic Links Setup
-echo "--- Setting up Symbolic Links ---"
-
-# Link individual config directories/files from the repo to XDG_CONFIG_HOME.
-ln -sfv "$REPO_DIR/config/"* "$XDG_CONFIG_HOME"
-ln -sfv "$XDG_CONFIG_HOME/zsh/.zshenv" "$HOME/.zshenv"
-
-# HACK:一時期XDG Base Directory Specificationがサポートされたが、謎に廃止されたので~/.claude配下にシンボリックリンクを貼る
-# xdgがサポートされたら、シンボリックリンクは廃止する
-mkdir -p "$HOME/.claude"
-ln -sfv "$XDG_CONFIG_HOME/claude/"* "$HOME/.claude"
-
-echo "Symbolic links setup complete."
-
 # Homebrew Setup
 echo "--- Starting Homebrew Setup ---"
 
@@ -78,15 +64,16 @@ else
   echo "Warning: mise is not installed via Homebrew. Skipping mise tool installation."
 fi
 
-# Claude Code setup (Native binary installation)
-echo "--- Installing Claude Code (Native Binary) ---"
-if command -v claude &>/dev/null; then
-  echo "Claude Code is already installed."
-  claude --version
+# Nix setup
+echo "--- Nix Setup ---"
+if command -v nix &>/dev/null; then
+  echo "Nix is already installed."
 else
-  echo "Installing Claude Code via official installer..."
-  curl -fsSL https://claude.ai/install.sh | bash
-  echo "Claude Code installation complete."
+  echo "Installing Nix (NixOS official installer)..."
+  curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
+  echo "Nix installation complete."
+  echo "Please restart your shell and run this script again."
+  exit 0
 fi
 
 echo "--- Dotfiles Setup Complete ---"
