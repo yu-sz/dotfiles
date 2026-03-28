@@ -20,7 +20,7 @@
       "ghostty"
       "wezterm"
       "warp"
-      "docker"
+      "docker-desktop"
       "dbeaver-community"
       "karabiner-elements"
       "visual-studio-code"
@@ -34,6 +34,9 @@
     user = username;
     autoMigrate = true;
   };
+
+  system.primaryUser = username;
+  users.users.${username}.home = "/Users/${username}";
 
   fonts.packages = with pkgs; [
     hackgen-font

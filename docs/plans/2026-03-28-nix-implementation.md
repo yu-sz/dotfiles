@@ -741,20 +741,35 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### フェーズ1: Nix基盤 + nix-darwin + HM
 
-- [ ] 1-1: scripts/install.sh にNixインストール処理追加
-- [ ] 1-2: flake.nix 作成（mkDarwinConfig + 複数ホストエントリ）
-- [ ] 1-3: nix/home/default.nix 作成（共通パッケージ）
-- [ ] 1-4: nix/home/shell.nix 作成（direnv）
-- [ ] 1-5: nix/home/darwin.nix 作成（macOS専用パッケージ）
-- [ ] 1-6: nix/home/symlinks.nix 作成（dotfilesリンク管理）
-- [ ] 1-7: nix/hosts/darwin-shared.nix 作成（nix-darwin共通設定）
-- [ ] 1-8: config/zsh/eager/path.zsh 修正（nix-daemon.sh source + PATH整理）
-- [ ] 1-9: config/zsh/lazy/nix.zsh 作成（ホスト名動的取得）
-- [ ] 1-9b: config/zsh/lazy/direnv.zsh 作成（手動direnv hook）
-- [ ] 1-10: .gitignore 確認（flake.lockが除外されていないこと）
-- [ ] 1-11: install.sh から手動symlink処理・Claude Codeバイナリインストール処理を削除
-- [ ] 1-12: darwin-rebuild switch 実行・全ツール動作確認
+- [x] 1-1: scripts/install.sh にNixインストール処理追加
+- [x] 1-2: flake.nix 作成（mkDarwinConfig + 複数ホストエントリ）
+- [x] 1-3: nix/home/default.nix 作成（共通パッケージ）
+- [x] 1-4: nix/home/shell.nix 作成（direnv）
+- [x] 1-5: nix/home/darwin.nix 作成（macOS専用パッケージ）
+- [x] 1-6: nix/home/symlinks.nix 作成（dotfilesリンク管理）
+- [x] 1-7: nix/hosts/darwin-shared.nix 作成（nix-darwin共通設定）
+- [x] 1-8: config/zsh/eager/path.zsh 修正（nix-daemon.sh source + PATH整理）
+- [x] 1-9: config/zsh/lazy/nix.zsh 作成（ホスト名動的取得）
+- [x] 1-9b: config/zsh/lazy/direnv.zsh 作成（手動direnv hook）
+- [x] 1-10: .gitignore 確認（flake.lockが除外されていないこと）
+- [x] 1-11: install.sh から手動symlink処理・Claude Codeバイナリインストール処理を削除
+- [x] 1-12: darwin-rebuild switch 実行・全ツール動作確認
 - [ ] 1-13: 2台目のMacで適用・動作確認
+
+### 実装時の正誤表（フェーズ1）
+
+| # | 計画書の記載 | 実際に必要だった対応 | 原因 |
+|---|---|---|---|
+| 1-2 | `flake.nix`: `sharedOverlays = [];` | direnv の `overrideAttrs` overlay を追加 | nixpkgs-unstable の direnv ビルドリグレッション (PR #486452)。mise が direnv にビルド依存しているため全体に波及。修正 PR #502769 がチャネル到達後に削除する |
+| 1-2 | `flake.nix`: `{ nixpkgs.overlays = sharedOverlays; }` | `nixpkgs.config.allowUnfreePredicate` を追加 | claude-code が unfree パッケージのため許可が必要 |
+| 1-3 | `default.nix`: `imports` で `lib.optionals pkgs.stdenv.isDarwin` | `darwin.nix` を無条件 import + `lib.mkIf` で条件分岐 | `imports` での `pkgs` 参照が infinite recursion を引き起こす |
+| 1-3 | `default.nix`: `home.username` / `home.homeDirectory` を設定 | 削除。`darwin-shared.nix` で `users.users` を設定 | `useUserPackages = true` 時に `common.nix` が `users.users.<name>.home` から自動設定するため重複 |
+| 1-3 | `default.nix`: `sqlite` を `home.packages` に含む | 削除 | `sqldiff` は独立バイナリで sqlite に実行時依存しない (nixpkgs `tools.nix` で確認) |
+| 1-5 | `darwin.nix`: 無条件で `home.packages` | `lib.mkIf pkgs.stdenv.isDarwin` でガード | `imports` から `lib.optionals` を除去したため、darwin.nix 側で条件分岐が必要 |
+| 1-7 | `darwin-shared.nix`: 記載なし | `system.primaryUser = username;` を追加 | nix-darwin 最新版で `homebrew.enable` 等に `system.primaryUser` が必須化 |
+| 1-7 | `darwin-shared.nix`: 記載なし | `users.users.${username}.home` を追加 | home-manager の `common.nix` が `homeDirectory` をここから取得するため必須 |
+| 1-7 | `darwin-shared.nix`: `casks` に `"docker"` | `"docker-desktop"` に変更 | Homebrew 側で cask 名が変更された |
+| 1-9b | `direnv.zsh`: `eval "$(direnv hook zsh)"` | `command -v direnv` でガード追加 | direnv 未インストール時のエラー防止 |
 
 ### フェーズ2: Overlay（zabrzeのみ。gomiはnixpkgsに存在）
 

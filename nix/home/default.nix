@@ -3,14 +3,9 @@
   imports = [
     ./shell.nix
     ./symlinks.nix
-  ] ++ lib.optionals pkgs.stdenv.isDarwin [
     ./darwin.nix
   ];
 
-  home.username = username;
-  home.homeDirectory =
-    if pkgs.stdenv.isDarwin then "/Users/${username}"
-    else "/home/${username}";
   home.stateVersion = "25.11";
 
   home.packages = with pkgs; [
@@ -60,7 +55,6 @@
     shellcheck
     luarocks
     libpq
-    sqlite
     sqldiff
 
     # package managers

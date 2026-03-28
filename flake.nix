@@ -20,6 +20,14 @@
       dotfilesPath = "/Users/${username}/Projects/dotfiles";
 
       sharedOverlays = [
+        # TODO: nixpkgs-unstable に direnv 修正 (PR #502769) が到達したら削除
+        (final: prev: {
+          direnv = prev.direnv.overrideAttrs (old: {
+            postPatch = (old.postPatch or "") + ''
+              substituteInPlace GNUmakefile --replace-fail " -linkmode=external" ""
+            '';
+          });
+        })
       ];
 
       mkDarwinConfig = { hostname, system ? "aarch64-darwin" }:
@@ -27,7 +35,12 @@
           inherit system;
           specialArgs = { inherit username hostname; };
           modules = [
-            { nixpkgs.overlays = sharedOverlays; }
+            {
+              nixpkgs.overlays = sharedOverlays;
+              nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) [
+                "claude-code"
+              ];
+            }
             ./nix/hosts/darwin-shared.nix
             nix-homebrew.darwinModules.nix-homebrew
             home-manager.darwinModules.home-manager
