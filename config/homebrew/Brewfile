@@ -9,6 +9,7 @@ tap "laishulu/homebrew" # macism
 # base
 brew "git"
 brew "neovim"
+brew "vim"
 brew "tmux"
 
 # shell

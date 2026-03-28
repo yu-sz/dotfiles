@@ -24,7 +24,8 @@ No tests or build system.
 Special cases:
 - `config/claude/*` -> `~/.claude/` (Claude CLI does not support XDG)
 - `config/zsh/.zshenv` -> `~/.zshenv`
-- `config/vim` -> `~/.vim`
+
+When adding files to `config/claude/`, also update `nix/home/symlinks.nix` (`home.file` section).
 
 ### Zsh Loading Pattern
 

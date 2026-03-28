@@ -16,8 +16,5 @@ export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export SHELDON_CONFIG_DIR="$ZDOTDIR/sheldon"
 export SHELDON_CONFIG_FILE="$SHELDON_CONFIG_DIR/plugins.toml"
 
-### vim ###
-export VIMINIT='source ~/.config/vim/vimrc'
-
 ### less ###
 export LESSHISTFILE="$XDG_CACHE_HOME/lesshst"

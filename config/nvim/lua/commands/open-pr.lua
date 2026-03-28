@@ -96,7 +96,7 @@ local function open_pr_from_hash()
 
   local output = run_command(get_pr_cmd)
   if not output then
-    vim.qpi.nvim_error_writeln("GraphQL API 呼び出しに失敗しました")
+    vim.api.nvim_err_writeln("GraphQL API 呼び出しに失敗しました")
     return
   end
 
