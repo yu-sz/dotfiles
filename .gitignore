@@ -8,3 +8,6 @@ local.*
 .zcomp*
 *.swp
 ~
+
+### Nix ###
+result
