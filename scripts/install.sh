@@ -78,5 +78,9 @@ fi
 
 echo "--- Dotfiles Setup Complete ---"
 echo "✅ All environment configurations and tools have been installed."
+echo ""
+echo "Next: Run darwin-rebuild switch to apply Nix configuration:"
+echo "  sudo nix run nix-darwin -- switch --flake ${REPO_DIR}#\$(scutil --get LocalHostName)"
+echo ""
 echo "🚀 To apply changes, please open a new terminal session or run 'exec zsh' in your current shell."
 echo "💡 If you installed Neovim, open it to allow plugin manager to install plugins on first run."
