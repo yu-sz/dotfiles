@@ -17,10 +17,7 @@ install_nix() {
   fi
   info "Installing Nix..."
   curl -fSL https://artifacts.nixos.org/nix-installer | sh -s -- install
-  warn "Nix installed. Restart your shell and run this script again:"
-  warn "  exec \$SHELL"
-  warn "  ./scripts/install.sh"
-  return 1
+  info "Nix installed."
 }
 
 load_nix_env() {

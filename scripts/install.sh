@@ -14,7 +14,7 @@ source "${SETUP}/prepare_env.sh"
 info "Dotfiles setup started (${OS})."
 
 create_directories
-install_nix || exit 0
+install_nix
 load_nix_env
 
 case "${OS}" in
