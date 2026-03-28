@@ -268,6 +268,7 @@ nix flake check
     # base
     git
     neovim
+    vim
     tmux
 
     # shell tools
