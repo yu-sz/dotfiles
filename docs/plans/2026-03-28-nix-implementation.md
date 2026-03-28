@@ -773,11 +773,20 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### フェーズ2: Overlay（zabrzeのみ。gomiはnixpkgsに存在）
 
-- [ ] 2-1: nix/overlays/default.nix 作成
-- [ ] 2-2: nix/overlays/zabrze.nix 作成・ハッシュ取得・ビルド確認
-- [ ] 2-3: flake.nix の sharedOverlays に `(import ./nix/overlays)` 追加
-- [ ] 2-4: nix/home/default.nix にzabrze追加
-- [ ] 2-5: darwin-rebuild switch で再ビルド・動作確認
+- [x] 2-1: nix/overlays/default.nix 作成
+- [x] 2-2: nix/overlays/zabrze.nix 作成・ハッシュ取得・ビルド確認
+- [x] 2-3: flake.nix の sharedOverlays に `(import ./nix/overlays)` 追加
+- [x] 2-4: nix/home/default.nix にzabrze追加
+- [x] 2-5: darwin-rebuild switch で再ビルド・動作確認
+
+### 実装時の正誤表（フェーズ2）
+
+| # | 計画書の記載 | 実際に必要だった対応 | 原因 |
+|---|---|---|---|
+| 2-2 | `zabrze.nix`: `hash = "";` / `cargoHash = "";` | `nix build` でハッシュミスマッチエラーから正しいハッシュを取得 | Nixの標準的なハッシュ取得手順。計画書では空文字で記載されていた |
+| 2-2 | `zabrze.nix`: テストに関する記載なし | `environment.variables.EDITOR = "vim"` を `darwin-shared.nix` に追加 | nix-darwin のデフォルト `EDITOR=nano` が `/etc/zshenv` → `set-environment` 経由でビルド時の zsh サブプロセスに伝播し、`EDITOR=vim` を期待する zabrze のテストが失敗。macOS では Nix ビルドサンドボックスがデフォルト無効（`sandbox = false`）のため、ホストの `/etc/zshenv` がビルドプロセスから参照される |
+| 2-3 | `sharedOverlays` を `[(import ./nix/overlays)]` に変更 | direnv overlay（フェーズ1正誤表）の後に追加する形 | フェーズ1で direnv overlay が既に追加済みだったため |
+| - | 記載なし | `git add nix/overlays/` が必要 | Flakes は未追跡ファイルを無視するため、overlay ファイルを git add しないとビルドエラーになる |
 
 ### フェーズ3: Homebrew廃止
 

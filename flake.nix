@@ -28,6 +28,7 @@
             '';
           });
         })
+        (import ./nix/overlays)
       ];
 
       mkDarwinConfig = { hostname, system ? "aarch64-darwin" }:

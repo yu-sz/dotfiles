@@ -22,6 +22,7 @@
     fd
     gomi
     zoxide
+    zabrze
     fzf
 
     # views
