@@ -1,3 +1,8 @@
+# Nix environment (GLOBAL_RCS=off で /etc/zshrc がスキップされる対策)
+if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+  source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+fi
+
 typeset -gU PATH path
 typeset -gU FPATH fpath
 
