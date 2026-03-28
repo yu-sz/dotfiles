@@ -6,6 +6,6 @@ if command -v nix &>/dev/null; then
   alias ngc="nix-collect-garbage -d"
 
   if [[ "$OSTYPE" == darwin* ]]; then
-    alias drs='darwin-rebuild switch --flake ~/Projects/dotfiles#$(scutil --get LocalHostName)'
+    alias drs='sudo darwin-rebuild switch --flake ~/Projects/dotfiles#$(scutil --get LocalHostName)'
   fi
 fi
