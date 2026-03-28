@@ -29,41 +29,6 @@ mkdir -p \
   "$XDG_DATA_HOME/vim"
 echo "XDG directories created."
 
-# Homebrew Setup
-echo "--- Starting Homebrew Setup ---"
-
-# Check if Homebrew is installed. If not, install it.
-if type brew >/dev/null; then
-  echo "Homebrew is already installed."
-else
-  echo "Installing Homebrew..."
-
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-
-  echo "Homebrew installation complete."
-fi
-
-# Install applications and dependencies listed in Brewfile.
-echo "Installing Homebrew apps from Brewfile..."
-brew bundle install --file "${REPO_DIR}/config/homebrew/Brewfile" --verbose --no-upgrade
-
-# Clean up Homebrew cache to free up space.
-echo "Cleaning up Homebrew cache..."
-brew cleanup
-
-echo "Homebrew setup complete."
-
-# mise setup and install
-echo "--- Installing mise managed tools ---"
-if command -v mise &>/dev/null; then
-  # use config/mise/config.toml
-  mise install
-  echo "mise tools installed."
-else
-  echo "Warning: mise is not installed via Homebrew. Skipping mise tool installation."
-fi
-
 # Nix setup
 echo "--- Nix Setup ---"
 if command -v nix &>/dev/null; then
@@ -74,6 +39,15 @@ else
   echo "Nix installation complete."
   echo "Please restart your shell and run this script again."
   exit 0
+fi
+
+# mise setup and install
+echo "--- Installing mise managed tools ---"
+if command -v mise &>/dev/null; then
+  mise install
+  echo "mise tools installed."
+else
+  echo "Warning: mise is not available. Run darwin-rebuild switch first."
 fi
 
 echo "--- Dotfiles Setup Complete ---"
