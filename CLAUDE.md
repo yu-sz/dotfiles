@@ -5,12 +5,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-# Initial setup (creates symlinks, installs Homebrew packages, mise tools)
-./scripts/setup.sh
+# Initial setup
+./scripts/install.sh
 
-# Add new Homebrew package
-# Edit config/homebrew/Brewfile, then:
-brew bundle install --file config/homebrew/Brewfile
+# Apply config changes after editing Nix files
+# macOS:
+darwin-rebuild switch --flake .#$(scutil --get LocalHostName)
+# or use the alias: drs
+# Linux:
+# home-manager switch --flake .#<user>@<hostname>
 ```
 
 No tests or build system.
@@ -62,15 +65,15 @@ All Lua configs (Neovim, WezTerm, Yazi) follow:
 - Module pattern with LuaCATS annotations
 - `snake_case` naming
 
-### Brewfile Format
+### Nix Package Management
 
-```ruby
-tap "owner/repo"       # Third-party taps
-brew "formula"         # CLI tools
-cask "application"     # GUI apps
-```
+- **CLI tools**: `nix/home/default.nix` (`home.packages`)
+- **macOS-only tools**: `nix/home/darwin.nix`
+- **GUI apps (cask)**: `nix/hosts/darwin-shared.nix` (`homebrew.casks`)
+- **Fonts**: `nix/hosts/darwin-shared.nix` (`fonts.packages`)
+- **Custom packages**: `nix/overlays/` (e.g. zabrze)
 
-Group by: taps -> formulae (categorized) -> casks
+After editing, run `drs` (or `darwin-rebuild switch --flake .#<hostname>`).
 
 ### Zabrze Abbreviations
 

@@ -1,60 +1,28 @@
 #!/usr/bin/env bash
-set -eu # Exit on error, exit on unset variables, print commands
+set -euo pipefail
 
-echo "--- Dotfiles Setup Started ---"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SETUP="${SCRIPT_DIR}/setup"
+OS="$(uname -s)"
 
-# Define script and repository paths
-export CUR_DIR="$(
-  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
-  pwd
-)"
-export REPO_DIR="$(
-  cd "${CUR_DIR}/.." || exit 1
-  pwd
-)"
+trap 'printf "\033[31m[ERROR]\033[0m Failed at line %s.\n" "${LINENO}" >&2' ERR
 
-# Set XDG Base Directory Specification variables
-# These default to ~/.config, ~/.local/share, ~/.local/state, ~/.cache if not already set.
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+source "${SETUP}/_helpers.sh"
+source "${SETUP}/prepare_env.sh"
 
-# Create XDG directories if they don't exist
-mkdir -p \
-  "$XDG_CONFIG_HOME" \
-  "$XDG_DATA_HOME" \
-  "$XDG_STATE_HOME" \
-  "$XDG_CACHE_HOME" \
-  "$XDG_DATA_HOME/vim"
-echo "XDG directories created."
+info "Dotfiles setup started (${OS})."
 
-# Nix setup
-echo "--- Nix Setup ---"
-if command -v nix &>/dev/null; then
-  echo "Nix is already installed."
-else
-  echo "Installing Nix (NixOS official installer)..."
-  curl -sSfL https://artifacts.nixos.org/nix-installer | sh -s -- install
-  echo "Nix installation complete."
-  echo "Please restart your shell and run this script again."
-  exit 0
-fi
+create_directories
+install_nix || exit 0
+load_nix_env
 
-# mise setup and install
-echo "--- Installing mise managed tools ---"
-if command -v mise &>/dev/null; then
-  mise install
-  echo "mise tools installed."
-else
-  echo "Warning: mise is not available. Run darwin-rebuild switch first."
-fi
+case "${OS}" in
+  Darwin) "${SETUP}/darwin.sh" "${REPO_DIR}" ;;
+  Linux)  "${SETUP}/linux.sh" "${REPO_DIR}" ;;
+  *)      error "Unsupported OS: ${OS}"; exit 1 ;;
+esac
 
-echo "--- Dotfiles Setup Complete ---"
-echo "✅ All environment configurations and tools have been installed."
-echo ""
-echo "Next: Run darwin-rebuild switch to apply Nix configuration:"
-echo "  sudo nix run nix-darwin -- switch --flake ${REPO_DIR}#\$(scutil --get LocalHostName)"
-echo ""
-echo "🚀 To apply changes, please open a new terminal session or run 'exec zsh' in your current shell."
-echo "💡 If you installed Neovim, open it to allow plugin manager to install plugins on first run."
+"${SETUP}/install_runtimes.sh"
+
+info "Dotfiles setup complete."

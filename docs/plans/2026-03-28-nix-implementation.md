@@ -809,10 +809,13 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### フェーズ4: install.sh 改善
 
-- [ ] 4-1: 権限の分離（ユーザー権限処理と root 権限処理を明確に分ける）
-- [ ] 4-2: `darwin-rebuild switch` の自動実行（sudo の $HOME 問題、PATH 問題を解決）
-- [ ] 4-3: 冪等性の確保（何度実行しても安全な設計）
-- [ ] 4-4: エラーハンドリング改善（各ステップの失敗時に適切なメッセージを表示）
+- [x] 4-1: 権限の分離（ユーザー権限処理と root 権限処理を明確に分ける）
+- [x] 4-2: `darwin-rebuild switch` の自動実行（sudo の $HOME 問題、PATH 問題を解決）
+- [x] 4-3: 冪等性の確保（何度実行しても安全な設計）
+- [x] 4-4: エラーハンドリング改善（各ステップの失敗時に適切なメッセージを表示）
+- [x] 4-5: OS固有処理のファイル分離（scripts/setup/darwin.sh, linux.sh）
+- [x] 4-6: 意図ベースの命名（apply_config, install_runtimes等）
+- [x] 4-7: 依存関係の整理（reload_path追加でapply_config後のPATH問題を解決）
 
 ---
 
