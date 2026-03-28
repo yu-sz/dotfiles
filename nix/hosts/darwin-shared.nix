@@ -26,6 +26,7 @@
       "visual-studio-code"
       "cursor"
       "cursor-cli"
+      "google-japanese-ime"
     ];
   };
 
