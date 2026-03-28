@@ -55,7 +55,7 @@
     hadolint
     shellcheck
     luarocks
-    libpq
+    postgresql
     sqldiff
 
     # package managers
