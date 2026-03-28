@@ -798,6 +798,13 @@ darwin-rebuild switch --flake .#<hostname>
 - [ ] 3-6: darwin-rebuild switch 最終適用
 - [ ] 3-7: 全マシンで最終適用・動作確認
 
+### フェーズ4: install.sh 改善
+
+- [ ] 4-1: 権限の分離（ユーザー権限処理と root 権限処理を明確に分ける）
+- [ ] 4-2: `darwin-rebuild switch` の自動実行（sudo の $HOME 問題、PATH 問題を解決）
+- [ ] 4-3: 冪等性の確保（何度実行しても安全な設計）
+- [ ] 4-4: エラーハンドリング改善（各ステップの失敗時に適切なメッセージを表示）
+
 ---
 
 ## 実装時に要確認事項
