@@ -35,7 +35,7 @@
     autoMigrate = true;
   };
 
-  # HACK: nix-darwinのデフォルトはEDITOR=nano。/etc/zshenvのset-environment経由で
+  # nix-darwinのデフォルトはEDITOR=nano。/etc/zshenvのset-environment経由で
   # ビルド時のzshサブプロセスにも伝播するため、zabrzeのテスト等に影響する
   environment.variables.EDITOR = "vim";
 

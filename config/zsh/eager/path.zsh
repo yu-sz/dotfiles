@@ -1,4 +1,6 @@
-# Nix environment (GLOBAL_RCS=off で /etc/zshrc がスキップされる対策)
+# Nix 環境変数 (NIX_SSL_CERT_FILE, NIX_PROFILES 等) を設定
+# GLOBAL_RCS=off で /etc/zshrc がスキップされるため、ここで明示的に source する
+# NOTE: PATH は下の path=() で再定義するため、nix-daemon.sh による PATH 追加は実質無効
 if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
   source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
