@@ -61,7 +61,6 @@
 			"Bash(rm:*)",
 			"Bash(rm -rf:*)",
 			"Bash(git reset:*)",
-			"Bash(git rebase:*)",
 			"Bash(gh pr create:*)",
 			"Bash(gh pr merge:*)",
 			"Bash(gh pr close:*)",
@@ -88,7 +87,11 @@
 			"Bash(mysql:*)",
 			"Bash(mongod:*)"
 		],
-		"ask": ["Bash(git push:*)", "Bash(git commit:*)"],
+		"ask": [
+			"Bash(git push:*)",
+			"Bash(git commit:*)",
+			"Bash(git rebase:*)"
+		],
 		"defaultMode": "plan"
 	},
 	"enableAllProjectMcpServers": true,
