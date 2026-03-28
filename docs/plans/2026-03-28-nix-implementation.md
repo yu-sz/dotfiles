@@ -790,13 +790,22 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### フェーズ3: Homebrew廃止
 
-- [ ] 3-1: 全CLIツールがNixパスから実行されること確認
-- [ ] 3-2: Brewfileからformulae・tap削除
-- [ ] 3-3: `cleanup = "uninstall"` に変更
-- [ ] 3-4: フォント整理
-- [ ] 3-5: install.shからHomebrew関連処理を削除
-- [ ] 3-6: darwin-rebuild switch 最終適用
+- [x] 3-1: 全CLIツールがNixパスから実行されること確認
+- [x] 3-2: Brewfileからformulae・tap削除
+- [x] 3-3: `cleanup = "uninstall"` に変更
+- [x] 3-4: フォント整理
+- [x] 3-5: install.shからHomebrew関連処理を削除
+- [x] 3-6: darwin-rebuild switch 最終適用
 - [ ] 3-7: 全マシンで最終適用・動作確認
+
+### 実装時の正誤表（フェーズ3）
+
+| # | 計画書の記載 | 実際に必要だった対応 | 原因 |
+|---|---|---|---|
+| 3-2 | Brewfile から formulae・tap 削除し cask のみ残す | Brewfile を空にし、cask も含めて darwin-shared.nix に一元化 | cask は既に darwin-shared.nix で宣言的管理されているため、Brewfile に残す意味がない |
+| 3-3 | `cleanup = "uninstall"` で Homebrew formulae が削除される | 一部 formulae が依存関係エラーで削除拒否。`brew uninstall --ignore-dependencies --force` で手動削除が必要だった | `gcloud-cli`（既に削除済み）が依存元として残っていたため `brew bundle cleanup` が一部を拒否 |
+| 3-6 | darwin-rebuild switch 後に Nix ツールが使われる | `path.zsh` で Nix パスが `$path[@]`（末尾）に配置されており、`/usr/bin/git` 等にフォールバック | `nix-daemon.sh` が追加するパスは `path=()` で明示指定したパスより後になる。Nix per-user profile を `/usr/bin` より前に明示的に配置する修正が必要だった |
+| - | starship がプロンプトに使われている | Homebrew formulae 強制削除後にシェルが `starship` を見つけられずエラーループ。ターミナルウィンドウを閉じて新規ウィンドウで復旧 | 既存シェルセッションが削除済みの `/opt/homebrew/bin/starship` を参照し続けた |
 
 ### フェーズ4: install.sh 改善
 
