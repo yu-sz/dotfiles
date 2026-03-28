@@ -1,0 +1,217 @@
+# General docker commands
+[[snippets]]
+name = "docker"
+trigger = "d"
+snippet = "docker"
+
+[[snippets]]
+name = "docker login"
+trigger = "dl"
+snippet = "docker login"
+
+[[snippets]]
+name = "docker info"
+trigger = "di"
+snippet = "docker info"
+
+[[snippets]]
+name = "docker ps"
+trigger = "dps"
+snippet = "docker ps"
+
+[[snippets]]
+name = "docker container ls"
+trigger = "dls"
+snippet = "docker container ls"
+
+[[snippets]]
+name = "docker image ls"
+trigger = "dimgs"
+snippet = "docker image ls"
+
+[[snippets]]
+name = "docker volume ls"
+trigger = "dvls"
+snippet = "docker volume ls"
+
+[[snippets]]
+name = "docker network ls"
+trigger = "dnls"
+snippet = "docker network ls"
+
+# Docker Compose commands
+[[snippets]]
+name = "docker compose"
+trigger = "dc"
+snippet = "docker compose"
+
+[[snippets]]
+name = "docker compose up -d"
+trigger = "dcu"
+snippet = "docker compose up -d"
+
+[[snippets]]
+name = "(docker compose) up -d"
+trigger = "u"
+snippet = "up -d"
+global = true
+context = 'docker\scompose\s'
+
+[[snippets]]
+name = "docker compose down"
+trigger = "dcd"
+snippet = "docker compose down"
+
+[[snippets]]
+name = "(docker compose) down"
+trigger = "d"
+snippet = "down"
+global = true
+context = 'docker\scompose\s'
+
+[[snippets]]
+name = "docker compose build"
+trigger = "dcb"
+snippet = "docker compose build"
+
+[[snippets]]
+name = "(docker compose) build"
+trigger = "b"
+snippet = "build"
+global = true
+context = 'docker\scompose\s'
+
+[[snippets]]
+name = "docker compose exec"
+trigger = "dce"
+snippet = "docker compose exec"
+
+[[snippets]]
+name = "(docker compose) exec"
+trigger = "e"
+snippet = "exec"
+global = true
+context = 'docker\scompose\s'
+
+[[snippets]]
+name = "docker compose logs"
+trigger = "dcl"
+snippet = "docker compose logs"
+
+[[snippets]]
+name = "docker compose restart"
+trigger = "dcr"
+snippet = "docker compose restart"
+
+[[snippets]]
+name = "(docker compose) restart"
+trigger = "r"
+snippet = "restart"
+global = true
+context = 'docker\scompose\s'
+
+[[snippets]]
+name = "docker compose stop"
+trigger = "dcs"
+snippet = "docker compose stop"
+
+[[snippets]]
+name = "(docker compose) stop"
+trigger = "s"
+snippet = "stop"
+global = true
+context = 'docker\scompose\s'
+
+# Docker container operations
+[[snippets]]
+name = "docker run"
+trigger = "dr"
+snippet = "docker run"
+
+[[snippets]]
+name = "docker stop"
+trigger = "dst"
+snippet = "docker stop"
+
+[[snippets]]
+name = "docker start"
+trigger = "ds"
+snippet = "docker start"
+
+[[snippets]]
+name = "docker restart"
+trigger = "drest"
+snippet = "docker restart"
+
+[[snippets]]
+name = "docker exec"
+trigger = "de"
+snippet = "docker exec"
+
+[[snippets]]
+name = "docker rm"
+trigger = "drm"
+snippet = "docker rm"
+
+[[snippets]]
+name = "docker logs"
+trigger = "dlg"
+snippet = "docker logs"
+
+# Docker image operations
+[[snippets]]
+name = "docker pull"
+trigger = "dpull"
+snippet = "docker pull"
+
+[[snippets]]
+name = "docker push"
+trigger = "dpush"
+snippet = "docker push"
+
+[[snippets]]
+name = "docker rmi"
+trigger = "drmi"
+snippet = "docker rmi"
+
+[[snippets]]
+name = "docker tag"
+trigger = "dt"
+snippet = "docker tag"
+
+# Docker Desktop operations
+[[snippets]]
+name = "start Docker Desktop in background"
+trigger = "dds"
+snippet = "open --background -a Docker"
+
+[[snippets]]
+name = "stop Docker Desktop"
+trigger = "ddk"
+snippet = "pkill -f Docker"
+
+[[snippets]]
+name = "restart Docker Desktop"
+trigger = "ddr"
+snippet = "pkill -f Docker && open -a Docker"
+
+# Other useful commands
+[[snippets]]
+name = "docker prune"
+trigger = "dprune"
+snippet = "docker system prune -f"
+
+[[snippets]]
+name = "docker system df"
+trigger = "dsdf"
+snippet = "docker system df"
+
+[[snippets]]
+name = "docker network inspect"
+trigger = "dni"
+snippet = "docker network inspect"
+
+[[snippets]]
+name = "docker volume inspect"
+trigger = "dvi"
+snippet = "docker volume inspect"

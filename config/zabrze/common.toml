@@ -1,0 +1,39 @@
+[[snippets]]
+name = "nvim"
+trigger = "v"
+snippet = "nvim"
+
+[[snippets]]
+name = "clear"
+trigger = "c"
+snippet = "clear"
+
+[[snippets]]
+name = "history"
+trigger = "h"
+snippet = "history"
+
+[[snippets]]
+name = "touch"
+trigger = "t"
+snippet = "touch"
+
+[[snippets]]
+name = "which"
+trigger = "w"
+snippet = "which"
+
+[[snippets]]
+name = "echo path"
+trigger = "path"
+snippet = "echo $PATH"
+
+[[snippets]]
+name = "echo fpath"
+trigger = "fpath"
+snippet = "echo $FPATH"
+
+[[snippets]]
+name = "search process without grep"
+trigger = "pss"
+snippet = 'ps aux | grep -E "PID|{}" | grep -v grep'
