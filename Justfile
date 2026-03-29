@@ -3,7 +3,7 @@ default:
 
 # darwin-rebuild switch を実行
 switch:
-    darwin-rebuild switch --flake .
+    sudo darwin-rebuild switch --flake .
 
 # flake.lock を更新して switch
 update:
