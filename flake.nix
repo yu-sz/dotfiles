@@ -35,6 +35,12 @@
         (import ./nix/overlays)
       ];
 
+      supportedSystems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+      ];
+      forEachSystem = nixpkgs.lib.genAttrs supportedSystems;
+
       mkDarwinConfig =
         {
           username,
@@ -71,20 +77,27 @@
         "yutanoMacBook-Pro" = mkDarwinConfig { username = "suta-ro"; };
       };
 
-      devShells."aarch64-darwin".default =
+      devShells = forEachSystem (
+        system:
         let
           pkgs = import nixpkgs {
-            system = "aarch64-darwin";
+            inherit system;
             overlays = sharedOverlays;
           };
         in
-        pkgs.mkShell {
-          packages = with pkgs; [
-            nixfmt
-            statix
-            deadnix
-          ];
-        };
+        {
+          default = pkgs.mkShell {
+            packages = with pkgs; [
+              nixfmt
+              statix
+              deadnix
+              just
+            ];
+          };
+        }
+      );
+
+      formatter = forEachSystem (system: nixpkgs.legacyPackages.${system}.nixfmt);
 
       # Linux (standalone home-manager) — 将来用
       # homeConfigurations."<user>@ubuntu" = home-manager.lib.homeManagerConfiguration {
