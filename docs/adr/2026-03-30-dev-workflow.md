@@ -48,6 +48,21 @@ Status: Accepted
 
 旧名 `pre-commit-hooks.nix` → 2024年頃 `git-hooks.nix` にリネーム。flake-parts なしのスタンドアロン統合が可能（[README](https://github.com/cachix/git-hooks.nix#readme)）。
 
+### Formatter: nixfmt-tree を採用
+
+`nix fmt` の `formatter` output に `pkgs.nixfmt-tree` を使用する。
+
+- `pkgs.nixfmt` 単体ではディレクトリ渡しが deprecated（[NixOS/nixfmt#273](https://github.com/NixOS/nixfmt/issues/273)）。`.gitignore` を尊重せず、ローカルの `.direnv/` 等が対象になる問題がある
+- `nixfmt-tree` は Nix Formatting Team が導入した公式ラッパー（[nixpkgs PR #384857](https://github.com/NixOS/nixpkgs/pull/384857)）。内部で treefmt + nixfmt を組み合わせ、`.gitignore` を自動尊重する
+- `treefmt-nix`（flake input として導入する方式）は複数言語フォーマッター統合向け。Nix ファイルのみなら `nixfmt-tree` で十分
+
+### Pre-commit（write）と CI（check）の棲み分け
+
+git-hooks.nix の設計により、追加設定なしで自動的に棲み分けされる:
+
+- **ローカル `git commit`**: pre-commit hook が nixfmt を直接実行し、ファイルを **in-place 修正**（write モード）
+- **CI `nix flake check`**: hooks が Nix sandbox 内で実行される → **読み取り専用**。差分があればビルド失敗（check モード）
+
 ## Consequences
 
 - `nix develop` で自動的に pre-commit hooks が有効化される。セットアップ手順ゼロ

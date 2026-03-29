@@ -10,9 +10,16 @@ update:
     nix flake update
     just switch
 
-# nixfmt + statix でリントチェック
-lint:
-    nix fmt -- --check flake.nix nix/
+# Nix ファイルをフォーマット
+fmt:
+    nix fmt
+
+# フォーマットチェック（差分があればエラー）
+fmt-check:
+    nix fmt -- --ci
+
+# フォーマットチェック + statix
+lint: fmt-check
     statix check .
 
 # Nix store のガベージコレクション

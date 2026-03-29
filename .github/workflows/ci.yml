@@ -2,8 +2,6 @@ name: CI
 
 on:
   pull_request:
-  push:
-    branches: [main]
 
 jobs:
   check:
@@ -21,11 +19,8 @@ jobs:
       - name: nix flake check
         run: nix flake check
 
-      - name: nixfmt
-        run: nix fmt -- --check flake.nix nix/
-
-      - name: statix
-        run: nix develop --command statix check .
+      - name: lint
+        run: nix develop --command just lint
 
       - name: shellcheck
         run: nix develop --command shellcheck scripts/install.sh scripts/bootstrap.sh scripts/setup/*.sh
