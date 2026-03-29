@@ -11,3 +11,6 @@ local.*
 
 ### Nix ###
 result
+
+### Direnv ###
+.direnv

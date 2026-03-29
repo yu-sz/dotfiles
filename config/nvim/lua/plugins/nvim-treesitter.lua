@@ -23,6 +23,7 @@ return {
           "tsx",
           "html",
           "sql",
+          "nix",
           "prisma",
           "regex",
         },

@@ -77,10 +77,10 @@ After editing, run `drs` (or `darwin-rebuild switch --flake .#<hostname>`).
 
 ### Zabrze Abbreviations
 
-YAML files in `config/zabrze/` define shell abbreviations:
-```yaml
-abbrevs:
-  - name: description
-    abbr: short
-    snippet: expanded command
+TOML files in `config/zabrze/` define shell abbreviations:
+```toml
+[[snippets]]
+name = "description"
+trigger = "short"
+snippet = "expanded command"
 ```

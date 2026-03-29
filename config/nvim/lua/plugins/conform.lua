@@ -14,6 +14,7 @@ return {
       },
       formatters_by_ft = {
         lua = { "stylua" },
+        nix = { "nixfmt" },
         bash = { "shfmt" },
         typescript = web_formatter_config,
         javascript = web_formatter_config,

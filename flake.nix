@@ -14,7 +14,14 @@
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
   };
 
-  outputs = { self, nixpkgs, nix-darwin, home-manager, nix-homebrew }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nix-darwin,
+      home-manager,
+      nix-homebrew,
+    }:
     let
       username = "suta-ro";
       dotfilesPath = "/Users/${username}/Projects/dotfiles";
@@ -31,16 +38,22 @@
         (import ./nix/overlays)
       ];
 
-      mkDarwinConfig = { hostname, system ? "aarch64-darwin" }:
+      mkDarwinConfig =
+        {
+          hostname,
+          system ? "aarch64-darwin",
+        }:
         nix-darwin.lib.darwinSystem {
           inherit system;
           specialArgs = { inherit username hostname; };
           modules = [
             {
               nixpkgs.overlays = sharedOverlays;
-              nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) [
-                "claude-code"
-              ];
+              nixpkgs.config.allowUnfreePredicate =
+                pkg:
+                builtins.elem (nixpkgs.lib.getName pkg) [
+                  "claude-code"
+                ];
             }
             ./nix/hosts/darwin-shared.nix
             nix-homebrew.darwinModules.nix-homebrew
@@ -55,10 +68,26 @@
             }
           ];
         };
-    in {
+    in
+    {
       darwinConfigurations = {
         "yutanoMacBook-Pro" = mkDarwinConfig { hostname = "yutanoMacBook-Pro"; };
       };
+
+      devShells."aarch64-darwin".default =
+        let
+          pkgs = import nixpkgs {
+            system = "aarch64-darwin";
+            overlays = sharedOverlays;
+          };
+        in
+        pkgs.mkShell {
+          packages = with pkgs; [
+            nixfmt
+            statix
+            deadnix
+          ];
+        };
 
       # Linux (standalone home-manager) — 将来用
       # homeConfigurations."${username}@ubuntu" = home-manager.lib.homeManagerConfiguration {

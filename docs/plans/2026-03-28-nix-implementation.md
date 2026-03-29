@@ -817,6 +817,20 @@ darwin-rebuild switch --flake .#<hostname>
 - [x] 4-6: 意図ベースの命名（apply_config, install_runtimes等）
 - [x] 4-7: 依存関係の整理（reload_path追加でapply_config後のPATH問題を解決）
 
+### フェーズ5: Nix 言語ツーリング（devShell + Neovim 統合）
+
+- [x] 5-1: flake.nix に devShells 出力を追加（nixfmt-rfc-style, statix, deadnix）
+- [x] 5-2: .envrc 作成（use flake）
+- [x] 5-3: .gitignore に .direnv 追加
+- [x] 5-4: direnv allow で devShell 動作確認
+- [x] 5-5: mason.lua に nil 追加
+- [x] 5-6: lsp/init.lua に nil_ls 追加
+- [x] 5-7: after/lsp/nil_ls.lua 作成
+- [x] 5-8: conform.lua に nix フォーマッタ追加
+- [x] 5-9: nvim-lint.lua に nix リンター追加
+- [x] 5-10: nvim-treesitter.lua に nix grammar 追加
+- [ ] 5-11: Neovim で .nix ファイルを開いて全機能動作確認
+
 ---
 
 ## 実装時に要確認事項

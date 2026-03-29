@@ -1,7 +1,14 @@
-{ config, lib, pkgs, dotfilesPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  dotfilesPath,
+  ...
+}:
 let
   mkLink = path: config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/${path}";
-in {
+in
+{
   xdg.configFile = {
     "nvim".source = mkLink "config/nvim";
     "ghostty".source = mkLink "config/ghostty";
@@ -19,7 +26,8 @@ in {
     "zsh".source = mkLink "config/zsh";
     "gh".source = mkLink "config/gh";
     "wezterm".source = mkLink "config/wezterm";
-  } // lib.optionalAttrs pkgs.stdenv.isDarwin {
+  }
+  // lib.optionalAttrs pkgs.stdenv.isDarwin {
     "karabiner".source = mkLink "config/karabiner";
   };
 
