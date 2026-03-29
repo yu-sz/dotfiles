@@ -12,14 +12,20 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     {
+      self,
       nixpkgs,
       nix-darwin,
       home-manager,
       nix-homebrew,
+      git-hooks,
       ...
     }:
     let
@@ -84,20 +90,40 @@
             inherit system;
             overlays = sharedOverlays;
           };
+          inherit (self.checks.${system}.pre-commit-check) shellHook enabledPackages;
         in
         {
           default = pkgs.mkShell {
-            packages = with pkgs; [
-              nixfmt
-              statix
-              deadnix
-              just
-            ];
+            inherit shellHook;
+            buildInputs =
+              enabledPackages
+              ++ (with pkgs; [
+                just
+              ]);
           };
         }
       );
 
       formatter = forEachSystem (system: nixpkgs.legacyPackages.${system}.nixfmt);
+
+      checks = forEachSystem (system: {
+        pre-commit-check = git-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            nixfmt.enable = true;
+            statix.enable = true;
+            deadnix.enable = true;
+            shellcheck = {
+              enable = true;
+              types_or = [
+                "sh"
+                "bash"
+              ];
+              excludes = [ "^\\.envrc$" ];
+            };
+          };
+        };
+      });
 
       # Linux (standalone home-manager) — 将来用
       # homeConfigurations."<user>@ubuntu" = home-manager.lib.homeManagerConfiguration {
