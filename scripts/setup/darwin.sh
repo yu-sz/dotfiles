@@ -24,9 +24,8 @@ if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
 fi
 
 # Apply config
-HOSTNAME="$(scutil --get LocalHostName)"
-info "Applying config for ${HOSTNAME} (darwin-rebuild switch)..."
+info "Applying config (darwin-rebuild switch)..."
 # sudo 環境でも nix コマンドと正しい HOME を参照するために環境変数を引き継ぐ
 sudo --preserve-env=PATH,HOME,USER \
-  nix run nix-darwin -- switch --flake "${REPO_DIR}#${HOSTNAME}"
+  nix run nix-darwin -- switch --flake "${REPO_DIR}#suta-ro"
 info "Config applied."

@@ -58,6 +58,7 @@
 
     # dev
     hadolint
+    nixd
     shellcheck
     luarocks
     postgresql

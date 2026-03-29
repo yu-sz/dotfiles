@@ -1,6 +1,6 @@
 vim.lsp.enable({
   "lua_ls",
-  "nil_ls",
+  "nixd",
   "vtsls",
   "bashls",
   "html",

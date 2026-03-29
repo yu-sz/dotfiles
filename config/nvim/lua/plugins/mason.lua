@@ -24,7 +24,6 @@ return {
         -- lsp
         "vtsls", -- typescript/javascript
         "lua-language-server", -- lua
-        "nil", -- nix
         "bash-language-server", -- bash
         "html-lsp", -- html
         "css-lsp", -- css

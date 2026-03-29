@@ -8,17 +8,7 @@ Personal config for macOS (Apple Silicon). Managed with Nix (nix-darwin + home-m
    - `config/git/config.local` (git auth info)
    - `config/mise/config.toml` (runtime versions)
 
-2. Add hostname to `flake.nix`:
-
-   ```nix
-   darwinConfigurations = {
-     "your-hostname" = mkDarwinConfig { hostname = "your-hostname"; };
-   };
-   ```
-
-   Hostname is `scutil --get LocalHostName`.
-
-3. Run:
+2. Run:
 
    ```bash
    ./scripts/install.sh
@@ -40,14 +30,14 @@ Note: Raycast settings must be configured manually.
 After editing, apply with:
 
 ```bash
-darwin-rebuild switch --flake .#$(scutil --get LocalHostName)
+drs
 ```
 
 ## Maintenance
 
 ```bash
-nix flake update                                              # Update all packages
-darwin-rebuild switch --flake .#$(scutil --get LocalHostName)  # Apply config
+nix flake update    # Update all packages
+drs                 # Apply config
 nix-collect-garbage -d                                        # Garbage collect old generations
 ```
 

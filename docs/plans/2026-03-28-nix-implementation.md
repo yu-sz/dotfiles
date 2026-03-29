@@ -58,7 +58,7 @@ darwin-rebuild switch --flake .#<hostname>
 | フォント                  | MoralerspaceⅡに統一                   | 既存フォント（PlemolJP, HackGen等）は維持                                                      |
 | 移行戦略                  | Homebrew併存                          | `cleanup = "none"` で安全に段階移行                                                            |
 | terminal-notifier         | nixpkgsで管理                         | 実装時に存在確認                                                                               |
-| ホスト名                  | **実マシンのホスト名を使用**          | 複数Mac対応。`scutil --get LocalHostName` で取得                                               |
+| 設定セット識別子          | **GitHub ユーザー名 `suta-ro`**       | OS のホスト名には依存しない。`darwinConfigurations` のキーは設定セットの識別子（正誤表 5-7 参照） |
 | ユーザー名                | `suta-ro`                             | `specialArgs` で一元管理、ハードコードしない                                                   |
 | direnv                    | フェーズ1で導入                       | nix-direnv付き                                                                                 |
 | Homebrew cask             | nix-darwinで宣言的管理                | upgrade=false                                                                                  |
@@ -819,17 +819,32 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### フェーズ5: Nix 言語ツーリング（devShell + Neovim 統合）
 
-- [x] 5-1: flake.nix に devShells 出力を追加（nixfmt-rfc-style, statix, deadnix）
+- [x] 5-1: flake.nix に devShells 出力を追加（nixfmt, statix, deadnix）
 - [x] 5-2: .envrc 作成（use flake）
 - [x] 5-3: .gitignore に .direnv 追加
 - [x] 5-4: direnv allow で devShell 動作確認
-- [x] 5-5: mason.lua に nil 追加
-- [x] 5-6: lsp/init.lua に nil_ls 追加
-- [x] 5-7: after/lsp/nil_ls.lua 作成
-- [x] 5-8: conform.lua に nix フォーマッタ追加
-- [x] 5-9: nvim-lint.lua に nix リンター追加
-- [x] 5-10: nvim-treesitter.lua に nix grammar 追加
-- [ ] 5-11: Neovim で .nix ファイルを開いて全機能動作確認
+- [x] 5-5: mason.lua から nil を削除（nil は Cargo 必須でビルド失敗のため）
+- [x] 5-6: nix/home/default.nix に nixd 追加
+- [x] 5-7: lsp/init.lua に nixd 追加
+- [x] 5-8: after/lsp/nixd.lua 作成（nil_ls.lua を削除）
+- [x] 5-9: conform.lua に nix フォーマッタ追加
+- [x] 5-10: nvim-lint.lua に nix リンター追加
+- [x] 5-11: nvim-treesitter.lua に nix grammar 追加
+- [x] 5-12: drs で nixd をインストール
+- [x] 5-13: Neovim で .nix ファイルを開いて全機能動作確認
+- [x] 5-14: darwinConfigurations のキーを GitHub ユーザー名 `suta-ro` に変更
+- [x] 5-15: darwin-shared.nix から networking.localHostName を削除
+- [x] 5-16: drs・install.sh・nixd.lua から scutil 依存を排除
+- [x] 5-17: CLAUDE.md・nix-guide.md のドキュメント更新
+
+### 実装時の正誤表（フェーズ5）
+
+| # | 計画書の記載 | 実際に必要だった対応 | 原因 |
+|---|---|---|---|
+| 5-5 | Mason で nil を管理 | nil は Cargo 必須でビルド失敗。nixd を home.packages で管理に変更 | Mason の nil パッケージは Rust ツールチェーンからのソースビルドが必要。環境に Rust がなかった |
+| 5-7 | `darwinConfigurations` のキーに OS のホスト名を使用 | GitHub ユーザー名 `suta-ro` を設定セット識別子として使用。`drs` と `install.sh` から `scutil` 依存を排除 | `darwinConfigurations` のキーは設定セットの識別子であり、OS のホスト名と一致させる必然性はない（nix-darwin 公式テンプレートも `"simple"` という任意名を使用）。OS のホスト名に依存すると仕事 Mac 展開時に制約になる |
+| 5-7 | `networking.localHostName = hostname;` を追加 | 削除。OS のホスト名を nix-darwin で管理しない | 仕事 Mac で OS のホスト名を変えたくないケースに対応するため |
+| 5-8 | nixd.lua で `scutil --get LocalHostName` を使用 | キー名を直書きに変更 | OS のホスト名への依存を排除 |
 
 ---
 
@@ -849,7 +864,7 @@ darwin-rebuild switch --flake .#<hostname>
 | poppler                           | ✅ `poppler-utils` を使用                           | `poppler` はライブラリのみ(`utils=false`)。Yaziが必要な `pdftoppm` は `poppler-utils` に含まれる |
 | mac-app-util必要性                | stateVersionでSpotlight動作テスト                   | copyAppsで十分なら不要                                                                           |
 | libpqバイナリ                     | `which pg_dump`                                     | psql等含むか確認                                                                                 |
-| scutil --get LocalHostName        | 各マシンで実行                                      | flake.nixのエントリ名と一致させる                                                                |
+| ~~scutil --get LocalHostName~~    | ~~各マシンで実行~~                                  | ~~flake.nixのエントリ名と一致させる~~（廃止: OS ホスト名に依存しない設計に変更。正誤表 5-7 参照） |
 
 ---
 

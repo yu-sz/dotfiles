@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Apply config changes after editing Nix files
 # macOS:
-darwin-rebuild switch --flake .#$(scutil --get LocalHostName)
+darwin-rebuild switch --flake .#suta-ro
 # or use the alias: drs
 # Linux:
 # home-manager switch --flake .#<user>@<hostname>

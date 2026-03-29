@@ -71,7 +71,7 @@
     in
     {
       darwinConfigurations = {
-        "yutanoMacBook-Pro" = mkDarwinConfig { hostname = "yutanoMacBook-Pro"; };
+        "suta-ro" = mkDarwinConfig { hostname = "suta-ro"; };
       };
 
       devShells."aarch64-darwin".default =
