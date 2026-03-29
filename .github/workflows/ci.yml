@@ -22,7 +22,7 @@ jobs:
         run: nix flake check
 
       - name: nixfmt
-        run: nix fmt -- --check .
+        run: nix fmt -- --check flake.nix nix/
 
       - name: statix
         run: nix develop --command statix check .

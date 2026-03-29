@@ -12,7 +12,7 @@ update:
 
 # nixfmt + statix でリントチェック
 lint:
-    nix fmt -- --check .
+    nix fmt -- --check flake.nix nix/
     statix check .
 
 # Nix store のガベージコレクション
