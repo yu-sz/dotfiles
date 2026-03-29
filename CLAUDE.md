@@ -10,8 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Apply config changes after editing Nix files
 # macOS:
-darwin-rebuild switch --flake .#suta-ro
-# or use the alias: drs
+drs
 # Linux:
 # home-manager switch --flake .#<user>@<hostname>
 ```
@@ -73,7 +72,7 @@ All Lua configs (Neovim, WezTerm, Yazi) follow:
 - **Fonts**: `nix/hosts/darwin-shared.nix` (`fonts.packages`)
 - **Custom packages**: `nix/overlays/` (e.g. zabrze)
 
-After editing, run `drs` (or `darwin-rebuild switch --flake .#<hostname>`).
+After editing, run `drs`.
 
 ### Zabrze Abbreviations
 

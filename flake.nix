@@ -23,9 +23,6 @@
       ...
     }:
     let
-      username = "suta-ro";
-      dotfilesPath = "/Users/${username}/Projects/dotfiles";
-
       sharedOverlays = [
         # TODO: nixpkgs-unstable に direnv 修正 (PR #502769) が到達したら削除
         (_final: prev: {
@@ -40,12 +37,12 @@
 
       mkDarwinConfig =
         {
-          hostname,
+          username,
           system ? "aarch64-darwin",
         }:
         nix-darwin.lib.darwinSystem {
           inherit system;
-          specialArgs = { inherit username hostname; };
+          specialArgs = { inherit username; };
           modules = [
             {
               nixpkgs.overlays = sharedOverlays;
@@ -63,7 +60,7 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.${username} = import ./nix/home;
-                extraSpecialArgs = { inherit username dotfilesPath; };
+                extraSpecialArgs = { inherit username; };
               };
             }
           ];
@@ -71,7 +68,7 @@
     in
     {
       darwinConfigurations = {
-        "suta-ro" = mkDarwinConfig { hostname = "suta-ro"; };
+        "yutanoMacBook-Pro" = mkDarwinConfig { username = "suta-ro"; };
       };
 
       devShells."aarch64-darwin".default =
@@ -90,10 +87,10 @@
         };
 
       # Linux (standalone home-manager) — 将来用
-      # homeConfigurations."${username}@ubuntu" = home-manager.lib.homeManagerConfiguration {
+      # homeConfigurations."<user>@ubuntu" = home-manager.lib.homeManagerConfiguration {
       #   pkgs = import nixpkgs { system = "x86_64-linux"; overlays = sharedOverlays; };
       #   modules = [ ./nix/home ];
-      #   extraSpecialArgs = { inherit username dotfilesPath; };
+      #   extraSpecialArgs = { username = "<user>"; };
       # };
     };
 }

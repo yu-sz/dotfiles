@@ -25,7 +25,6 @@ fi
 
 # Apply config
 info "Applying config (darwin-rebuild switch)..."
-# sudo 環境でも nix コマンドと正しい HOME を参照するために環境変数を引き継ぐ
 sudo --preserve-env=PATH,HOME,USER \
-  nix run nix-darwin -- switch --flake "${REPO_DIR}#suta-ro"
+  nix run nix-darwin -- switch --flake "${REPO_DIR}"
 info "Config applied."

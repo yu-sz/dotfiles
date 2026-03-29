@@ -4,17 +4,30 @@ Personal config for macOS (Apple Silicon). Managed with Nix (nix-darwin + home-m
 
 ## Setup
 
-1. Prepare local files:
-   - `config/git/config.local` (git auth info)
-   - `config/mise/config.toml` (runtime versions)
+### New Mac
 
-2. Run:
+```bash
+curl -fsSL https://raw.githubusercontent.com/yu-sz/dotfiles/main/scripts/bootstrap.sh | bash
+```
 
-   ```bash
-   ./scripts/install.sh
-   ```
+### Existing clone
 
-Note: Raycast settings must be configured manually.
+```bash
+./scripts/install.sh
+```
+
+### Post-install (manual)
+
+- `config/mise/config.toml` を作成してランタイムバージョンを設定し `mise install`
+- Raycast は手動設定
+
+### Adding a new machine
+
+`flake.nix` の `darwinConfigurations` にエントリを追加:
+
+```nix
+"<username>" = mkDarwinConfig { username = "<username>"; };
+```
 
 ## Managing Packages
 
