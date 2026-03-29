@@ -1,7 +1,20 @@
 name: CI
 
 on:
+  push:
+    paths:
+      - "**.nix"
+      - "flake.lock"
+      - "Justfile"
+      - "scripts/**"
+      - ".github/workflows/ci.yml"
   pull_request:
+    paths:
+      - "**.nix"
+      - "flake.lock"
+      - "Justfile"
+      - "scripts/**"
+      - ".github/workflows/ci.yml"
 
 jobs:
   check:
