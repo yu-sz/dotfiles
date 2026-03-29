@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 [[ -n "${_HELPERS_LOADED:-}" ]] && return
 _HELPERS_LOADED=1
 
