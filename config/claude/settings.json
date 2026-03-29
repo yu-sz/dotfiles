@@ -53,6 +53,7 @@
 			"Bash(bun run:*)",
 			"Bash(bun test:*)",
 			"Bash(curl:*)",
+			"Bash(nix develop -c:*)",
 			"WebSearch",
 			"WebFetch"
 		],

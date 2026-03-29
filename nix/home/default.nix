@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  username,
-  ...
-}:
+{ pkgs, ... }:
 {
   imports = [
     ./shell.nix

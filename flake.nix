@@ -16,11 +16,11 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       nix-darwin,
       home-manager,
       nix-homebrew,
+      ...
     }:
     let
       username = "suta-ro";
@@ -28,7 +28,7 @@
 
       sharedOverlays = [
         # TODO: nixpkgs-unstable に direnv 修正 (PR #502769) が到達したら削除
-        (final: prev: {
+        (_final: prev: {
           direnv = prev.direnv.overrideAttrs (old: {
             postPatch = (old.postPatch or "") + ''
               substituteInPlace GNUmakefile --replace-fail " -linkmode=external" ""
