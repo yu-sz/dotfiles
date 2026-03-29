@@ -14,3 +14,9 @@ result
 
 ### Direnv ###
 .direnv
+
+### Karabiner ###
+config/karabiner/automatic_backups/
+
+### Neovim ###
+.netrwhist
