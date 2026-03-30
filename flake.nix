@@ -30,14 +30,6 @@
     }:
     let
       sharedOverlays = [
-        # TODO: nixpkgs-unstable に direnv 修正 (PR #502769) が到達したら削除
-        (_final: prev: {
-          direnv = prev.direnv.overrideAttrs (old: {
-            postPatch = (old.postPatch or "") + ''
-              substituteInPlace GNUmakefile --replace-fail " -linkmode=external" ""
-            '';
-          });
-        })
         (import ./nix/overlays)
       ];
 
