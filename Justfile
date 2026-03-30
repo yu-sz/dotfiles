@@ -23,6 +23,10 @@ lint: fmt-check
     statix check .
     deadnix --no-lambda-pattern-names .
 
+# nix flake check を実行
+check:
+    nix flake check
+
 # Nix store のガベージコレクション
 clean:
     nix-collect-garbage -d

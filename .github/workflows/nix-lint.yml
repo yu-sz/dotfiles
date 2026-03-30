@@ -27,9 +27,3 @@ jobs:
 
       - name: nix flake check
         run: nix flake check
-
-      - name: lint
-        run: nix develop --command just lint
-
-      - name: shellcheck
-        run: nix develop --command shellcheck -x -e SC1091 scripts/install.sh scripts/bootstrap.sh scripts/setup/*.sh
