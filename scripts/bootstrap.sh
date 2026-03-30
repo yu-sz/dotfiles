@@ -36,7 +36,8 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     TMP="$(mktemp)"
     sed "/darwinConfigurations = {/a\\
 \\        \"${HOSTNAME}\" = mkDarwinConfig { username = \"${USERNAME}\"; };" \
-      "${FLAKE}" > "${TMP}" && mv "${TMP}" "${FLAKE}" || rm -f "${TMP}"
+      "${FLAKE}" > "${TMP}"
+    if mv "${TMP}" "${FLAKE}"; then :; else rm -f "${TMP}"; fi
     git -C "${DOTFILES_DIR}" add flake.nix
   fi
 fi
