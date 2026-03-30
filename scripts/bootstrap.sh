@@ -21,11 +21,8 @@ if [[ ! -f "${GIT_CONFIG_LOCAL}" ]]; then
   info "Setting up git config.local..."
   read -rp "Git user.name: " git_name < /dev/tty
   read -rp "Git user.email: " git_email < /dev/tty
-  cat > "${GIT_CONFIG_LOCAL}" <<EOF
-[user]
-	name = ${git_name}
-	email = ${git_email}
-EOF
+  git config --file "${GIT_CONFIG_LOCAL}" user.name "${git_name}"
+  git config --file "${GIT_CONFIG_LOCAL}" user.email "${git_email}"
   info "git config.local created."
 fi
 
@@ -35,9 +32,11 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
   USERNAME="$(whoami)"
   if ! grep -q "\"${HOSTNAME}\"" "${DOTFILES_DIR}/flake.nix"; then
     info "Adding darwinConfiguration for ${HOSTNAME}..."
-    sed -i '' "/darwinConfigurations = {/a\\
+    FLAKE="${DOTFILES_DIR}/flake.nix"
+    TMP="$(mktemp)"
+    sed "/darwinConfigurations = {/a\\
 \\        \"${HOSTNAME}\" = mkDarwinConfig { username = \"${USERNAME}\"; };" \
-      "${DOTFILES_DIR}/flake.nix"
+      "${FLAKE}" > "${TMP}" && mv "${TMP}" "${FLAKE}" || rm -f "${TMP}"
     git -C "${DOTFILES_DIR}" add flake.nix
   fi
 fi

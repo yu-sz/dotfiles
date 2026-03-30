@@ -3,11 +3,14 @@ name: Nix Lint
 on:
   push:
     paths:
-      - "**.nix"
+      - "**/*.nix"
       - "flake.lock"
       - "Justfile"
       - "scripts/**"
       - ".github/workflows/nix-lint.yml"
+
+permissions:
+  contents: read
 
 jobs:
   check:

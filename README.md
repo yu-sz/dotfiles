@@ -23,10 +23,10 @@ curl -fsSL https://raw.githubusercontent.com/yu-sz/dotfiles/main/scripts/bootstr
 
 ### Adding a new machine
 
-`flake.nix` の `darwinConfigurations` にエントリを追加:
+`bootstrap.sh` が自動でホスト名を検出し `flake.nix` にエントリを追加する。手動で追加する場合:
 
 ```nix
-"<username>" = mkDarwinConfig { username = "<username>"; };
+"<hostname>" = mkDarwinConfig { username = "<username>"; };
 ```
 
 ## Managing Packages

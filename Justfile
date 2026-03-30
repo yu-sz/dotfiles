@@ -21,6 +21,7 @@ fmt-check:
 # フォーマットチェック + statix
 lint: fmt-check
     statix check .
+    deadnix --no-lambda-pattern-names .
 
 # Nix store のガベージコレクション
 clean:
