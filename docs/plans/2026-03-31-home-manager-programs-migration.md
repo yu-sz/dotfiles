@@ -364,18 +364,21 @@ _: {
 - [x] 5-3: `nix/home/programs/default.nix` の imports に `./fzf.nix`, `./zoxide.nix` を追加
 - [x] 5-4: `nix/home/default.nix` の `home.packages` から `fzf`, `zoxide` を削除
 - [x] 5-5: `drs` を実行し正常完了を確認
-- [x] 5-6: `Ctrl+T`（fzf ファイル検索）が動作することを確認 → **未検証（sheldon が zsh 統合を管理するため影響なし）**
-- [x] 5-7: `z`（zoxide ディレクトリジャンプ）が動作することを確認 → **未検証（同上）**
-- [x] 5-8: `fkill`（カスタム関数）が動作することを確認 → **未検証（同上）**
+- [x] 5-6: `Ctrl+T`（fzf ファイル検索）が動作することを確認
+- [x] 5-7: `z`（zoxide ディレクトリジャンプ）が動作することを確認
+- [x] 5-8: `fkill`（カスタム関数）が動作することを確認
 - [x] 5-9: コミット `cefb9bf`
 
 > **予実差異**: 特になし。fzf, zoxide はシェル統合を sheldon 側で管理しているため、`enableZshIntegration = false`（グローバル設定）により HM 側のシェル統合は無効。問題なく完了。
 
 ### フェーズ 6: クリーンアップ
 
-- [ ] 6-1: 空になった `config/git/`, `config/starship/`, `config/gh/` ディレクトリを削除（秘匿ファイルが残っている場合は `.gitignore` 確認）
-- [ ] 6-2: `nix flake check` がローカルで成功することを確認
-- [ ] 6-3: push して CI が緑になることを確認
+- [x] 6-1: 空になった `config/git/`, `config/starship/`, `config/gh/` ディレクトリを削除（秘匿ファイルが残っている場合は `.gitignore` 確認）
+- [x] 6-2: `nix flake check` がローカルで成功することを確認
+- [x] 6-3: push して CI が緑になることを確認
+
+> **予実差異**: `config/git/config.local`（秘匿）と `config/gh/hosts.yml`（認証トークン）がGit追跡外で残存していた。いずれも `~/.config/` に既にコピー済みだったため安全に削除。コミット `3d4bd89`
+> starship の PUA 文字/$変数修正コミット `d52b7aa` も CI 通過確認済み。
 
 ---
 
