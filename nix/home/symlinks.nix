@@ -13,7 +13,6 @@ in
     "nvim".source = mkLink "config/nvim";
     "ghostty".source = mkLink "config/ghostty";
     "tmux".source = mkLink "config/tmux";
-    "starship".source = mkLink "config/starship";
     "gitmux".source = mkLink "config/gitmux";
     "gomi".source = mkLink "config/gomi";
     "lazygit".source = mkLink "config/lazygit";

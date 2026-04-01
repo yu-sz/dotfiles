@@ -24,7 +24,6 @@
     fzf
 
     # views
-    starship
     gitmux
 
     # tui
