@@ -14,7 +14,6 @@ in
     "ghostty".source = mkLink "config/ghostty";
     "tmux".source = mkLink "config/tmux";
     "starship".source = mkLink "config/starship";
-    "git".source = mkLink "config/git";
     "gitmux".source = mkLink "config/gitmux";
     "gomi".source = mkLink "config/gomi";
     "lazygit".source = mkLink "config/lazygit";

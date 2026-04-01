@@ -11,7 +11,6 @@
 
   home.packages = with pkgs; [
     # base
-    git
     neovim
     vim
     tmux

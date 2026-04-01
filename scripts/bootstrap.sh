@@ -16,7 +16,7 @@ else
 fi
 
 # git config.local の生成（初回のみ）
-GIT_CONFIG_LOCAL="${DOTFILES_DIR}/config/git/config.local"
+GIT_CONFIG_LOCAL="${HOME}/.config/git/config.local"
 if [[ ! -f "${GIT_CONFIG_LOCAL}" ]]; then
   info "Setting up git config.local..."
   read -rp "Git user.name: " git_name < /dev/tty
