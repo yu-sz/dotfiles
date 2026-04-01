@@ -19,9 +19,7 @@
     ripgrep
     fd
     gomi
-    zoxide
     zabrze
-    fzf
 
     # views
     gitmux
