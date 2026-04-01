@@ -2,18 +2,17 @@ _: {
   programs.starship = {
     enable = true;
     settings = {
-      format = "[░▒▓](#a3aed2)[  ](bg:#a3aed2 fg:#090c0c)[](bg:#3B6ADB fg:#a3aed2)$directory[](fg:#3B6ADB bg:#394260)$git_branch$git_status$git_state[](fg:#394260 bg:#212736)$nodejs$bun$lua[](fg:#212736 bg:#1d2230)$time[ ](fg:#1d2230)
-$character";
+      format = "[░▒▓](#a3aed2)[  ](bg:#a3aed2 fg:#090c0c)[](bg:#3B6ADB fg:#a3aed2)$directory[](fg:#3B6ADB bg:#394260)$git_branch$git_status$git_state[](fg:#394260 bg:#212736)$nodejs$bun$lua[](fg:#212736 bg:#1d2230)$time[ ](fg:#1d2230)\n$character\n";
       directory = {
         style = "fg:#e3e5e5 bg:#3B6ADB";
         format = "[ $path ]($style)";
         truncation_length = 3;
         truncation_symbol = "…/";
         substitutions = {
-          "Documents" = "󰈙 ";
-          "Downloads" = " ";
-          "Music" = " ";
-          "Pictures" = " ";
+          Documents = "󰈙 ";
+          Downloads = " ";
+          Music = " ";
+          Pictures = " ";
         };
       };
       git_branch = {
@@ -24,7 +23,7 @@ $character";
       git_state = {
         disabled = false;
         style = "bg:#394260";
-        format = "[[(\ )](fg:#769ff0 bg:#394260)]($style)";
+        format = "[[($state )](fg:#769ff0 bg:#394260)]($style)";
         rebase = "󰡒 ";
         merge = " ";
         revert = " ";
@@ -35,7 +34,7 @@ $character";
       };
       git_status = {
         style = "bg:#394260";
-        format = "[[(\ )](fg:#769ff0 bg:#394260)]($style)";
+        format = "[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)";
         conflicted = "⚡️";
         ahead = "";
         behind = "";
@@ -51,23 +50,23 @@ $character";
       nodejs = {
         symbol = " ";
         style = "bg:#212736";
-        format = "[[ $symbol (\) ](fg:#769ff0 bg:#212736)]($style)";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
       };
       bun = {
         symbol = "🥟 ";
         style = "bg:#212736";
-        format = "[[ $symbol (\) ](fg:#769ff0 bg:#212736)]($style)";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
       };
       lua = {
         symbol = "󰢱 ";
         style = "bg:#212736";
-        format = "[[ $symbol (\) ](fg:#769ff0 bg:#212736)]($style)";
+        format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)";
       };
       time = {
         disabled = true;
         time_format = "%R";
         style = "bg:#1d2230";
-        format = "[[  \ ](fg:#a0a9cb bg:#1d2230)]($style)";
+        format = "[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)";
       };
     };
   };
