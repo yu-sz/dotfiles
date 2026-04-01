@@ -23,7 +23,6 @@ in
     "vim".source = mkLink "config/vim";
     "mise".source = mkLink "config/mise";
     "zsh".source = mkLink "config/zsh";
-    "gh".source = mkLink "config/gh";
     "wezterm".source = mkLink "config/wezterm";
   }
   // lib.optionalAttrs pkgs.stdenv.isDarwin {

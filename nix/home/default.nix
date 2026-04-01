@@ -41,7 +41,6 @@
 
     # cli
     awscli2
-    gh
     ghq
     jq
     pgcli
