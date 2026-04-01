@@ -4,6 +4,7 @@
     ./shell.nix
     ./symlinks.nix
     ./darwin.nix
+    ./programs
   ];
 
   home.stateVersion = "25.11";
@@ -17,8 +18,6 @@
 
     # shell tools
     ripgrep
-    bat
-    eza
     fd
     gomi
     zoxide
@@ -27,7 +26,6 @@
 
     # views
     starship
-    delta
     gitmux
 
     # tui
