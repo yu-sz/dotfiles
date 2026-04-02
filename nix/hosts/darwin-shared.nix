@@ -94,6 +94,16 @@
 
   users.users.${username}.home = "/Users/${username}";
 
+  stylix = {
+    enable = true;
+    autoEnable = false;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+    fonts.monospace = {
+      package = pkgs.moralerspace-hw;
+      name = "Moralerspace Xenon HW";
+    };
+  };
+
   fonts.packages = with pkgs; [
     hackgen-font
     hackgen-nf-font

@@ -5,6 +5,7 @@
     ./symlinks.nix
     ./darwin.nix
     ./programs
+    ./stylix.nix
   ];
 
   xdg.enable = true;

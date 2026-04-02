@@ -225,18 +225,18 @@ require("smart-enter"):setup({
 - [x] 1-4: Dock が右配置になっていることを確認（autohide は OFF に変更、マウス設定も追加）
 - [x] 1-5: Finder でパスバー・拡張子・リスト表示を確認（カラム → リスト表示に変更）
 - [x] 1-6: メニューバー時計が 24h・秒表示になっていることを確認
-- [ ] 1-7: コミット
+- [x] 1-7: コミット
 
 ### フェーズ 2: Stylix 基盤導入
 
-- [ ] 2-1: `flake.nix` の inputs に `stylix` を追加
-- [ ] 2-2: `flake.nix` の `mkDarwinConfig` modules に `stylix.darwinModules.stylix` を追加
-- [ ] 2-3: `nix/hosts/darwin-shared.nix` に Stylix core 設定を追加（`stylix.enable = true`, `stylix.base16Scheme`, `stylix.fonts.monospace`, `stylix.autoEnable = false`）
-- [ ] 2-4: `nix/home/stylix.nix` を作成（targets は空の状態で開始）
-- [ ] 2-5: `nix/home/default.nix` の imports に `./stylix.nix` を追加
-- [ ] 2-6: `drs` を実行し正常完了を確認
-- [ ] 2-7: neovim, wezterm, starship, tmux → 既存設定のまま変化なしを確認（`autoEnable = false` の検証）
-- [ ] 2-8: コミット
+- [x] 2-1: `flake.nix` の inputs に `stylix` を追加
+- [x] 2-2: `flake.nix` の `mkDarwinConfig` modules に `stylix.darwinModules.stylix` を追加
+- [x] 2-3: `nix/hosts/darwin-shared.nix` に Stylix core 設定を追加（`stylix.enable = true`, `stylix.base16Scheme`, `stylix.fonts.monospace`, `stylix.autoEnable = false`）
+- [x] 2-4: `nix/home/stylix.nix` を作成（targets は空の状態で開始）
+- [x] 2-5: `nix/home/default.nix` の imports に `./stylix.nix` を追加
+- [x] 2-6: `drs` を実行し正常完了を確認（新規ファイルは `git add` が必要だった）
+- [x] 2-7: neovim, wezterm, starship, tmux → 既存設定のまま変化なしを確認（`autoEnable = false` の検証）
+- [x] 2-8: コミット
 
 ### フェーズ 3: lazygit 移行 + Stylix target 有効化
 

@@ -16,6 +16,10 @@
       url = "github:cachix/git-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -26,6 +30,7 @@
       home-manager,
       nix-homebrew,
       git-hooks,
+      stylix,
       ...
     }:
     let
@@ -57,6 +62,7 @@
                 ];
             }
             ./nix/hosts/darwin-shared.nix
+            stylix.darwinModules.stylix
             nix-homebrew.darwinModules.nix-homebrew
             home-manager.darwinModules.home-manager
             {
