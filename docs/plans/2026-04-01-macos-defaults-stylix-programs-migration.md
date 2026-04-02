@@ -321,25 +321,25 @@ require("smart-enter"):setup({
 - [x] 5-10: プレビュー機能確認
 - [x] 5-11: yazi → tokyo-night の色を確認（BennyOe flavor をそのまま使用）
 - [x] 5-12: `config/yazi/` ディレクトリを削除
-- [ ] 5-13: コミット
+- [x] 5-13: コミット `74ee564`
 
 > **予実差異**:
 > 1. Stylix 見送りにより `stylix.targets.yazi.enable = true` は追加せず、代わりに `programs.yazi.flavors` + `programs.yazi.theme` で BennyOe tokyo-night flavor を直接設定。
 > 2. `fetchFromGitHub` の hash が不一致。`package.toml` の rev `8e6296f` に対する hash を nix のエラーメッセージから取得して修正。
 > 3. `~/.config/ghostty` の旧 HM シンボリンクが再び残存し mkdir エラー。`unlink` で手動削除。`drs` のたびに旧世代シンボリンクが問題になるパターン。
 
-### フェーズ 6: bat, fzf の Stylix target 有効化
+### フェーズ 6: ADR 更新（Stylix 見送り記録）
 
-- [ ] 6-1: `nix/home/stylix.nix` に `stylix.targets.bat.enable = true`, `stylix.targets.fzf.enable = true` を追加
-- [ ] 6-2: `nix/home/programs/bat.nix` の `config.style` が Stylix と競合しないか確認（`style` と `theme` は独立オプションのため競合しない想定）
-- [ ] 6-3: `drs` を実行し正常完了を確認
-- [ ] 6-4: `bat` でファイル表示 → tokyo-night の色になっていることを確認
-- [ ] 6-5: `fzf` 起動 → tokyo-night の色を確認
-- [ ] 6-6: コミット
+- [x] 6-1: ADR `docs/adr/2026-04-01-stylix-programs-migration.md` に Stylix 見送りの Addendum を追記
+- [x] 6-2: ADR `docs/adr/2026-04-01-macos-defaults-stylix-programs-migration.md` の `postUserActivation` → `postActivation` 修正
+- [x] 6-3: `stylix.nix` が空（targets なし）であることを確認
+- [ ] 6-4: コミット
+
+> **予実差異**: Phase 6 の内容を「bat/fzf Stylix target 有効化」から「ADR 更新（Stylix 見送り記録）」に変更。Stylix のターミナルカラー品質問題により、bat/fzf への Stylix 適用は見送り。
 
 ### フェーズ 7: クリーンアップ
 
-- [ ] 7-1: 空になった `config/` ディレクトリの確認・削除
+- [ ] 7-1: `config/lazygit/`, `config/ghostty/`, `config/yazi/` が削除済みであることを確認
 - [ ] 7-2: `nix flake check` がローカルで成功することを確認
 - [ ] 7-3: push して CI が緑になることを確認
 

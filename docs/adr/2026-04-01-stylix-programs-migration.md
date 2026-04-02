@@ -109,10 +109,49 @@ Stylix のテーマ統一対象にするため、`programs.yazi` に移行する
 
 ## Consequences
 
-- カラースキーム変更が `base16Scheme` の1行変更で bat, fzf, lazygit, ghostty, yazi に反映
-- ghostty が nixpkgs 管理になり、Linux 展開時の差分が減る（Homebrew cask は macOS 専用 GUI アプリのみに整理される）
+- ~~カラースキーム変更が `base16Scheme` の1行変更で bat, fzf, lazygit, ghostty, yazi に反映~~ → Addendum 参照
+- ~~ghostty が nixpkgs 管理になり、Linux 展開時の差分が減る~~ → Addendum 参照
 - yazi の `config/` ディレクトリ（236行 TOML + plugins + flavors）が数行の Nix 定義に集約
 - `config/` ディレクトリと `symlinks.nix` のエントリが lazygit, ghostty, yazi の3つ分減る
 - `ya pack` によるプラグイン管理が Nix に統一される（`ya pack` のワークフローは使えなくなる）
 - `drs` で設定変更を適用する必要があり、ghostty/yazi の raw config の「即時反映」は失われる。ただし設定変更頻度が低いため実用上の影響は小さい
 - wezterm, neovim 等のシンボリンク管理ツールはカラースキーム変更時に手動修正が引き続き必要
+
+---
+
+## Addendum (2026-04-03): Stylix テーマ統一の見送り
+
+Status: **Partially Superseded** — programs 移行（B〜E）は実施、Stylix テーマ統一（A）は見送り
+
+### 経緯
+
+Phase 2 で Stylix 基盤を導入し Phase 3-4 で lazygit・ghostty に適用したところ、ghostty の色味に違和感が発生。調査の結果、**Stylix の base16 パレットマッピングが公式 TokyoNight テーマと大きく乖離**していることが判明。
+
+### 根本原因: base16 と ANSI カラーの設計思想の違い
+
+base16 スキームはエディタ向けに設計された 16 色定義で、ANSI ターミナルカラー（palette 0-15）とは用途が異なる。Stylix は base16 の色を機械的に ANSI パレットにマッピングするが、結果として色の意味が崩れる:
+
+| ANSI slot | 期待される色 | TokyoNight 公式 | Stylix base16 |
+|-----------|-------------|----------------|---------------|
+| 1 (red) | 赤系 | `#f7768e` | `#c0caf5`（青系） |
+| 3 (yellow) | 黄系 | `#e0af68` | `#0db9d7`（シアン） |
+| foreground | 明るい白 | `#c0caf5` | `#a9b1d6`（暗い） |
+
+### 対象ツールの特性
+
+lazygit, yazi, bat, fzf はすべてターミナル上で動作し、ターミナルの ANSI パレットをそのまま使用する。ghostty の公式 TokyoNight テーマ（正確な ANSI カラー定義）を使えば、これらのツールは自動的に正しい色で表示される。Stylix で別のパレットを注入する必要がない。
+
+### 変更した決定
+
+| 項目 | 元の決定 | 変更後 |
+|------|---------|--------|
+| Stylix テーマ統一 | bat, fzf, lazygit, ghostty, yazi に適用 | **すべて無効化**。`autoEnable = false` + targets 空 |
+| ghostty テーマ | Stylix 管理 | `theme = "tokyonight"`（ghostty ビルトイン） |
+| yazi テーマ | Stylix 管理 | `programs.yazi.flavors` + `theme` で BennyOe tokyo-night flavor を直接設定 |
+| lazygit テーマ | Stylix 管理（`mkForce` で上書き） | テーマ設定なし（ターミナルカラーに従う） |
+| bat/fzf テーマ | Stylix 管理 | テーマ設定なし（ターミナルカラーに従う） |
+| ghostty 本体 | Homebrew cask → nixpkgs `ghostty-bin` | **Homebrew cask を維持**（`package = null`）。nix 版はウィンドウ操作・フォント描画に問題 |
+
+### Stylix 基盤の残置
+
+`flake.nix` の stylix input、`darwin-shared.nix` の core 設定、`nix/home/stylix.nix`（targets 空）はそのまま残す。将来 base16 パレットマッピングが改善された場合や、エディタ系ツール（neovim 等）への適用を検討する際に再利用可能。
