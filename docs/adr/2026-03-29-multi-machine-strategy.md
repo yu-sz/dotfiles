@@ -5,49 +5,50 @@ Status: Accepted
 
 ## Context
 
-この dotfiles を複数の Mac（個人用: ユーザー名 `suta-ro`、仕事用: ユーザー名 `<work-username>`）で共有したい。設定内容は完全に同一で、ユーザー名だけが異なる。
+複数の Mac（個人用 `suta-ro`、仕事用 `<work-username>`）で dotfiles を共有したい。設定内容は同一でユーザー名だけが異なる。
 
-### 根本的な制約
+Nix flake の pure evaluation では実行時のユーザー名を取得できないが、nix-darwin / home-manager は以下の箇所でユーザー名を要求する:
 
-Nix flake の pure evaluation では実行時の環境情報（ユーザー名、ホスト名）を取得できない。一方、以下の nix-darwin / home-manager の設定項目にはシステムユーザー名が必須:
+- `home-manager.users.${username}` / `users.users.${username}.home`
+- `system.primaryUser` / `nix-homebrew.user`
 
-- `home-manager.users.${username}`
-- `users.users.${username}.home`
-- `system.primaryUser`
-- `nix-homebrew.user`
+追加制約:
 
-### 思想の衝突
+- `darwin-rebuild --flake .#name` はドット入りキーを扱えない（[パーサーの制限](https://github.com/LnL7/nix-darwin/blob/master/pkgs/nix-tools/darwin-rebuild.sh)）
+- 仕事用 Mac のユーザー名がドット入り、ホスト名は変更不可
+- リポジトリのパブリック化と CI (`nix flake check`) を予定
 
-- **dotfiles の思想**: リポジトリをクローンすればどのマシンでも同じ環境が再現できる
-- **Nix flake の思想**: 全ての入力を明示的に宣言して再現性を保証する
+## Decision
 
-ユーザー名という環境固有の値の扱いで、この2つが根本的に衝突する。
+|                        | A. --impure getEnv | B. ユーザー名2エントリ | C. local.nix + git ハック | **D. ホスト名ベース** |
+| ---------------------- | :----------------: | :--------------------: | :-----------------------: | :-------------------: |
+| Pure evaluation        |         ❌         |           ✅           |            ✅             |          ✅           |
+| `nix flake check`      |         ❌         |           ✅           |            ✅             |          ✅           |
+| ドット入り名の問題なし |         ✅         |           ❌           |            ✅             |          ✅           |
+| clone だけで動く       |         ✅         |           ✅           |            ❌             |          ✅           |
+| `#` 指定なしで自動解決 |         ✅         |           ❌           |            ✅             |          ✅           |
+| マシン追加時に編集不要 |         ✅         |           ❌           |            ✅             |          ❌           |
+| ホスト名の非公開       |         ✅         |           ✅           |            ✅             |          ❌           |
 
-### 追加の制約
+**D. ホスト名ベースを採用。** 根拠:
 
-- `darwin-rebuild --flake .#name` はドット入りキー名を扱えない（パーサーの正規表現 `[^\#\"]*` が `"` を除外し、`flakeAttr=darwinConfigurations.${flakeAttr}` で単純結合するため）
-- 仕事用 Mac のユーザー名が `<work-username>`（ドット入り）
-- 仕事用 Mac のホスト名は変更不可（会社管理）
-- 将来的にリポジトリをパブリック化する予定
-- CI で `nix flake check` を使う予定
+- nix-darwin の設計思想に沿い、`darwin-rebuild switch --flake .` で `scutil --get LocalHostName` から自動解決
+- Pure evaluation を維持し CI で `nix flake check` が使える
+- マシン追加時の編集は bootstrap.sh のエントリ自動追加で緩和
+- ホスト名の露出はパブリック dotfiles で一般的（例: [AlexNabokikh](https://github.com/AlexNabokikh/nix-config) の `"PL-OLX-KCGXHGK3PY"` 等）
 
-## Considered Options
+各オプションの実装例:
 
-### A. --impure + builtins.getEnv "USER"
+<details><summary>A. --impure + builtins.getEnv "USER"</summary>
 
 ```nix
 username = builtins.getEnv "USER";
 darwinConfigurations.default = mkDarwinConfig { };
 ```
 
-- ✅ 1エントリ、マシン固有情報ゼロ
-- ✅ どのマシンでもクローンするだけで動く
-- ✅ ドット入りユーザー名の問題が存在しない
-- ❌ `nix flake check` が使えない（CI計画と衝突）
-- ❌ `--impure` フラグが毎回必要
-- ❌ Nix コミュニティで非推奨
+</details>
 
-### B. ユーザー名ベタ書き2エントリ
+<details><summary>B. ユーザー名ベタ書き2エントリ</summary>
 
 ```nix
 darwinConfigurations = {
@@ -56,22 +57,21 @@ darwinConfigurations = {
 };
 ```
 
-- ✅ Pure evaluation、`nix flake check` 可能
-- ❌ `darwin-rebuild` のドット制約で `tr '.' '-'` ハックが必要
-- ❌ マシン追加時に flake.nix の変更が必要
+`tr '.' '-'` ハックが必要。
 
-### C. local.nix + git ハック
+</details>
+
+<details><summary>C. local.nix + git ハック</summary>
 
 ```nix
 username = import ./nix/local.nix;
 ```
 
-- ✅ Pure、1エントリ、マシン固有情報が非公開
-- ❌ `git add --intent-to-add` + `git update-index --assume-unchanged` が必要
-- ❌ `git stash` / `git checkout` で状態が壊れる可能性
-- ❌ clone するたびに git ハックの再設定が必要
+`git add --intent-to-add` + `git update-index --assume-unchanged` が必要。`git stash` / `git checkout` で壊れるリスクあり。
 
-### D. ホスト名ベース（採用）
+</details>
+
+<details><summary>D. ホスト名ベース（採用）</summary>
 
 ```nix
 darwinConfigurations = {
@@ -79,27 +79,12 @@ darwinConfigurations = {
 };
 ```
 
-- ✅ Pure evaluation、`nix flake check` 可能
-- ✅ nix-darwin 公式推奨（`darwin-rebuild` のデフォルト解決が `scutil --get LocalHostName`）
-- ✅ `darwin-rebuild switch --flake .` だけで自動解決（`#` 指定不要）
-- ✅ ドット入りユーザー名の問題が存在しない（キー名はホスト名）
-- ✅ `tr` ハック不要
-- ⚠️ マシン追加時に flake.nix の変更が必要（bootstrap.sh で自動追加）
-- ⚠️ ホスト名がリポジトリに露出する
-
-## Decision
-
-**D. ホスト名ベースを採用する。**
-
-- nix-darwin の設計思想に沿っており、`darwin-rebuild` との統合が最もスムーズ
-- Pure evaluation を維持し、CI での `nix flake check` が可能
-- 「マシン追加時に編集が必要」という課題は bootstrap.sh のエントリ自動追加で緩和
-- ホスト名の露出は、世間のパブリック dotfiles でも一般的（AlexNabokikh: `"PL-OLX-KCGXHGK3PY"` 等）
+</details>
 
 ## Consequences
 
-- 新しいマシンの追加時は bootstrap.sh が自動でエントリを flake.nix に追加する。コミット・プッシュはユーザーが行う
-- `darwin-rebuild switch --flake .` で動作し、`#` 以降の指定は不要
-- 会社 Mac のホスト名がリポジトリに載る（許容する）
+- bootstrap.sh が新マシンのエントリを flake.nix に自動追加する（コミット・プッシュは手動）
+- `darwin-rebuild switch --flake .` で動作、`#` 指定不要
+- 会社 Mac のホスト名がリポジトリに露出する（許容）
 - `nix flake check` が CI で使用可能
-- 将来 Nix が flake への引数渡しをサポートした場合（Issue #2861, #5663）、1エントリ化できる可能性がある
+- 将来 Nix が flake 引数渡しをサポートした場合（[#2861](https://github.com/NixOS/nix/issues/2861), [#5663](https://github.com/NixOS/nix/issues/5663)）、1エントリ化の可能性あり
