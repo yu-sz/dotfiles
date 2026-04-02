@@ -2,10 +2,10 @@
 
 ## 概要
 
-macOS システム設定の宣言的管理、Stylix によるテーマ統一、lazygit/ghostty/yazi の `programs.*` 移行を行う:
+macOS システム設定の宣言的管理と lazygit/ghostty/yazi の `programs.*` 移行を行う:
 
-- **macOS 設定**: `system.defaults` で Dock, Finder, キーボード等を管理
-- **Stylix**: tokyo-night-dark で bat, fzf, lazygit, ghostty, yazi のカラースキームを統一
+- **macOS 設定**: `system.defaults` は撤廃。手動管理に移行
+- **Stylix**: 基盤のみ導入。テーマ統一は base16 パレット問題により見送り
 - **programs 移行**: lazygit, ghostty, yazi を `config/` シンボリンクから `programs.*` に移行
 
 **出典**:
@@ -17,18 +17,18 @@ macOS システム設定の宣言的管理、Stylix によるテーマ統一、l
 
 ## 決定事項
 
-| 項目            | 決定                                    | 備考                                                                                                             |
-| --------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| XDG 前提設定    | **`xdg.enable = true`**                 | macOS で HM モジュールが `~/Library/Application Support/` に書くのを防止。全フェーズの前提条件                   |
-| macOS 設定      | **`system.defaults`** で宣言的管理      | `activateSettings -u` で即時反映                                                                                 |
-| Stylix          | **`autoEnable = false`** で個別有効化   | bat, fzf, lazygit, ghostty, yazi のみ                                                                            |
-| カラースキーム  | **tokyo-night-dark**                    | Base16 スキーム                                                                                                  |
-| lazygit         | **`programs.lazygit`** に移行           | YAML → Nix 変換。`pagers` はリスト構造を維持。`selectedLineBgColor` は `lib.mkForce` 必須                        |
-| ghostty 本体    | **Homebrew cask → nixpkgs**             | macOS: `ghostty-bin`, Linux: `ghostty`                                                                           |
-| ghostty 設定    | **`programs.ghostty`** に移行           | key-value → Nix 変換                                                                                             |
-| yazi            | **`programs.yazi`** に移行              | 非デフォルト値は `sort_by`, `show_hidden`, `title_format` の 3 項目のみ。依存パッケージは `extraPackages` で管理 |
-| yazi プラグイン | **`programs.yazi.plugins`** で Nix 管理 | `ya pack` は使えなくなる                                                                                         |
-| yazi テーマ     | **Stylix が管理**                       | `theme.toml` + `flavors/` 不要。BennyOe flavor と色の細部が異なる可能性あり                                      |
+| 項目            | 決定                                                      | 備考                                                                                                             |
+| --------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| XDG 前提設定    | **`xdg.enable = true`**                                   | macOS で HM モジュールが `~/Library/Application Support/` に書くのを防止。全フェーズの前提条件                   |
+| macOS 設定      | **撤廃**。`system.defaults` 全削除                        | 手動管理。費用対効果が見合わない（2026-04-03）                                                                   |
+| Stylix          | **基盤のみ残置**。`autoEnable = false`、targets 空        | base16 パレットが TokyoNight と乖離するため見送り                                                                |
+| カラースキーム  | 各ツールが個別管理                                        | ghostty: ビルトイン `tokyonight`、yazi: BennyOe flavor、lazygit/bat/fzf: ターミナルカラー                        |
+| lazygit         | **`programs.lazygit`** に移行                             | YAML → Nix 変換。`pagers` はリスト構造を維持。`mkForce` 不要（Stylix 無効のため）                                |
+| ghostty 本体    | **Homebrew cask を維持**                                  | `package = null`。nixpkgs 版は GUI に問題あり                                                                    |
+| ghostty 設定    | **`programs.ghostty`** に移行                             | HM は config のみ管理。`theme = tokyonight`（ビルトイン）                                                        |
+| yazi            | **`programs.yazi`** に移行                                | 非デフォルト値は `sort_by`, `show_hidden`, `title_format` の 3 項目のみ。依存パッケージは `extraPackages` で管理 |
+| yazi プラグイン | **`programs.yazi.plugins`** で Nix 管理                   | `ya pack` は使えなくなる                                                                                         |
+| yazi テーマ     | **BennyOe tokyo-night flavor を直接設定**                 | `programs.yazi.flavors` + `theme`                                                                                |
 
 ---
 
@@ -37,16 +37,16 @@ macOS システム設定の宣言的管理、Stylix によるテーマ統一、l
 ```
 nix/
 ├── hosts/
-│   └── darwin-shared.nix  ← system.defaults 追加、Stylix core 設定追加、homebrew.casks から ghostty 削除
+│   └── darwin-shared.nix  ← system.defaults 撤廃、Stylix core 設定（基盤のみ）
 └── home/
     ├── default.nix        ← xdg.enable = true 追加、imports に ./stylix.nix 追加、home.packages から lazygit・yazi・yazi 依存パッケージ削除
-    ├── stylix.nix         ← 新規: Stylix targets 設定（HM レベル）
+    ├── stylix.nix         ← Stylix targets 空（将来用に残置）
     ├── symlinks.nix       ← lazygit, ghostty, yazi エントリ削除
     └── programs/
         ├── default.nix    ← imports に lazygit, ghostty, yazi 追加
         ├── lazygit.nix    ← 新規
-        ├── ghostty.nix    ← 新規
-        ├── yazi.nix       ← 新規
+        ├── ghostty.nix    ← 新規（package = null、theme = tokyonight）
+        ├── yazi.nix       ← 新規（BennyOe flavor 直接設定）
         └── yazi-init.lua  ← config/yazi/init.lua から移動
 
 flake.nix                  ← stylix input 追加、modules に stylix.darwinModules.stylix 追加
@@ -56,7 +56,7 @@ Stylix 設定のスコープ:
 
 - **system レベル** (`darwin-shared.nix`): `stylix.enable = true`, `stylix.base16Scheme`, `stylix.fonts.monospace`, `stylix.autoEnable = false`
   - `followSystem = true`（デフォルト）により HM に `mkDefault` で自動伝播
-- **HM レベル** (`stylix.nix`): `stylix.targets.<name>.enable = true` のみ
+- **HM レベル** (`stylix.nix`): targets 空（将来用に残置）
 
 削除対象:
 
@@ -72,32 +72,24 @@ Stylix 設定のスコープ:
 
 ```nix
 _: {
-  stylix.targets = {
-    bat.enable = true;
-    fzf.enable = true;
-    lazygit.enable = true;
-    ghostty = {
-      enable = true;
-      fonts.enable = false;
-      opacity.enable = false;
-    };
-    yazi.enable = true;
-  };
+  stylix.targets = { };
 }
 ```
 
-> `fonts.enable = false` でフォント名・サイズの上書きを防止。`opacity.enable = false` で `background-opacity = 0.85` を維持。
+> Stylix テーマ統一は base16 パレット問題により見送り。基盤のみ残置し targets は空。
 
 ### `nix/home/programs/lazygit.nix`
 
 ```nix
-{ lib, ... }:
-{
+_: {
   programs.lazygit = {
     enable = true;
     settings = {
       git.pagers = [
-        { colorArg = "always"; pager = "delta --dark --paging=never"; }
+        {
+          colorArg = "always";
+          pager = "delta --dark --paging=never";
+        }
       ];
       gui = {
         language = "ja";
@@ -105,7 +97,7 @@ _: {
         sidePanelWidth = 0.15;
         showIcons = true;
         theme = {
-          selectedLineBgColor = lib.mkForce [ "underline" ];
+          selectedLineBgColor = [ "underline" ];
         };
       };
       refresher.refreshInterval = 3;
@@ -116,26 +108,26 @@ _: {
 ```
 
 > `git.pagers` は Go ソースで `[]PagingConfig` (スライス) として定義されているため、Nix でもリスト構造を維持すること。
-> `selectedLineBgColor` は Stylix が通常優先度で設定するため `lib.mkForce` が必須。なしだと conflicting definition values エラー。
+> `mkForce` は Stylix 無効化により不要。
 
 ### `nix/home/programs/ghostty.nix`
 
 ```nix
-{ lib, pkgs, ... }:
-{
+_: {
   programs.ghostty = {
     enable = true;
-    package = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
+    package = null;
     settings = {
-      font-family = "Moralerspace Xenon HW";
-      window-title-font-family = "Moralerspace Xenon HW";
+      font-family = "\"Moralerspace Xenon HW\"";
+      window-title-font-family = "\"Moralerspace Xenon HW\"";
       font-size = 18;
       font-thicken = false;
+      theme = "tokyonight";
       background-opacity = 0.85;
       background-blur-radius = 20;
       unfocused-split-opacity = 0.7;
       cursor-opacity = 0.8;
-      cursor-color = lib.mkForce "#ffffff";
+      cursor-color = "#ffffff";
       cursor-style = "block";
       window-theme = "auto";
       window-padding-color = "background";
@@ -158,8 +150,9 @@ _: {
 }
 ```
 
-> `theme` は Stylix 管理のため含めない。`package` は macOS で `ghostty-bin` を明示指定すること（デフォルトの `pkgs.ghostty` は Linux 専用）。
-> `cursor-color` は Stylix が `colors.base05` を通常優先度で設定するため `lib.mkForce` が必須。
+> `package = null`: nixpkgs 版は macOS で GUI に問題があるため Homebrew cask を維持。HM は config のみ管理。
+> `theme = "tokyonight"`: ghostty ビルトインテーマを使用（Stylix 見送りのため）。
+> `font-family` にエスケープクォートが必要: HM の `mkKeyValueDefault` がクォートを除去するため。
 
 ### `nix/home/programs/yazi.nix`
 
@@ -171,6 +164,20 @@ _: {
     initLua = ./yazi-init.lua;
     plugins = {
       inherit (pkgs.yaziPlugins) smart-enter starship full-border;
+    };
+    flavors = {
+      tokyo-night = pkgs.fetchFromGitHub {
+        owner = "BennyOe";
+        repo = "tokyo-night.yazi";
+        rev = "8e6296f";
+        hash = "sha256-LArhRteD7OQRBguV1n13gb5jkl90sOxShkDzgEf3PA0=";
+      };
+    };
+    theme = {
+      flavor = {
+        use = "tokyo-night";
+        dark = "tokyo-night";
+      };
     };
     settings = {
       mgr = {
@@ -191,6 +198,7 @@ _: {
 ```
 
 > yazi デフォルト設定と diff した結果、非デフォルト値は 3 項目のみ。現在の `yazi.toml` の `[tasks]`, `[spotters]`, `[open].rules` 等は古いデフォルトのコピーなので、書かない方が最新デフォルトが適用されて改善される。
+> テーマは BennyOe tokyo-night flavor を `programs.yazi.flavors` + `theme` で直接設定（Stylix 見送りのため）。
 
 ### `nix/home/programs/yazi-init.lua`
 
@@ -237,6 +245,10 @@ require("smart-enter"):setup({
 > 4. 計画では `autohide = true`, `FXPreferredViewStyle = "clmv"`（カラム表示）だったが、ユーザー確認で `autohide = false`, `FXPreferredViewStyle = "Nlsv"`（リスト表示）に変更。
 > 5. `NSGlobalDomain` にマウス設定を追加: `com.apple.swipescrolldirection = false`, `com.apple.trackpad.forceClick = true`, `com.apple.trackpad.scaling = 2.0`。`CustomUserPreferences.NSGlobalDomain` に `com.apple.mouse.scaling`, `com.apple.mouse.doubleClickThreshold`, `com.apple.scrollwheel.scaling` を追加。
 > 6. `flake.nix` に `home-manager.backupFileExtension = "hm-backup"` を追加（計画外。Phase 3 で既存設定ファイルとの衝突に備えて必要だった）。
+> 7. (2026-04-03) `com.apple.swipescrolldirection = false` が挙動に反映されない問題が発生。`defaults write` では macOS のスクロール管理プロセスに通知されない ([nix-darwin#1572](https://github.com/nix-darwin/nix-darwin/issues/1572))。
+> 8. (2026-04-03) `activateSettings -u` がスクロール方向を `drs` のたびにリセットしていた。Dock/Finder 等は nix-darwin が個別に反映するため不要と判明し、削除。
+> 9. (2026-04-03) 入力デバイス系設定（swipescrolldirection, trackpad.forceClick, trackpad.scaling, mouse.scaling, mouse.doubleClickThreshold, scrollwheel.scaling）を `system.defaults` から除外。CustomUserPreferences.NSGlobalDomain はブロックごと削除。
+> 10. (2026-04-03) 残りの Dock/Finder/メニューバー設定も費用対効果が見合わないため `system.defaults` を全面撤廃。いずれも「一度設定したら変えない」類で GUI で 30 秒で完了する量。
 
 ### フェーズ 2: Stylix 基盤導入
 
