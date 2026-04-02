@@ -284,7 +284,17 @@ require("smart-enter"):setup({
 - [x] 4-11: `shift+enter` キーバインド → レートリミット中の再起動で解決（原因不明、config は旧と同一）
 - [x] 4-12: ghostty → tokyo-night の色 → Stylix 見送り、`theme = tokyonight`（ghostty ビルトイン）に変更して解決
 - [x] 4-13: `config/ghostty/` ディレクトリを削除
-- [ ] 4-14: コミット
+- [x] 4-14: コミット `fc15e64`
+
+> **予実差異**:
+>
+> 1. **nixpkgs `ghostty-bin` の GUI 問題**: nix 版 Ghostty はウィンドウサイズ、ドラッグ、キー入力、フォント描画に異常。`package = null` に変更し Homebrew cask に戻した。HM は config のみ管理。
+> 2. **Stylix 見送り**: base16 パレットが公式 TokyoNight と大きく乖離（赤に青系 `#c0caf5` を割り当て等）。`theme = tokyonight`（ghostty ビルトイン）に変更。stylix.nix の targets を空に戻し、lazygit の `mkForce` も除去。
+> 3. **font-family クォート**: HM の `mkKeyValueDefault` がクォートを除去。`"\"Moralerspace Xenon HW\""` で明示。
+> 4. **shift+enter**: config のバイト列は旧と同一だが一時的に動作せず。レートリミット中の Ghostty 再起動で解決（原因不明）。
+> 5. **`~/.config/lazygit` 残存**: Phase 3 で `config/lazygit/` を削除したが旧 HM シンボリンクが残存し mkdir エラー。`unlink` で手動削除。
+> 6. **`~/.config/ghostty/config.hm-backup`**: `backupFileExtension` により旧 config がバックアップされた。手動削除済み。
+> 7. **statix 警告**: `{ ... }:` → `_:` に修正（空パターン警告）。
 
 > **予実差異**:
 >
@@ -299,19 +309,24 @@ require("smart-enter"):setup({
 
 ### フェーズ 5: yazi 移行 + Stylix target 有効化
 
-- [ ] 5-1: `config/yazi/init.lua` を `nix/home/programs/yazi-init.lua` にコピー
-- [ ] 5-2: `nix/home/programs/yazi.nix` を作成（設計セクション参照）
-- [ ] 5-3: `nix/home/programs/default.nix` の imports に `./yazi.nix` を追加
-- [ ] 5-4: `nix/home/default.nix` の `home.packages` から `yazi` と yazi 依存パッケージ（`ffmpeg`, `poppler-utils`, `imagemagick`, `resvg`, `_7zz`）を削除（`programs.yazi.extraPackages` に移動済み）
-- [ ] 5-5: `nix/home/symlinks.nix` から `"yazi"` エントリを削除
-- [ ] 5-6: `nix/home/stylix.nix` に `stylix.targets.yazi.enable = true` を追加
-- [ ] 5-7: `~/.config/yazi` シンボリンクを手動削除
-- [ ] 5-8: `drs` を実行し正常完了を確認
-- [ ] 5-9: `yazi` 起動 → 隠しファイル表示、full-border, smart-enter, starship プラグイン動作を確認
-- [ ] 5-10: プレビュー機能（画像、PDF 等）が正常動作することを確認
-- [ ] 5-11: yazi → tokyo-night の色を確認（BennyOe flavor との差異に注意）
-- [ ] 5-12: `config/yazi/` ディレクトリを削除
+- [x] 5-1: `config/yazi/init.lua` を `nix/home/programs/yazi-init.lua` にコピー
+- [x] 5-2: `nix/home/programs/yazi.nix` を作成（Stylix なし、BennyOe tokyo-night flavor を fetchFromGitHub で取得）
+- [x] 5-3: `nix/home/programs/default.nix` の imports に `./yazi.nix` を追加
+- [x] 5-4: `nix/home/default.nix` の `home.packages` から `yazi` と yazi 依存パッケージを削除
+- [x] 5-5: `nix/home/symlinks.nix` から `"yazi"` エントリを削除
+- [x] 5-6: Stylix 見送りのため `stylix.nix` への追加はスキップ
+- [x] 5-7: `~/.config/yazi` シンボリンクは `backupFileExtension` で自動処理
+- [x] 5-8: `drs` を実行し正常完了を確認（fetchFromGitHub の hash 修正が必要だった、旧 HM ghostty シンボリンク残存で再度 unlink が必要だった）
+- [x] 5-9: `yazi` 起動 → 隠しファイル表示、full-border, smart-enter, starship プラグイン動作を確認
+- [x] 5-10: プレビュー機能確認
+- [x] 5-11: yazi → tokyo-night の色を確認（BennyOe flavor をそのまま使用）
+- [x] 5-12: `config/yazi/` ディレクトリを削除
 - [ ] 5-13: コミット
+
+> **予実差異**:
+> 1. Stylix 見送りにより `stylix.targets.yazi.enable = true` は追加せず、代わりに `programs.yazi.flavors` + `programs.yazi.theme` で BennyOe tokyo-night flavor を直接設定。
+> 2. `fetchFromGitHub` の hash が不一致。`package.toml` の rev `8e6296f` に対する hash を nix のエラーメッセージから取得して修正。
+> 3. `~/.config/ghostty` の旧 HM シンボリンクが再び残存し mkdir エラー。`unlink` で手動削除。`drs` のたびに旧世代シンボリンクが問題になるパターン。
 
 ### フェーズ 6: bat, fzf の Stylix target 有効化
 

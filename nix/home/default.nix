@@ -29,14 +29,6 @@
 
     # tui
     lazydocker
-    yazi
-
-    # yazi dependencies
-    ffmpeg
-    poppler-utils
-    imagemagick
-    resvg
-    _7zz
 
     # cli
     awscli2
