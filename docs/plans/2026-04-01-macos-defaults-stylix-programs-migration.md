@@ -208,9 +208,9 @@ require("smart-enter"):setup({
 
 ### フェーズ 0: XDG Base Directory 前提設定
 
-- [ ] 0-1: `nix/home/default.nix` に `xdg.enable = true` を追加
-- [ ] 0-2: `drs` を実行し正常完了を確認
-- [ ] 0-3: 既存ツールの動作に影響がないことを確認（nvim, tmux, zsh 等）
+- [x] 0-1: `nix/home/default.nix` に `xdg.enable = true` を追加
+- [x] 0-2: `drs` を実行し正常完了を確認
+- [x] 0-3: 既存ツールの動作に影響がないことを確認（nvim, tmux, zsh 等）
 - [ ] 0-4: コミット
 
 > macOS では `xdg.enable = false`（デフォルト）の場合、home-manager の一部モジュール（lazygit, lazydocker 等 10 モジュール）が `~/Library/Application Support/` に設定ファイルを書き出す。

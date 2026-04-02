@@ -7,6 +7,8 @@
     ./programs
   ];
 
+  xdg.enable = true;
+
   home.stateVersion = "25.11";
 
   home.packages = with pkgs; [
