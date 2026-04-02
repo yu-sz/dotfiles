@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+_: {
   programs.lazygit = {
     enable = true;
     settings = {
@@ -15,7 +14,7 @@
         sidePanelWidth = 0.15;
         showIcons = true;
         theme = {
-          selectedLineBgColor = lib.mkForce [ "underline" ];
+          selectedLineBgColor = [ "underline" ];
         };
       };
       refresher.refreshInterval = 3;

@@ -230,6 +230,7 @@ require("smart-enter"):setup({
 - [x] 1-7: コミット `f5b1187`
 
 > **予実差異**:
+>
 > 1. `system.defaults.menuExtraClock.Show24Hr` → 正しくは `Show24Hour`。nix-darwin のオプション名を確認して修正。
 > 2. `system.activationScripts.postUserActivation` → nix-darwin で削除済み。`postActivation` に変更。
 > 3. statix が `system` キーの重複を警告。`system.primaryUser`, `system.defaults`, `system.activationScripts`, `system.stateVersion` を1つの `system = { ... };` ブロックに統合。
@@ -264,24 +265,37 @@ require("smart-enter"):setup({
 - [x] 3-10: lazygit 内で `e` → nvim-remote でエディタ起動を確認
 - [x] 3-11: lazygit → tokyo-night の色を確認
 - [x] 3-12: `config/lazygit/` ディレクトリを削除
-- [ ] 3-13: コミット
+- [x] 3-13: コミット `c6ce8c6`
+
+> **予実差異**: `~/.config/lazygit/config.yml` が HM 管理シンボリンクの先に実体として存在し、"Existing file would be clobbered" エラー。`flake.nix` に `home-manager.backupFileExtension = "hm-backup"` を追加（Phase 1 コミットに含む）して自動バックアップで解決。手動シンボリンク削除は不要だった。
 
 ### フェーズ 4: ghostty 移行 + Stylix target 有効化
 
-- [ ] 4-1: `nix/home/programs/ghostty.nix` を作成（設計セクション参照）
-- [ ] 4-2: `nix/home/programs/default.nix` の imports に `./ghostty.nix` を追加
-- [ ] 4-3: `nix/hosts/darwin-shared.nix` の `homebrew.casks` から `"ghostty"` を削除
-- [ ] 4-4: `nix/home/symlinks.nix` から `"ghostty"` エントリを削除
-- [ ] 4-5: `nix/home/stylix.nix` に ghostty targets を追加（設計セクション参照）
-- [ ] 4-6: `~/.config/ghostty` シンボリンクを手動削除
-- [ ] 4-7: Homebrew の ghostty がまだ残っている場合は手動アンインストール（`drs` の `cleanup = "uninstall"` で自動処理される可能性あり）
-- [ ] 4-8: `drs` を実行し正常完了を確認
-- [ ] 4-9: ghostty 起動 → tmux セッションに接続を確認
-- [ ] 4-10: フォント・透明度・カーソル設定が反映されていることを確認
-- [ ] 4-11: `shift+enter` キーバインドが動作することを確認
-- [ ] 4-12: ghostty → tokyo-night の色を確認（ビルトイン `tokyonight` との差異に注意）
-- [ ] 4-13: `config/ghostty/` ディレクトリを削除
+- [x] 4-1: `nix/home/programs/ghostty.nix` を作成（設計セクション参照）
+- [x] 4-2: `nix/home/programs/default.nix` の imports に `./ghostty.nix` を追加
+- [x] 4-3: `nix/hosts/darwin-shared.nix` の `homebrew.casks` から `"ghostty"` を削除 → **元に戻した**（下記予実差異参照）
+- [x] 4-4: `nix/home/symlinks.nix` から `"ghostty"` エントリを削除
+- [x] 4-5: `nix/home/stylix.nix` に ghostty targets を追加（設計セクション参照）
+- [x] 4-6: `~/.config/ghostty` シンボリンクは HM 管理のため手動削除不要（`backupFileExtension` で自動処理）
+- [x] 4-7: `drs` の `cleanup = "uninstall"` で Homebrew 版 ghostty が自動アンインストールされた
+- [x] 4-8: `drs` を実行し正常完了を確認
+- [x] 4-9: ghostty 起動 → tmux セッションに接続を確認
+- [x] 4-10: フォント・透明度・カーソル設定 → クォート追加で改善、微差は許容
+- [x] 4-11: `shift+enter` キーバインド → レートリミット中の再起動で解決（原因不明、config は旧と同一）
+- [x] 4-12: ghostty → tokyo-night の色 → Stylix 見送り、`theme = tokyonight`（ghostty ビルトイン）に変更して解決
+- [x] 4-13: `config/ghostty/` ディレクトリを削除
 - [ ] 4-14: コミット
+
+> **予実差異**:
+>
+> 1. **nixpkgs `ghostty-bin` の問題**: `package = ghostty-bin` でインストールした nix 版 Ghostty は、Homebrew 版と比較してウィンドウ表示サイズ、縁のドラッグ、起動時の画面・サイズ、キー入力、フォント描画に異常が発生。Homebrew 版はネイティブ macOS アプリとして配布されており、nix のラップ方法が macOS の GUI アプリとして不適切だった可能性。
+> 2. **方針変更**: `package = null` に変更し、Homebrew cask に `"ghostty"` を復活。HM は config ファイルのみ管理する方式に変更。
+> 3. **font-family クォート問題**: HM の `mkKeyValueDefault` がフォント名のクォートを除去。`"\"Moralerspace Xenon HW\""` で明示的にクォートを含めて解決。
+> 4. **font-thicken**: ghostty 1.3.1 で `+show-config` に表示されないため廃止と誤認したが、デフォルト値 `false` と同一のため非表示だっただけ。設定自体は有効。
+> 5. **shift+enter 未解決**: config ファイルの `keybind = shift+enter=text:\n` は旧 config とバイト列が完全に同一。Homebrew 版に戻しても動作しない。`text:\x0d`（CR）、`unbind` + tmux 側 `S-Enter` バインド、`allow-passthrough` 等を試したがいずれも効果なし。原因未特定。
+> 6. **Stylix テーマ色差**: `theme = tokyonight`（ghostty ビルトイン）→ `theme = stylix`（Stylix 生成）でパレットが異なり、表示の滲みや `+boo` の色が変化。
+> 7. **`~/.config/lazygit` 残存**: Phase 3 で `config/lazygit/` を削除したが、旧 HM 世代のシンボリンク（削除済みディレクトリを参照）が残存し、Phase 4 の `drs` 時に `mkdir` エラー。`unlink` で手動削除して解決。
+> 8. **計画外の変更**: `flake.nix` に `home-manager.backupFileExtension = "hm-backup"` を追加（Phase 1 コミットに含む）、`config/tmux/tmux.conf` に `allow-passthrough on` を追加（後で削除）。
 
 ### フェーズ 5: yazi 移行 + Stylix target 有効化
 

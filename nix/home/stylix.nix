@@ -1,5 +1,3 @@
 _: {
-  stylix.targets = {
-    lazygit.enable = true;
-  };
+  stylix.targets = { };
 }

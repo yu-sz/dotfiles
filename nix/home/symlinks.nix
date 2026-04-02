@@ -11,7 +11,6 @@ in
 {
   xdg.configFile = {
     "nvim".source = mkLink "config/nvim";
-    "ghostty".source = mkLink "config/ghostty";
     "tmux".source = mkLink "config/tmux";
     "gitmux".source = mkLink "config/gitmux";
     "gomi".source = mkLink "config/gomi";
