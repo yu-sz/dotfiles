@@ -211,7 +211,7 @@ require("smart-enter"):setup({
 - [x] 0-1: `nix/home/default.nix` に `xdg.enable = true` を追加
 - [x] 0-2: `drs` を実行し正常完了を確認
 - [x] 0-3: 既存ツールの動作に影響がないことを確認（nvim, tmux, zsh 等）
-- [ ] 0-4: コミット
+- [x] 0-4: コミット
 
 > macOS では `xdg.enable = false`（デフォルト）の場合、home-manager の一部モジュール（lazygit, lazydocker 等 10 モジュール）が `~/Library/Application Support/` に設定ファイルを書き出す。
 > `.zshenv` で `XDG_CONFIG_HOME=$HOME/.config` を設定しているため、ツール本体は `~/.config/` を読む。
@@ -219,12 +219,12 @@ require("smart-enter"):setup({
 
 ### フェーズ 1: macOS システム設定
 
-- [ ] 1-1: `nix/hosts/darwin-shared.nix` に `system.defaults` を追加（Dock, Finder, NSGlobalDomain, menuExtraClock, CustomUserPreferences）
-- [ ] 1-2: `nix/hosts/darwin-shared.nix` に `system.activationScripts.postUserActivation` を追加
-- [ ] 1-3: `drs` を実行し正常完了を確認
-- [ ] 1-4: Dock が右配置・自動非表示・遅延なしになっていることを確認
-- [ ] 1-5: Finder でパスバー・拡張子・カラム表示を確認
-- [ ] 1-6: メニューバー時計が 24h・秒表示になっていることを確認
+- [x] 1-1: `nix/hosts/darwin-shared.nix` に `system.defaults` を追加（Dock, Finder, NSGlobalDomain, menuExtraClock, CustomUserPreferences）
+- [x] 1-2: `nix/hosts/darwin-shared.nix` に `system.activationScripts.postActivation` を追加（`postUserActivation` は nix-darwin で削除済みのため `postActivation` を使用）
+- [x] 1-3: `drs` を実行し正常完了を確認（`Show24Hr` → `Show24Hour`、`postUserActivation` → `postActivation`、statix による system ブロック統合の修正も実施）
+- [x] 1-4: Dock が右配置になっていることを確認（autohide は OFF に変更、マウス設定も追加）
+- [x] 1-5: Finder でパスバー・拡張子・リスト表示を確認（カラム → リスト表示に変更）
+- [x] 1-6: メニューバー時計が 24h・秒表示になっていることを確認
 - [ ] 1-7: コミット
 
 ### フェーズ 2: Stylix 基盤導入

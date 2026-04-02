@@ -47,7 +47,51 @@
   # ビルド時のzshサブプロセスにも伝播するため、zabrzeのテスト等に影響する
   environment.variables.EDITOR = "vim";
 
-  system.primaryUser = username;
+  system = {
+    primaryUser = username;
+    defaults = {
+      dock = {
+        orientation = "right";
+        autohide = false;
+        autohide-delay = 0.0;
+        autohide-time-modifier = 0.0;
+      };
+      finder = {
+        ShowPathbar = true;
+        AppleShowAllExtensions = true;
+        FXPreferredViewStyle = "Nlsv";
+      };
+      NSGlobalDomain = {
+        AppleShowAllExtensions = true;
+        "com.apple.swipescrolldirection" = false;
+        "com.apple.trackpad.forceClick" = true;
+        "com.apple.trackpad.scaling" = 2.0;
+      };
+      menuExtraClock = {
+        Show24Hour = true;
+        ShowSeconds = true;
+      };
+      CustomUserPreferences = {
+        NSGlobalDomain = {
+          "com.apple.mouse.scaling" = 2;
+          "com.apple.mouse.doubleClickThreshold" = 1.1;
+          "com.apple.scrollwheel.scaling" = 0.215;
+        };
+        "com.apple.dock".show-recents = false;
+        "com.apple.finder" = {
+          ShowExternalHardDrivesOnDesktop = false;
+          ShowHardDrivesOnDesktop = false;
+          ShowMountedServersOnDesktop = false;
+          ShowRemovableMediaOnDesktop = false;
+        };
+      };
+    };
+    activationScripts.postActivation.text = ''
+      /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+    '';
+    stateVersion = 6;
+  };
+
   users.users.${username}.home = "/Users/${username}";
 
   fonts.packages = with pkgs; [
@@ -59,6 +103,4 @@
     moralerspace
     moralerspace-hw
   ];
-
-  system.stateVersion = 6;
 }
