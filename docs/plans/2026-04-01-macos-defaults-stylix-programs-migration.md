@@ -333,15 +333,15 @@ require("smart-enter"):setup({
 - [x] 6-1: ADR `docs/adr/2026-04-01-stylix-programs-migration.md` に Stylix 見送りの Addendum を追記
 - [x] 6-2: ADR `docs/adr/2026-04-01-macos-defaults-stylix-programs-migration.md` の `postUserActivation` → `postActivation` 修正
 - [x] 6-3: `stylix.nix` が空（targets なし）であることを確認
-- [ ] 6-4: コミット
+- [x] 6-4: コミット `9827307`
 
 > **予実差異**: Phase 6 の内容を「bat/fzf Stylix target 有効化」から「ADR 更新（Stylix 見送り記録）」に変更。Stylix のターミナルカラー品質問題により、bat/fzf への Stylix 適用は見送り。
 
 ### フェーズ 7: クリーンアップ
 
-- [ ] 7-1: `config/lazygit/`, `config/ghostty/`, `config/yazi/` が削除済みであることを確認
-- [ ] 7-2: `nix flake check` がローカルで成功することを確認
-- [ ] 7-3: push して CI が緑になることを確認
+- [x] 7-1: `config/lazygit/`, `config/ghostty/`, `config/yazi/` が削除済みであることを確認
+- [x] 7-2: `nix flake check` がローカルで成功することを確認
+- [x] 7-3: push して CI が緑になることを確認
 
 ---
 
