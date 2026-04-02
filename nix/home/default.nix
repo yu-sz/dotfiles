@@ -28,7 +28,6 @@
     gitmux
 
     # tui
-    lazygit
     lazydocker
     yazi
 

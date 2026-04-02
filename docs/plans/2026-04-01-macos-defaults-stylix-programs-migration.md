@@ -211,21 +211,31 @@ require("smart-enter"):setup({
 - [x] 0-1: `nix/home/default.nix` に `xdg.enable = true` を追加
 - [x] 0-2: `drs` を実行し正常完了を確認
 - [x] 0-3: 既存ツールの動作に影響がないことを確認（nvim, tmux, zsh 等）
-- [x] 0-4: コミット
+- [x] 0-4: コミット `7f369ca`
 
 > macOS では `xdg.enable = false`（デフォルト）の場合、home-manager の一部モジュール（lazygit, lazydocker 等 10 モジュール）が `~/Library/Application Support/` に設定ファイルを書き出す。
 > `.zshenv` で `XDG_CONFIG_HOME=$HOME/.config` を設定しているため、ツール本体は `~/.config/` を読む。
 > このパスのずれを防ぐため、`xdg.enable = true` を全フェーズの前提条件として設定する。
 
+> **予実差異**: 特になし。
+
 ### フェーズ 1: macOS システム設定
 
 - [x] 1-1: `nix/hosts/darwin-shared.nix` に `system.defaults` を追加（Dock, Finder, NSGlobalDomain, menuExtraClock, CustomUserPreferences）
-- [x] 1-2: `nix/hosts/darwin-shared.nix` に `system.activationScripts.postActivation` を追加（`postUserActivation` は nix-darwin で削除済みのため `postActivation` を使用）
-- [x] 1-3: `drs` を実行し正常完了を確認（`Show24Hr` → `Show24Hour`、`postUserActivation` → `postActivation`、statix による system ブロック統合の修正も実施）
-- [x] 1-4: Dock が右配置になっていることを確認（autohide は OFF に変更、マウス設定も追加）
-- [x] 1-5: Finder でパスバー・拡張子・リスト表示を確認（カラム → リスト表示に変更）
+- [x] 1-2: `nix/hosts/darwin-shared.nix` に `system.activationScripts.postActivation` を追加
+- [x] 1-3: `drs` を実行し正常完了を確認
+- [x] 1-4: Dock が右配置になっていることを確認
+- [x] 1-5: Finder でパスバー・拡張子・リスト表示を確認
 - [x] 1-6: メニューバー時計が 24h・秒表示になっていることを確認
-- [x] 1-7: コミット
+- [x] 1-7: コミット `f5b1187`
+
+> **予実差異**:
+> 1. `system.defaults.menuExtraClock.Show24Hr` → 正しくは `Show24Hour`。nix-darwin のオプション名を確認して修正。
+> 2. `system.activationScripts.postUserActivation` → nix-darwin で削除済み。`postActivation` に変更。
+> 3. statix が `system` キーの重複を警告。`system.primaryUser`, `system.defaults`, `system.activationScripts`, `system.stateVersion` を1つの `system = { ... };` ブロックに統合。
+> 4. 計画では `autohide = true`, `FXPreferredViewStyle = "clmv"`（カラム表示）だったが、ユーザー確認で `autohide = false`, `FXPreferredViewStyle = "Nlsv"`（リスト表示）に変更。
+> 5. `NSGlobalDomain` にマウス設定を追加: `com.apple.swipescrolldirection = false`, `com.apple.trackpad.forceClick = true`, `com.apple.trackpad.scaling = 2.0`。`CustomUserPreferences.NSGlobalDomain` に `com.apple.mouse.scaling`, `com.apple.mouse.doubleClickThreshold`, `com.apple.scrollwheel.scaling` を追加。
+> 6. `flake.nix` に `home-manager.backupFileExtension = "hm-backup"` を追加（計画外。Phase 3 で既存設定ファイルとの衝突に備えて必要だった）。
 
 ### フェーズ 2: Stylix 基盤導入
 
@@ -234,24 +244,26 @@ require("smart-enter"):setup({
 - [x] 2-3: `nix/hosts/darwin-shared.nix` に Stylix core 設定を追加（`stylix.enable = true`, `stylix.base16Scheme`, `stylix.fonts.monospace`, `stylix.autoEnable = false`）
 - [x] 2-4: `nix/home/stylix.nix` を作成（targets は空の状態で開始）
 - [x] 2-5: `nix/home/default.nix` の imports に `./stylix.nix` を追加
-- [x] 2-6: `drs` を実行し正常完了を確認（新規ファイルは `git add` が必要だった）
+- [x] 2-6: `drs` を実行し正常完了を確認
 - [x] 2-7: neovim, wezterm, starship, tmux → 既存設定のまま変化なしを確認（`autoEnable = false` の検証）
-- [x] 2-8: コミット
+- [x] 2-8: コミット `91e3ac4`
+
+> **予実差異**: 新規ファイル `nix/home/stylix.nix` は `git add` が必要だった（Nix flake は Git 追跡ファイルのみ参照）。初回 `drs` はパスが見つからずエラー。`git add` 後に再実行で解決。
 
 ### フェーズ 3: lazygit 移行 + Stylix target 有効化
 
-- [ ] 3-1: `nix/home/programs/lazygit.nix` を作成（設計セクション参照）
-- [ ] 3-2: `nix/home/programs/default.nix` の imports に `./lazygit.nix` を追加
-- [ ] 3-3: `nix/home/default.nix` の `home.packages` から `lazygit` を削除
-- [ ] 3-4: `nix/home/symlinks.nix` から `"lazygit"` エントリを削除
-- [ ] 3-5: `nix/home/stylix.nix` に `stylix.targets.lazygit.enable = true` を追加
-- [ ] 3-6: `~/.config/lazygit` シンボリンクを手動削除
-- [ ] 3-7: `drs` を実行し正常完了を確認
-- [ ] 3-8: `lazygit` 起動 → 日本語 UI、Nerd Font アイコン表示を確認
-- [ ] 3-9: lazygit 内で diff → delta の side-by-side 表示を確認
-- [ ] 3-10: lazygit 内で `e` → nvim-remote でエディタ起動を確認
-- [ ] 3-11: lazygit → tokyo-night の色を確認
-- [ ] 3-12: `config/lazygit/` ディレクトリを削除
+- [x] 3-1: `nix/home/programs/lazygit.nix` を作成（設計セクション参照）
+- [x] 3-2: `nix/home/programs/default.nix` の imports に `./lazygit.nix` を追加
+- [x] 3-3: `nix/home/default.nix` の `home.packages` から `lazygit` を削除
+- [x] 3-4: `nix/home/symlinks.nix` から `"lazygit"` エントリを削除
+- [x] 3-5: `nix/home/stylix.nix` に `stylix.targets.lazygit.enable = true` を追加
+- [x] 3-6: `~/.config/lazygit` シンボリンクは HM 管理のため手動削除不要（`backupFileExtension` で自動処理）
+- [x] 3-7: `drs` を実行し正常完了を確認
+- [x] 3-8: `lazygit` 起動 → 日本語 UI、Nerd Font アイコン表示を確認
+- [x] 3-9: lazygit 内で diff → delta の side-by-side 表示を確認
+- [x] 3-10: lazygit 内で `e` → nvim-remote でエディタ起動を確認
+- [x] 3-11: lazygit → tokyo-night の色を確認
+- [x] 3-12: `config/lazygit/` ディレクトリを削除
 - [ ] 3-13: コミット
 
 ### フェーズ 4: ghostty 移行 + Stylix target 有効化

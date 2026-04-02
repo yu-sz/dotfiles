@@ -6,6 +6,7 @@
     ./gh.nix
     ./git.nix
     ./fzf.nix
+    ./lazygit.nix
     ./starship.nix
     ./zoxide.nix
   ];

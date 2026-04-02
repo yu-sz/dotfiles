@@ -15,7 +15,6 @@ in
     "tmux".source = mkLink "config/tmux";
     "gitmux".source = mkLink "config/gitmux";
     "gomi".source = mkLink "config/gomi";
-    "lazygit".source = mkLink "config/lazygit";
     "lazydocker".source = mkLink "config/lazydocker";
     "yazi".source = mkLink "config/yazi";
     "zabrze".source = mkLink "config/zabrze";
