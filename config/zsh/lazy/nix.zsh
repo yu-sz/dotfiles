@@ -3,9 +3,10 @@ if command -v nix &>/dev/null; then
   alias ndc="nix develop --command"
   alias nf="nix flake"
   alias nfu="nix flake update"
-  alias ngc="nix-collect-garbage -d"
+  alias ngc="nh clean all --keep 5"
 
   if [[ "$OSTYPE" == darwin* ]]; then
-    alias drs='sudo darwin-rebuild switch --flake ~/Projects/dotfiles'
+    # unsetopt GLOBAL_RCS により hm-session-vars.sh が読み込まれず NH_DARWIN_FLAKE が未設定のため、明示的にパスを指定
+    alias drs='nh darwin switch ~/Projects/dotfiles'
   fi
 fi

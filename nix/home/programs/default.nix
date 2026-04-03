@@ -8,6 +8,7 @@
     ./fzf.nix
     ./ghostty.nix
     ./lazygit.nix
+    ./nh.nix
     ./yazi.nix
     ./starship.nix
     ./zoxide.nix

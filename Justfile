@@ -1,9 +1,9 @@
 default:
     @just --list
 
-# darwin-rebuild switch を実行
+# nh darwin switch を実行
 switch:
-    sudo darwin-rebuild switch --flake .
+    nh darwin switch .
 
 # flake.lock を更新して switch
 update:
@@ -27,6 +27,6 @@ lint: fmt-check
 check:
     nix flake check
 
-# Nix store のガベージコレクション
+# Nix store のガベージコレクション（直近5世代を保持）
 clean:
-    nix-collect-garbage -d
+    nh clean all --keep 5

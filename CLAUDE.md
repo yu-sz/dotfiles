@@ -9,8 +9,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ./scripts/install.sh
 
 # Apply config changes after editing Nix files
-# macOS:
+# macOS (uses nh):
 drs
+# or: just switch (from dotfiles directory)
 # Linux:
 # home-manager switch --flake .#<user>@<hostname>
 ```
