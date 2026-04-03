@@ -29,4 +29,4 @@ check:
 
 # Nix store のガベージコレクション（直近5世代を保持）
 clean:
-    nh clean all --keep 5
+    nh clean all --keep 5 --nogcroots

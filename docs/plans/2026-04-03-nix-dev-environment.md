@@ -187,7 +187,7 @@ if command -v nix &>/dev/null; then
   alias ndc="nix develop --command"
   alias nf="nix flake"
   alias nfu="nix flake update"
-  alias ngc="nh clean all --keep 5"
+  alias ngc="nh clean all --keep 5 --nogcroots"
 
   if [[ "$OSTYPE" == darwin* ]]; then
     # unsetopt GLOBAL_RCS により hm-session-vars.sh が読み込まれず NH_DARWIN_FLAKE が未設定のため、明示的にパスを指定
@@ -232,7 +232,7 @@ check:
 
 # Nix store のガベージコレクション（直近5世代を保持）
 clean:
-    nh clean all --keep 5
+    nh clean all --keep 5 --nogcroots
 ```
 
 ---
@@ -279,7 +279,7 @@ flake.nix を大きく変更するため同時に実施。
 | `NH_DARWIN_FLAKE` | パス指定不要 | `drs` で明示パス指定が必要 | `.zshenv` の `unsetopt GLOBAL_RCS` により `hm-session-vars.sh` が読み込まれず環境変数が未設定 |
 | `drs` エイリアス | `nh darwin switch` | `nh darwin switch ~/Projects/dotfiles` | 上記の理由で明示パス指定に変更 |
 | `just switch` | `nh darwin switch` | `nh darwin switch .` | Justfile は dotfiles 内で実行するため `.` で解決可能 |
-| `ngc` | `nh clean user --keep 5` | `nh clean all --keep 5` | ADR の決定に従い `all`（user + system プロファイル両方）を採用 |
+| `ngc` | `nh clean user --keep 5` | `nh clean all --keep 5 --nogcroots` | ADR の決定に従い `all`（user + system プロファイル両方）を採用 |
 | ブートストラップ手順 | 3-3 で Justfile → 3-4 で切替 | 先に Justfile/エイリアスを nh に変更してしまい手戻り | nh 未インストール状態で nh コマンドを参照する設定に変更してしまった。`drs`（旧コマンド）でブートストラップ後に切替が正しい |
 
 ---
