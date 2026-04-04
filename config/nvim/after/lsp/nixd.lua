@@ -1,5 +1,7 @@
-local flake_path = vim.fn.expand("~/Projects/dotfiles")
-local config_name = "suta-ro"
+-- dotfiles flake のパス (.zshenv の DOTFILES_DIR を参照)
+local flake_path = vim.env.DOTFILES_DIR or vim.fn.expand("~/Projects/dotfiles")
+-- flake.nix の darwinConfigurations キー (= scutil --get LocalHostName)
+local config_name = vim.fn.hostname():gsub("%.local$", "")
 
 ---@type vim.lsp.Config
 return {

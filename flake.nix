@@ -86,7 +86,10 @@
                     useUserPackages = true;
                     backupFileExtension = "hm-backup";
                     users.${username} = import ./nix/home;
-                    extraSpecialArgs = { inherit username; };
+                    extraSpecialArgs = {
+                      inherit username;
+                      dotfilesRelPath = "Projects/dotfiles";
+                    };
                   };
                 }
               ];

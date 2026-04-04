@@ -2,10 +2,11 @@
   config,
   lib,
   pkgs,
+  dotfilesRelPath,
   ...
 }:
 let
-  dotfilesPath = "${config.home.homeDirectory}/Projects/dotfiles";
+  dotfilesPath = "${config.home.homeDirectory}/${dotfilesRelPath}";
   mkLink = path: config.lib.file.mkOutOfStoreSymlink "${dotfilesPath}/${path}";
 in
 {

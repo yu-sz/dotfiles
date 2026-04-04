@@ -7,6 +7,6 @@ if command -v nix &>/dev/null; then
 
   if [[ "$OSTYPE" == darwin* ]]; then
     # unsetopt GLOBAL_RCS により hm-session-vars.sh が読み込まれず NH_DARWIN_FLAKE が未設定のため、明示的にパスを指定
-    alias drs='nh darwin switch ~/Projects/dotfiles'
+    alias drs='nh darwin switch $DOTFILES_DIR'
   fi
 fi

@@ -1,7 +1,7 @@
-{ username, ... }:
+{ config, dotfilesRelPath, ... }:
 {
   programs.nh = {
     enable = true;
-    darwinFlake = "/Users/${username}/Projects/dotfiles";
+    darwinFlake = "${config.home.homeDirectory}/${dotfilesRelPath}";
   };
 }
