@@ -41,7 +41,7 @@ When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
 - Nix flake only sees Git-tracked files. **Always `git add` after creating new files.**
 - Run `git status` before `drs` to check for untracked files.
 - When introducing new tools: add package and apply first, then switch configs. Never reference uninstalled tools.
-- `drs` / `nh darwin switch` requires sudo (darwin-rebuild internally calls `sudo`).
+- `drs` / `nh darwin switch` requires sudo. Do not run directly — ask the user to run `! drs` instead.
 - `.zshenv` has `unsetopt GLOBAL_RCS`, so HM's `hm-session-vars.sh` is never sourced. Environment variables set via `home.sessionVariables` won't work — use explicit paths instead.
 
 ## Lua Config Files
