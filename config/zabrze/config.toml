@@ -1,0 +1,188 @@
+# ── General ──
+
+[[snippets]]
+name = "nvim"
+trigger = "v"
+snippet = "nvim"
+
+[[snippets]]
+name = "clear"
+trigger = "c"
+snippet = "clear"
+
+[[snippets]]
+name = "search process without grep"
+trigger = "pss"
+snippet = 'ps aux | grep -E "PID|{}" | grep -v grep'
+
+[[snippets]]
+name = "zsh startup time"
+trigger = "zsht"
+snippet = "time zsh -i -c exit"
+
+# ── Git ──
+
+[[snippets]]
+name = "git log"
+trigger = "gl"
+snippet = 'git log --pretty=format:"%C(auto)%h (%C(blue)%cd%C(auto))%d %s %Cblue" --date=format:"%Y/%m/%d %H:%M:%S" -n 10'
+
+[[snippets]]
+name = "git log --graph"
+trigger = "ggr"
+snippet = "git log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'"
+
+[[snippets]]
+name = "git status"
+trigger = "gs"
+snippet = "git status"
+
+[[snippets]]
+name = "git diff"
+trigger = "gd"
+snippet = "git diff"
+
+[[snippets]]
+name = "git add"
+trigger = "ga"
+snippet = "git add"
+
+[[snippets]]
+name = "git add ."
+trigger = "gaa"
+snippet = "git add ."
+
+[[snippets]]
+name = "git commit"
+trigger = "gc"
+snippet = "git commit"
+
+[[snippets]]
+name = "git commit -m"
+trigger = "gcm"
+snippet = 'git commit -m "{}"'
+
+[[snippets]]
+name = "git checkout -b"
+trigger = "gcob"
+snippet = 'git checkout -b "{}" && git commit --allow-empty -m "start working on $(git rev-parse --abbrev-ref HEAD)"'
+
+[[snippets]]
+name = "branch name"
+trigger = "B"
+snippet = "$(git symbolic-ref --short HEAD)"
+evaluate = true
+global = true
+context = '^git\s'
+
+# ── Docker ──
+
+[[snippets]]
+name = "docker compose"
+trigger = "dc"
+snippet = "docker compose"
+
+[[snippets]]
+name = "docker compose up -d"
+trigger = "dcu"
+snippet = "docker compose up -d"
+
+[[snippets]]
+name = "docker compose down"
+trigger = "dcd"
+snippet = "docker compose down"
+
+[[snippets]]
+name = "docker compose build"
+trigger = "dcb"
+snippet = "docker compose build"
+
+[[snippets]]
+name = "docker compose exec"
+trigger = "dce"
+snippet = "docker compose exec"
+
+[[snippets]]
+name = "docker compose logs"
+trigger = "dcl"
+snippet = "docker compose logs"
+
+[[snippets]]
+name = "docker compose restart"
+trigger = "dcr"
+snippet = "docker compose restart"
+
+[[snippets]]
+name = "docker ps"
+trigger = "dps"
+snippet = "docker ps"
+
+[[snippets]]
+name = "start Docker Desktop in background"
+trigger = "dds"
+snippet = "open --background -a Docker"
+
+[[snippets]]
+name = "docker prune"
+trigger = "dprune"
+snippet = "docker system prune -f"
+
+# ── Terraform ──
+
+[[snippets]]
+name = "terraform"
+trigger = "te"
+snippet = "terraform"
+
+[[snippets]]
+name = "terraform init"
+trigger = "tei"
+snippet = "terraform init"
+
+[[snippets]]
+name = "terraform validate"
+trigger = "tev"
+snippet = "terraform validate"
+
+[[snippets]]
+name = "(tenv) install terraform"
+trigger = "i"
+snippet = "tf install"
+global = true
+context = '^tenv\s'
+
+# ── AI ──
+
+[[snippets]]
+name = "claude"
+trigger = "cl"
+snippet = "claude --mcp-config=$HOME/.claude/mcp/.mcp.json"
+
+[[snippets]]
+name = "claude yolo mode (skip command permission)"
+trigger = "cly"
+snippet = "claude --mcp-config=$HOME/.claude/mcp/.mcp.json --dangerously-skip-permissions"
+
+[[snippets]]
+name = "(claude) --dangerously-skip-permissions"
+trigger = "y"
+snippet = "--dangerously-skip-permissions"
+global = true
+context = '^claude\s'
+
+[[snippets]]
+name = "ccusage"
+trigger = "cc"
+snippet = "npx ccusage"
+
+[[snippets]]
+name = "ccusage live monitor"
+trigger = "ccm"
+snippet = "npx ccusage blocks --live"
+
+[[snippets]]
+name = "ccusage live monitor (option only)"
+trigger = "m"
+snippet = "blocks --live"
+global = true
+context = '^npx ccusage\s'
