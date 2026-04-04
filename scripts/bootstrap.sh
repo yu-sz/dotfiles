@@ -8,7 +8,9 @@ info() { printf '\033[34m[INFO]\033[0m %s\n' "$*"; }
 
 if [[ -d "${DOTFILES_DIR}/.git" ]]; then
   info "Dotfiles repo found. Pulling latest..."
-  git -C "${DOTFILES_DIR}" pull --rebase || true
+  if ! git -C "${DOTFILES_DIR}" pull --ff-only; then
+    info "Pull failed. Continuing with local copy."
+  fi
 else
   info "Cloning dotfiles..."
   mkdir -p "$(dirname "${DOTFILES_DIR}")"
