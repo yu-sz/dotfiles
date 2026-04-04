@@ -47,3 +47,10 @@ When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
 ## Lua Config Files
 
 All Lua configs (Neovim, WezTerm, Yazi): module pattern with LuaCATS annotations, `snake_case` naming.
+
+## Skills
+
+Skill auto-invocation is unreliable. Always load the corresponding skill before starting these tasks. Never guess formats without loading the skill first.
+
+- **ADR / Plans**: Run `/writing-adr-plans` and follow its workflow and format
+- **Git commits**: Ensure the `commit` skill is loaded and follow Conventional Commits rules

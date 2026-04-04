@@ -1,6 +1,6 @@
 ---
 name: writing-adr-plans
-description: "Generates ADR (Architecture Decision Record) and Plans documents for this dotfiles repository. Use when: planning implementation work, recording architecture decisions, or the user asks to create ADR/Plans documents. TRIGGER when user mentions ADR, Plans, 実装計画, or starts a planning phase for code changes."
+description: "Generates ADR and Plans documents. Use when: user mentions ADR, Plans, 実装計画, or starts planning. MUST invoke before writing any ADR/Plans — never write them without this skill."
 ---
 
 # ADR + Plans ドキュメント生成

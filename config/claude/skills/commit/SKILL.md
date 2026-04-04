@@ -1,6 +1,6 @@
 ---
 name: commit
-description: "Git commit message rules based on Conventional Commits. Use when: creating git commits."
+description: "Git commit message rules based on Conventional Commits. Use when: creating git commits. MUST load before creating any commit — never commit without this skill."
 user-invocable: false
 ---
 
