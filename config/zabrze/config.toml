@@ -186,3 +186,10 @@ trigger = "m"
 snippet = "blocks --live"
 global = true
 context = '^npx ccusage\s'
+
+# ── Nix ──
+
+[[snippets]]
+name = "darwin rebuild switch"
+trigger = "drs"
+snippet = "nh darwin switch $DOTFILES_DIR"
