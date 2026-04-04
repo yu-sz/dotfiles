@@ -23,3 +23,6 @@ config/karabiner/automatic_backups/
 
 ### Neovim ###
 .netrwhist
+
+### Local scratch ###
+tmp/
