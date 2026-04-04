@@ -37,3 +37,8 @@ snippet = "echo $FPATH"
 name = "search process without grep"
 trigger = "pss"
 snippet = 'ps aux | grep -E "PID|{}" | grep -v grep'
+
+[[snippets]]
+name = "zsh startup time"
+trigger = "zsht"
+snippet = "time zsh -i -c exit"

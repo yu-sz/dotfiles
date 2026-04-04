@@ -21,6 +21,7 @@
     ripgrep
     fd
     gomi
+    hyperfine
     zabrze
 
     # views

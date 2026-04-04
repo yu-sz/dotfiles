@@ -27,6 +27,10 @@ lint: fmt-check
 check:
     nix flake check
 
+# シェル起動時間のベンチマーク
+bench:
+    hyperfine --warmup 3 'zsh -i -c exit'
+
 # Nix store のガベージコレクション（直近5世代を保持）
 clean:
     nh clean all --keep 5 --nogcroots
