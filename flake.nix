@@ -97,7 +97,7 @@
         in
         {
           darwinConfigurations = {
-            "yutanoMacBook-Pro" = mkDarwinConfig { username = "suta-ro"; };
+            "suta-ro" = mkDarwinConfig { username = "suta-ro"; };
           };
 
           # Linux (standalone home-manager) — 将来用

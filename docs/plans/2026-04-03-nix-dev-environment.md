@@ -118,7 +118,7 @@ Nix 開発環境を4施策で改善する:
         in
         {
           darwinConfigurations = {
-            "yutanoMacBook-Pro" = mkDarwinConfig { username = "suta-ro"; };
+            "suta-ro" = mkDarwinConfig { username = "suta-ro"; };
           };
 
           # Linux (standalone home-manager) — 将来用
