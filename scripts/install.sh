@@ -1,95 +1,28 @@
 #!/usr/bin/env bash
-set -eu # Exit on error, exit on unset variables, print commands
+set -euo pipefail
 
-echo "--- Dotfiles Setup Started ---"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SETUP="${SCRIPT_DIR}/setup"
+OS="$(uname -s)"
 
-# Define script and repository paths
-export CUR_DIR="$(
-  cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
-  pwd
-)"
-export REPO_DIR="$(
-  cd "${CUR_DIR}/.." || exit 1
-  pwd
-)"
+trap 'printf "\033[31m[ERROR]\033[0m Failed at line %s.\n" "${LINENO}" >&2' ERR
 
-# Set XDG Base Directory Specification variables
-# These default to ~/.config, ~/.local/share, ~/.local/state, ~/.cache if not already set.
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+source "${SETUP}/_helpers.sh"
+source "${SETUP}/prepare_env.sh"
 
-# Create XDG directories if they don't exist
-mkdir -p \
-  "$XDG_CONFIG_HOME" \
-  "$XDG_DATA_HOME" \
-  "$XDG_STATE_HOME" \
-  "$XDG_CACHE_HOME" \
-  "$XDG_DATA_HOME/vim"
-echo "XDG directories created."
+info "Dotfiles setup started (${OS})."
 
-# Symbolic Links Setup
-echo "--- Setting up Symbolic Links ---"
+create_directories
+install_nix
+load_nix_env
 
-# Link individual config directories/files from the repo to XDG_CONFIG_HOME.
-ln -sfv "$REPO_DIR/config/"* "$XDG_CONFIG_HOME"
-ln -sfv "$XDG_CONFIG_HOME/zsh/.zshenv" "$HOME/.zshenv"
+case "${OS}" in
+  Darwin) "${SETUP}/darwin.sh" "${REPO_DIR}" ;;
+  Linux)  "${SETUP}/linux.sh" "${REPO_DIR}" ;;
+  *)      error "Unsupported OS: ${OS}"; exit 1 ;;
+esac
 
-# HACK:一時期XDG Base Directory Specificationがサポートされたが、謎に廃止されたので~/.claude配下にシンボリックリンクを貼る
-# xdgがサポートされたら、シンボリックリンクは廃止する
-mkdir -p "$HOME/.claude"
-ln -sfv "$XDG_CONFIG_HOME/claude/"* "$HOME/.claude"
+"${SETUP}/install_runtimes.sh"
 
-echo "Symbolic links setup complete."
-
-# Homebrew Setup
-echo "--- Starting Homebrew Setup ---"
-
-# Check if Homebrew is installed. If not, install it.
-if type brew >/dev/null; then
-  echo "Homebrew is already installed."
-else
-  echo "Installing Homebrew..."
-
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-
-  echo "Homebrew installation complete."
-fi
-
-# Install applications and dependencies listed in Brewfile.
-echo "Installing Homebrew apps from Brewfile..."
-brew bundle install --file "${REPO_DIR}/config/homebrew/Brewfile" --verbose --no-upgrade
-
-# Clean up Homebrew cache to free up space.
-echo "Cleaning up Homebrew cache..."
-brew cleanup
-
-echo "Homebrew setup complete."
-
-# mise setup and install
-echo "--- Installing mise managed tools ---"
-if command -v mise &>/dev/null; then
-  # use config/mise/config.toml
-  mise install
-  echo "mise tools installed."
-else
-  echo "Warning: mise is not installed via Homebrew. Skipping mise tool installation."
-fi
-
-# Claude Code setup (Native binary installation)
-echo "--- Installing Claude Code (Native Binary) ---"
-if command -v claude &>/dev/null; then
-  echo "Claude Code is already installed."
-  claude --version
-else
-  echo "Installing Claude Code via official installer..."
-  curl -fsSL https://claude.ai/install.sh | bash
-  echo "Claude Code installation complete."
-fi
-
-echo "--- Dotfiles Setup Complete ---"
-echo "✅ All environment configurations and tools have been installed."
-echo "🚀 To apply changes, please open a new terminal session or run 'exec zsh' in your current shell."
-echo "💡 If you installed Neovim, open it to allow plugin manager to install plugins on first run."
+info "Dotfiles setup complete."

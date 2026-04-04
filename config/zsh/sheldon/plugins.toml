@@ -33,7 +33,6 @@ apply = ["source"]
 
 [plugins.starship]
 inline = """
-export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
 eval "$(starship init zsh)"
 """
 

@@ -3,7 +3,9 @@ autoload -Uz compinit
 compinit -d "$XDG_STATE_HOME/zcompdump"
 
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /opt/homebrew/bin/terraform terraform
+if command -v terraform &>/dev/null; then
+  complete -o nospace -C "$(command -v terraform)" terraform
+fi
 
 zmodload -i zsh/complist
 zstyle ':completion:*:default' menu select=1

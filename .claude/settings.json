@@ -1,0 +1,44 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty'); [ \"${FILE##*.}\" = \"nix\" ] && command -v nixfmt > /dev/null && nixfmt \"$FILE\"; true"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(nix --version)",
+      "Bash(nix search:*)",
+      "Bash(nix eval:*)",
+      "Bash(nix flake:*)",
+      "Bash(nix develop:*)",
+      "Bash(nix fmt:*)",
+      "Bash(nix log:*)",
+      "Bash(nix repl:*)",
+      "Bash(nix-channel --list)",
+      "Bash(nh darwin:*)",
+      "Bash(darwin-rebuild --version)",
+      "Bash(home-manager --version)",
+      "Bash(home-manager option:*)",
+      "Bash(git add:*)",
+      "Bash(defaults read:*)",
+      "Bash(scutil:*)",
+      "Bash(sw_vers)",
+      "Read(/Users/suta-ro/.nix-defexpr/channels/**)",
+      "Read(/Users/suta-ro/.nix-profile/**)",
+      "Read(/etc/profiles/per-user/**)",
+      "Read(/nix/store/**)",
+      "Read(/etc/nix/**)",
+      "Read(/run/current-system/**)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs"
+    ]
+  }
+}

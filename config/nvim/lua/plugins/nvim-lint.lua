@@ -6,6 +6,7 @@ return {
     local lint = require("lint")
     lint.linters_by_ft = {
       lua = { "luacheck" },
+      nix = { "statix", "deadnix" },
       javascript = { "biomejs", "eslint" },
       typescript = { "biomejs", "eslint" },
       typescriptreact = { "biomejs", "eslint" },

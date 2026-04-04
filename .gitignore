@@ -8,3 +8,21 @@ local.*
 .zcomp*
 *.swp
 ~
+
+### Nix ###
+result
+
+### Direnv ###
+.direnv
+
+### Git Hooks ###
+.pre-commit-config.yaml
+
+### Karabiner ###
+config/karabiner/automatic_backups/
+
+### Neovim ###
+.netrwhist
+
+### Local scratch ###
+tmp/

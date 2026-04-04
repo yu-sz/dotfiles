@@ -1,83 +1,56 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Commands
 
 ```bash
-# Initial setup (creates symlinks, installs Homebrew packages, mise tools)
-./scripts/setup.sh
-
-# Add new Homebrew package
-# Edit config/homebrew/Brewfile, then:
-brew bundle install --file config/homebrew/Brewfile
+drs                # Apply Nix config changes (macOS, uses nh)
+just switch        # Alternative (from dotfiles directory)
 ```
 
 No tests or build system.
 
-## Architecture
+## Symlink Strategy
 
-### Symlink Strategy
+All configs follow the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/latest/). New config files must be placed under `config/` and symlinked to `~/.config/`.
 
-`config/*` -> `~/.config/` (XDG compliant)
+`config/*` → `~/.config/`
 
 Special cases:
-- `config/claude/*` -> `~/.claude/` (Claude CLI does not support XDG)
-- `config/zsh/.zshenv` -> `~/.zshenv`
 
-When adding files to `config/claude/`, also update `nix/home/symlinks.nix` (`home.file` section).
+- `config/claude/*` → `~/.claude/`
+- `config/zsh/.zshenv` → `~/.zshenv`
 
-### Zsh Loading Pattern
+When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
 
-Sheldon manages plugins with `zsh-defer` for lazy loading:
-- `eager/*.zsh` - Loaded immediately (PATH, critical settings)
-- `lazy/*.zsh` - Deferred loading (aliases, completions, functions)
+## Multi-Machine Strategy
 
-### Neovim Structure
+- `flake.nix` の `darwinConfigurations` がホスト名単位で構成を管理
+- `specialArgs` で `username` を渡し、ユーザー名の差異を吸収
+- 新マシン追加は `scripts/bootstrap.sh` が自動で行う
 
-```
-nvim/
-├── init.lua           # Entry: requires commands, config, lsp
-├── lua/
-│   ├── config/        # Options, autocmd, lazy.nvim setup
-│   ├── plugins/       # One file per plugin (lazy.nvim spec)
-│   ├── commands/      # Custom user commands
-│   └── lsp/           # LSP base config
-└── after/lsp/         # Per-server LSP overrides
-```
+## Nix Package Management
 
-Plugin files return lazy.nvim spec table directly.
+- **CLI tools**: `nix/home/default.nix` (`home.packages`)
+- **macOS-only tools**: `nix/home/darwin.nix`
+- **GUI apps (cask)**: `nix/hosts/darwin-shared.nix` (`homebrew.casks`)
+- **Fonts**: `nix/hosts/darwin-shared.nix` (`fonts.packages`)
+- **Custom packages**: `nix/overlays/`
 
-### WezTerm Structure
+## Nix Flake Workflow
 
-Modular Lua config with `require()`:
-- `wezterm.lua` - Entry, merges all modules
-- `styles.lua`, `tab_bar.lua`, `hooks.lua` - Separated concerns
+- Nix flake only sees Git-tracked files. **Always `git add` after creating new files.**
+- Run `git status` before `drs` to check for untracked files.
+- When introducing new tools: add package and apply first, then switch configs. Never reference uninstalled tools.
+- `drs` / `nh darwin switch` requires sudo. Do not run directly — ask the user to run `! drs` instead.
+- `.zshenv` has `unsetopt GLOBAL_RCS`, so HM's `hm-session-vars.sh` is never sourced. Environment variables set via `home.sessionVariables` won't work — use explicit paths instead.
 
-## Conventions
+## Lua Config Files
 
-### Lua Config Files
+All Lua configs (Neovim, WezTerm, Yazi): module pattern with LuaCATS annotations, `snake_case` naming.
 
-All Lua configs (Neovim, WezTerm, Yazi) follow:
-- Module pattern with LuaCATS annotations
-- `snake_case` naming
+## Skills
 
-### Brewfile Format
+Skill auto-invocation is unreliable. Always load the corresponding skill before starting these tasks. Never guess formats without loading the skill first.
 
-```ruby
-tap "owner/repo"       # Third-party taps
-brew "formula"         # CLI tools
-cask "application"     # GUI apps
-```
-
-Group by: taps -> formulae (categorized) -> casks
-
-### Zabrze Abbreviations
-
-YAML files in `config/zabrze/` define shell abbreviations:
-```yaml
-abbrevs:
-  - name: description
-    abbr: short
-    snippet: expanded command
-```
+- **ADR / Plans**: Run `/writing-adr-plans` and follow its workflow and format
+- **Git commits**: Ensure the `commit` skill is loaded and follow Conventional Commits rules
