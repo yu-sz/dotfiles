@@ -1,9 +1,46 @@
 ---
 name: lua-standard
-description: "Lua/Neovim coding standards. Use when: writing or reviewing Lua code (*.lua) for Neovim plugins or configuration."
+description: "Lua/Neovim coding standards and Neovim structure guide. Use when: writing or reviewing Lua code (*.lua) for Neovim plugins or configuration."
+paths:
+  - "config/nvim/**"
 ---
 
 # Lua/Neovim Standard
+
+## Neovim Directory Structure
+
+```
+nvim/
+├── init.lua           # Entry: requires commands, config, lsp
+├── lua/
+│   ├── config/        # Options, autocmd, lazy.nvim setup
+│   ├── plugins/       # One file per plugin (lazy.nvim spec)
+│   ├── commands/      # Custom user commands
+│   └── lsp/           # LSP base config
+└── after/lsp/         # Per-server LSP overrides
+```
+
+## Plugin File Pattern
+
+`plugins/` 内の各ファイルは lazy.nvim spec を返す:
+```lua
+return {
+  "author/plugin-name",
+  event = "VeryLazy",
+  opts = { ... },
+}
+```
+
+## LSP Configuration
+
+- `lua/lsp/init.lua` — アタッチハンドラ、キーマップ、inlay hints。`vim.lsp.enable({...})` でサーバーを有効化
+- `after/lsp/{server_name}.lua` — サーバーごとのオーバーライド。自動検出される。ファイル名は LSP クライアント名と一致させる
+
+## Gotchas
+
+- `lazy-lock.json` はバージョンを固定。`:Lazy! update` で再生成
+- LSP サーバーは `lua/lsp/init.lua` のリストに明示的に追加が必要
+- `after/lsp/` のファイル名は LSP クライアント名に一致させる（例: `lua_ls.lua`、`lua-language-server.lua` ではない）
 
 ## 1. Scoping & Variables
 
