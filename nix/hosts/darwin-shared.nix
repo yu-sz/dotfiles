@@ -1,18 +1,23 @@
 { pkgs, username, ... }:
 {
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-
-  nix.gc = {
-    automatic = true;
-    interval = {
-      Weekday = 7;
-      Hour = 3;
-      Minute = 0;
+  nix = {
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      warn-dirty = false;
     };
-    options = "--delete-older-than 30d";
+    optimise.automatic = true;
+    gc = {
+      automatic = true;
+      interval = {
+        Weekday = 7;
+        Hour = 3;
+        Minute = 0;
+      };
+      options = "--delete-older-than 30d";
+    };
   };
 
   homebrew = {
