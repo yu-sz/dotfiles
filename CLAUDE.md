@@ -11,7 +11,9 @@ No tests or build system.
 
 ## Symlink Strategy
 
-`config/*` → `~/.config/` (XDG compliant)
+All configs follow the [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir-spec/latest/). New config files must be placed under `config/` and symlinked to `~/.config/`.
+
+`config/*` → `~/.config/`
 
 Special cases:
 

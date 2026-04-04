@@ -2,6 +2,8 @@
 
 Personal config for macOS (Apple Silicon). Managed with Nix (nix-darwin + home-manager).
 
+> Linux (standalone home-manager) is scaffolded but not yet active. See `flake.nix`.
+
 ## Setup
 
 ### New Mac
