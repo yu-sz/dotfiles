@@ -30,6 +30,29 @@ nix/
 
 **データフロー**: `flake.nix` の `mkDarwinConfig` → `darwin-shared.nix`（システム）+ `nix/home/`（ユーザー）。`specialArgs` で `username` を全モジュールに渡す。
 
+## Toolchain
+
+### Flake Inputs（インフラ）
+
+| ツール                 | 役割                                            |
+| ---------------------- | ----------------------------------------------- |
+| nixpkgs unstable       | ベースパッケージセット                          |
+| nix-darwin             | macOS システム管理（`darwinSystem`）            |
+| home-manager           | ユーザー環境・ドットファイル管理                |
+| flake-parts            | Flake のモジュラー構成（`perSystem` / `flake`） |
+| nix-homebrew           | Homebrew cask と Nix の共存                     |
+| git-hooks.nix (cachix) | pre-commit フック自動化                         |
+
+### 開発ツール
+
+| ツール              | 役割                                    | 備考                                        |
+| ------------------- | --------------------------------------- | ------------------------------------------- |
+| nh                  | darwin-rebuild ラッパー（nom/nvd 内蔵） | `drs` / `just switch` / `just clean`        |
+| just                | タスクランナー                          | `Justfile` 参照。`switch`, `fmt`, `lint` 等 |
+| direnv + nix-direnv | `.envrc` で devShell 自動ロード         | `nix develop` 手動不要                      |
+| nixd                | Nix LSP                                 | エディタ補完・定義ジャンプ                  |
+| shellcheck          | シェルスクリプト静的解析                | pre-commit で自動実行                       |
+
 ## Conventions
 
 | 項目                          | 規約                                                                   |
@@ -102,5 +125,4 @@ _: { programs.app-name = { enable = true; package = null; settings = { ... }; };
 
 ## References
 
-- ADR（設計判断の経緯）: `docs/adr/`
 - flake-parts 構成: `flake.nix` の `perSystem` / `flake` ブロック
