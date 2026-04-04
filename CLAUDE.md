@@ -75,6 +75,12 @@ All Lua configs (Neovim, WezTerm, Yazi) follow:
 
 After editing, run `drs`.
 
+### Nix Flake Workflow
+
+- Nix flake は Git 追跡ファイルのみ認識する。**新規ファイル作成後は必ず `git add` する**
+- `drs` 実行前に `git status` で未追跡ファイルがないか確認する
+- 新しいツール導入時: まずパッケージを追加・適用してから設定を切り替える（未インストールのツールを参照しない）
+
 ### Zabrze Abbreviations
 
 TOML files in `config/zabrze/` define shell abbreviations:
