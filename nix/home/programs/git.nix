@@ -7,6 +7,7 @@ _: {
       diff.colorMoved = "default";
       user.useConfigOnly = true;
       ghq.root = "~/Projects";
+      fetch.prune = true;
     };
     ignores = [
       ".DS_Store"
