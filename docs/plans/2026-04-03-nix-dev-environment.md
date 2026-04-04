@@ -19,15 +19,15 @@ Nix 開発環境を4施策で改善する:
 
 ## 決定事項
 
-| 項目           | 決定                                                       | 備考                                                                           |
-| -------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Stylix         | **完全削除**                                               | `autoEnable = false` + targets 空 → 機能的影響ゼロ                             |
-| flake-parts    | **`perSystem` + `flake` 構造に移行**                       | Stylix 削除と同時に flake.nix を整理                                           |
-| nix.settings   | **`warn-dirty = false` + `nix.optimise.automatic = true`** | `auto-optimise-store` も利用可能だが定期バッチの方がビルド時オーバーヘッドなし |
+| 項目           | 決定                                                       | 備考                                                                                           |
+| -------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Stylix         | **完全削除**                                               | `autoEnable = false` + targets 空 → 機能的影響ゼロ                                             |
+| flake-parts    | **`perSystem` + `flake` 構造に移行**                       | Stylix 削除と同時に flake.nix を整理                                                           |
+| nix.settings   | **`warn-dirty = false` + `nix.optimise.automatic = true`** | `auto-optimise-store` も利用可能だが定期バッチの方がビルド時オーバーヘッドなし                 |
 | nh             | **`programs.nh` モジュールで導入**                         | HM モジュールで導入。`NH_DARWIN_FLAKE` は `unsetopt GLOBAL_RCS` により未設定のため明示パス指定 |
-| nix.gc         | **維持**（元の計画から変更）                               | `nh clean all` でシステム + ユーザー両方を GC                                  |
-| drs エイリアス | **中身を nh に置き換え、残す**                             | `nh darwin switch ~/Projects/dotfiles`（明示パス指定）                          |
-| ngc エイリアス | **中身を nh clean all に置き換え**                         | 世代数ベース管理に移行（`--keep 5`）                                           |
+| nix.gc         | **維持**（元の計画から変更）                               | `nh clean all` でシステム + ユーザー両方を GC                                                  |
+| drs エイリアス | **中身を nh に置き換え、残す**                             | `nh darwin switch ~/Projects/dotfiles`（明示パス指定）                                         |
+| ngc エイリアス | **中身を nh clean all に置き換え**                         | `--keep 5 --nogcroots`（世代数ベース管理 + devShell GC root 保護）                             |
 
 ---
 
@@ -243,23 +243,23 @@ clean:
 
 flake.nix を大きく変更するため同時に実施。
 
-- [ ] 1-1: `flake.nix` から `stylix` input を削除
-- [ ] 1-2: `flake.nix` の outputs 引数から `stylix` を削除
-- [ ] 1-3: `flake.nix` の modules から `stylix.darwinModules.stylix` を削除
-- [ ] 1-4: `nix/hosts/darwin-shared.nix` から `stylix = { ... }` ブロックを削除
-- [ ] 1-5: `nix/home/stylix.nix` を削除
-- [ ] 1-6: `nix/home/default.nix` の imports から `./stylix.nix` を削除
-- [ ] 1-7: `flake.nix` に `flake-parts` input を追加
-- [ ] 1-8: `flake.nix` の outputs を `flake-parts.lib.mkFlake` 構造に書き換え（設計セクション参照）
-- [ ] 1-9: `nix flake lock` で flake.lock を更新（Stylix 関連エントリ削除 + flake-parts 追加）
-- [ ] 1-10: `nix flake check` で検証
-- [ ] 1-11: `just switch` で適用確認
+- [x] 1-1: `flake.nix` から `stylix` input を削除
+- [x] 1-2: `flake.nix` の outputs 引数から `stylix` を削除
+- [x] 1-3: `flake.nix` の modules から `stylix.darwinModules.stylix` を削除
+- [x] 1-4: `nix/hosts/darwin-shared.nix` から `stylix = { ... }` ブロックを削除
+- [x] 1-5: `nix/home/stylix.nix` を削除
+- [x] 1-6: `nix/home/default.nix` の imports から `./stylix.nix` を削除
+- [x] 1-7: `flake.nix` に `flake-parts` input を追加
+- [x] 1-8: `flake.nix` の outputs を `flake-parts.lib.mkFlake` 構造に書き換え（設計セクション参照）
+- [x] 1-9: `nix flake lock` で flake.lock を更新（Stylix 20 依存削除 + flake-parts 追加）
+- [x] 1-10: `nix flake check` で検証
+- [x] 1-11: `drs` で適用確認（base16 テーマファイルが REMOVED、-4.77 KiB）
 
 ### Phase 2: nix.settings 強化
 
-- [ ] 2-1: `nix/hosts/darwin-shared.nix` の `nix.settings` に `warn-dirty = false` を追加し、`nix.optimise.automatic = true` をトップレベルに追加
-- [ ] 2-2: `just switch` で適用
-- [ ] 2-3: dirty tree で `nix flake check` を実行し、警告が出ないことを確認
+- [x] 2-1: `nix/hosts/darwin-shared.nix` の `nix.settings` に `warn-dirty = false` を追加し、`nix.optimise.automatic = true` をトップレベルに追加
+- [x] 2-2: `drs` で適用（nix-optimise launchd サービスが追加、+2.01 KiB）
+- [x] 2-3: dirty tree で `nix flake check` を実行し、警告が出ないことを確認
 
 ### Phase 3: nh 導入
 
@@ -274,12 +274,12 @@ flake.nix を大きく変更するため同時に実施。
 
 #### 予実差異
 
-| 項目 | 計画 | 実際 | 理由 |
-|------|------|------|------|
-| `NH_DARWIN_FLAKE` | パス指定不要 | `drs` で明示パス指定が必要 | `.zshenv` の `unsetopt GLOBAL_RCS` により `hm-session-vars.sh` が読み込まれず環境変数が未設定 |
-| `drs` エイリアス | `nh darwin switch` | `nh darwin switch ~/Projects/dotfiles` | 上記の理由で明示パス指定に変更 |
-| `just switch` | `nh darwin switch` | `nh darwin switch .` | Justfile は dotfiles 内で実行するため `.` で解決可能 |
-| `ngc` | `nh clean user --keep 5` | `nh clean all --keep 5 --nogcroots` | ADR の決定に従い `all`（user + system プロファイル両方）を採用 |
+| 項目                 | 計画                         | 実際                                                 | 理由                                                                                                                       |
+| -------------------- | ---------------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `NH_DARWIN_FLAKE`    | パス指定不要                 | `drs` で明示パス指定が必要                           | `.zshenv` の `unsetopt GLOBAL_RCS` により `hm-session-vars.sh` が読み込まれず環境変数が未設定                              |
+| `drs` エイリアス     | `nh darwin switch`           | `nh darwin switch ~/Projects/dotfiles`               | 上記の理由で明示パス指定に変更                                                                                             |
+| `just switch`        | `nh darwin switch`           | `nh darwin switch .`                                 | Justfile は dotfiles 内で実行するため `.` で解決可能                                                                       |
+| `ngc`                | `nh clean user --keep 5`     | `nh clean all --keep 5 --nogcroots`                  | ADR に従い `all` を採用。`--nogcroots` は nh がデフォルトで `.direnv` GC root を削除し devShell が壊れるため追加            |
 | ブートストラップ手順 | 3-3 で Justfile → 3-4 で切替 | 先に Justfile/エイリアスを nh に変更してしまい手戻り | nh 未インストール状態で nh コマンドを参照する設定に変更してしまった。`drs`（旧コマンド）でブートストラップ後に切替が正しい |
 
 ---
