@@ -31,16 +31,14 @@ return {
       },
       formatters = {
         stylua = {
-          command = "stylua", -- 固定パスを削除
+          command = "stylua",
         },
         shfmt = {
-          command = "shfmt", -- 固定パスを削除
+          command = "shfmt",
         },
-        -- prettier = {
-        -- 	command = "prettier", -- 固定パスを削除
-        -- 	args = { "--stdin-filepath", "$FILENAME" },
-        -- 	stdin = true,
-        -- },
+        prettier = {
+          prepend_args = { "--ignore-path", "/dev/null" },
+        },
       },
     }
   end,
