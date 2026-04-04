@@ -40,6 +40,7 @@
 
     # dev
     hadolint
+    mkcert
     nixd
     shellcheck
     luarocks
