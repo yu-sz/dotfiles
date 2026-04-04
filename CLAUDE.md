@@ -24,9 +24,9 @@ When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
 
 ## Multi-Machine Strategy
 
-- `flake.nix` の `darwinConfigurations` がホスト名単位で構成を管理
-- `specialArgs` で `username` を渡し、ユーザー名の差異を吸収
-- 新マシン追加は `scripts/bootstrap.sh` が自動で行う
+- `darwinConfigurations` in `flake.nix` manages per-host configurations
+- `specialArgs` passes `username` to absorb differences across machines
+- Adding a new machine is automated by `scripts/bootstrap.sh`
 
 ## Nix Package Management
 
