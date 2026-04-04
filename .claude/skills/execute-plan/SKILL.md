@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: "Plans ドキュメントのチェックリストに従って実装を実行する。Use when: 計画書の実行、Plans の実装を開始するとき。TRIGGER when user mentions 計画を実行, Plan 実行, Phase 実行, or references a Plans document for implementation."
+description: "Execute implementation following Plans document checklists. Use when: starting implementation of a Plans document. TRIGGER when user mentions 計画を実行, Plan 実行, Phase 実行, or references a Plans document for implementation."
 argument-hint: "[plans file path]"
 ---
 
