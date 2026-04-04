@@ -3,7 +3,7 @@ name: Update flake.lock
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: "0 0 * * 6"
 
 jobs:
   update:
@@ -24,3 +24,6 @@ jobs:
           pr-title: "chore(nix): update flake.lock"
           pr-body: |
             Automated weekly update of flake.lock.
+
+            ### Updated inputs
+            {{ env.GIT_LOG_OUTPUT }}
