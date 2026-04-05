@@ -7,6 +7,10 @@ description: "Generates ADR and Plans documents. Use when: user mentions ADR, Pl
 
 計画フェーズの成果物として ADR と Plans を生成する。
 
+## Plan モードでの振る舞い
+
+Plan モードが有効な場合、ADR/Plans の内容を **plan file に出力する**。`docs/adr/` や `docs/plans/` への Write は Plan モード解除後に行う。
+
 ## ワークフロー
 
 ### Step 1: スコープ判定
