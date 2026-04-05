@@ -118,15 +118,6 @@
             "command": "mkdir -p ~/.claude/logs && echo \"[$(date '+%H:%M:%S')] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/logs/command_history_$(date '+%Y-%m-%d').log"
           }
         ]
-      },
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/format.sh"
-          }
-        ]
       }
     ],
     "Stop": [
