@@ -10,6 +10,7 @@ return {
       javascript = { "biomejs", "eslint" },
       typescript = { "biomejs", "eslint" },
       typescriptreact = { "biomejs", "eslint" },
+      markdown = { "markdownlint" },
     }
 
     local augroup = vim.api.nvim_create_augroup("NvimLintAutocmds", { clear = true })

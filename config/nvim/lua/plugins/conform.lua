@@ -3,14 +3,19 @@ return {
   "stevearc/conform.nvim",
   event = "VeryLazy",
   opts = function()
-    local web_formatter_config = function()
+    ---@param bufnr integer
+    ---@return string[]
+    local web_formatter_config = function(bufnr)
+      if vim.fs.root(bufnr, { "biome.json", "biome.jsonc" }) then
+        return { "biome-check" }
+      end
       return { "biome-check", "prettier", stop_after_first = true }
     end
 
     return {
       format_on_save = {
         timeout_ms = 1500,
-        lsp_fallback = true,
+        lsp_format = "fallback",
       },
       formatters_by_ft = {
         lua = { "stylua" },
@@ -47,7 +52,7 @@ return {
     conform.setup(opts)
     vim.keymap.set({ "n", "v" }, "<leader>lF", function()
       conform.format({
-        lsp_fallback = true,
+        lsp_format = "fallback",
         async = false,
         timeout_ms = 500,
       })

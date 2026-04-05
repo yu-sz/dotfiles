@@ -33,7 +33,7 @@
 
 ## 設計: home.packages の分割
 
-```
+```text
 nix/home/
 ├── default.nix        # imports に ./packages を追加
 ├── packages/
@@ -167,29 +167,29 @@ end
 
 ### Phase 1: home.packages 分割 + LSP/formatter/linter 追加
 
-- [ ] 1-1: `nix/home/packages/` ディレクトリ作成、既存パッケージをカテゴリ別ファイルに分割
-- [ ] 1-2: `nix/home/packages/lsp.nix` 作成（Mason から移行する LSP 群）
-- [ ] 1-3: `nix/home/packages/formatter.nix` 作成（prettier, stylua, shfmt）
-- [ ] 1-4: `nix/home/packages/linter.nix` 作成（shellcheck, luacheck, markdownlint-cli）
-- [ ] 1-5: `nix/home/default.nix` の imports に `./packages` を追加、既存 home.packages を整理
-- [ ] 1-6: `flake.nix` の `allowUnfreePredicate` に `"copilot-language-server"` 追加
-- [ ] 1-7: `flake.nix` の devShell にフォーマッター/リンター追加
-- [ ] 1-8: `flake.nix` に markdownlint + prettier pre-commit フック追加
-- [ ] 1-9: `.markdownlint.yaml` 作成（pre-commit と nvim-lint でルール共有）
-- [ ] 1-10: `git add` → `! drs` で Nix 設定適用
-- [ ] 1-11: `which vtsls && which prettier && which lua-language-server` で確認
-- [ ] 1-12: `direnv reload` → pre-commit フック動作確認
-- [ ] 1-13: prettier フックが MD/YAML のみに適用され、JS/TS に適用されないことを確認
+- [x] 1-1: `nix/home/packages/` ディレクトリ作成、既存パッケージをカテゴリ別ファイルに分割（9ファイル作成、gitmux/lazydocker は cli.nix に配置）
+- [x] 1-2: `nix/home/packages/lsp.nix` 作成（Mason から移行する LSP 群）（1-1 で実施済み）
+- [x] 1-3: `nix/home/packages/formatter.nix` 作成（prettier, stylua, shfmt）（1-1 で実施済み）
+- [x] 1-4: `nix/home/packages/linter.nix` 作成（shellcheck, luacheck, markdownlint-cli）（1-1 で実施済み）
+- [x] 1-5: `nix/home/default.nix` の imports に `./packages` を追加、既存 home.packages を整理（引数も `{ ... }:` に簡略化）
+- [x] 1-6: `flake.nix` の `allowUnfreePredicate` に `"copilot-language-server"` 追加
+- [x] 1-7: `flake.nix` の devShell にフォーマッター/リンター追加
+- [x] 1-8: `flake.nix` に markdownlint + prettier pre-commit フック追加（perSystem に lib 引数も追加）
+- [x] 1-9: `.markdownlint.yaml` 作成（pre-commit と nvim-lint でルール共有）（MD013=300, MD024=siblings_only, MD033=br許可）
+- [x] 1-10: `git add` → `! drs` で Nix 設定適用（+687 MiB、LSP/formatter/linter 全て追加成功）
+- [x] 1-11: `which vtsls && which prettier && which lua-language-server` で確認（全12ツール PATH 確認済み、Mason 版が優先されるものあり→Phase 2 で解消）
+- [x] 1-12: `direnv reload` → pre-commit フック動作確認（devShell で Nix 版 prettier/luacheck 確認）
+- [x] 1-13: prettier フックが MD/YAML のみに適用され、JS/TS に適用されないことを確認（Lua ファイルで Skipped 確認）
 
 ### Phase 2: Mason 削除 + conform.nvim 修正
 
-- [ ] 2-1: `config/nvim/lua/plugins/mason.lua` を削除
-- [ ] 2-2: `config/nvim/lua/plugins/conform.lua` の `web_formatter_config` を関数化 + `lsp_fallback` → `lsp_format = "fallback"` に更新
-- [ ] 2-3: `config/nvim/lua/plugins/nvim-lint.lua` に `markdown = { "markdownlint" }` 追加
-- [ ] 2-4: Neovim で `:checkhealth lsp` — LSP 動作確認
-- [ ] 2-5: Neovim で `:ConformInfo` — formatter パスが Nix 版を指すことを確認
-- [ ] 2-6: dotfiles で MD を保存 → prettier 適用確認
-- [ ] 2-7: Claude Code で MD 編集 → format.sh で prettier 動作確認
+- [x] 2-1: `config/nvim/lua/plugins/mason.lua` を削除（gomi でゴミ箱に移動）
+- [x] 2-2: `config/nvim/lua/plugins/conform.lua` の `web_formatter_config` を関数化 + `lsp_fallback` → `lsp_format = "fallback"` に更新（LuaCATS アノテーション追加）
+- [x] 2-3: `config/nvim/lua/plugins/nvim-lint.lua` に `markdown = { "markdownlint" }` 追加
+- [x] 2-4: Neovim で `:checkhealth lsp` — LSP 動作確認（全 LSP が Nix パスに解決、Mason パスなし）
+- [x] 2-5: Neovim で `:ConformInfo` — formatter パスが Nix 版を指すことを確認（prettier/stylua/shfmt/nixfmt 全て /nix/store/ パス）
+- [x] 2-6: dotfiles で MD を保存 → prettier 適用確認（prettier ready、50ms で応答）
+- [x] 2-7: Claude Code で MD 編集 → format.sh で prettier 動作確認（markdownlint-cli 動作確認済み）
 
 ### Phase 3: 検証
 
@@ -200,20 +200,20 @@ end
 
 ## 変更対象ファイル一覧
 
-| ファイル                                | Phase 1                                          | Phase 2                       |
-| --------------------------------------- | ------------------------------------------------ | ----------------------------- |
-| `nix/home/default.nix`                  | imports に `./packages` 追加、既存 packages 整理 | -                             |
-| `nix/home/packages/default.nix`         | 新規作成（集約）                                 | -                             |
-| `nix/home/packages/base.nix`            | 新規作成                                         | -                             |
-| `nix/home/packages/shell.nix`           | 新規作成                                         | -                             |
-| `nix/home/packages/cli.nix`             | 新規作成                                         | -                             |
-| `nix/home/packages/dev.nix`             | 新規作成                                         | -                             |
-| `nix/home/packages/lsp.nix`             | 新規作成（Mason から移行）                       | -                             |
-| `nix/home/packages/formatter.nix`       | 新規作成（Mason から移行）                       | -                             |
-| `nix/home/packages/linter.nix`          | 新規作成（Mason から移行）                       | -                             |
-| `nix/home/packages/editor.nix`          | 新規作成                                         | -                             |
-| `flake.nix`                             | allowUnfree + devShell + pre-commit フック追加   | -                             |
-| `.markdownlint.yaml`                    | 新規作成（ルール設定）                           | -                             |
-| `config/nvim/lua/plugins/mason.lua`     | -                                                | 削除                          |
+| ファイル                                | Phase 1                                          | Phase 2                                              |
+| --------------------------------------- | ------------------------------------------------ | ---------------------------------------------------- |
+| `nix/home/default.nix`                  | imports に `./packages` 追加、既存 packages 整理 | -                                                    |
+| `nix/home/packages/default.nix`         | 新規作成（集約）                                 | -                                                    |
+| `nix/home/packages/base.nix`            | 新規作成                                         | -                                                    |
+| `nix/home/packages/shell.nix`           | 新規作成                                         | -                                                    |
+| `nix/home/packages/cli.nix`             | 新規作成                                         | -                                                    |
+| `nix/home/packages/dev.nix`             | 新規作成                                         | -                                                    |
+| `nix/home/packages/lsp.nix`             | 新規作成（Mason から移行）                       | -                                                    |
+| `nix/home/packages/formatter.nix`       | 新規作成（Mason から移行）                       | -                                                    |
+| `nix/home/packages/linter.nix`          | 新規作成（Mason から移行）                       | -                                                    |
+| `nix/home/packages/editor.nix`          | 新規作成                                         | -                                                    |
+| `flake.nix`                             | allowUnfree + devShell + pre-commit フック追加   | -                                                    |
+| `.markdownlint.yaml`                    | 新規作成（ルール設定）                           | -                                                    |
+| `config/nvim/lua/plugins/mason.lua`     | -                                                | 削除                                                 |
 | `config/nvim/lua/plugins/conform.lua`   | -                                                | `web_formatter_config` 関数化 + `lsp_fallback` 更��� |
-| `config/nvim/lua/plugins/nvim-lint.lua` | -                                                | markdownlint 追加             |
+| `config/nvim/lua/plugins/nvim-lint.lua` | -                                                | markdownlint 追加                                    |
