@@ -35,8 +35,5 @@ jobs:
 
       - uses: DeterminateSystems/flake-checker-action@v9
 
-      - name: nix flake check
-        run: nix flake check
-
-      - name: Dry-run build darwin configuration
-        run: nix build .#darwinConfigurations.yu-sz.system --dry-run
+      - name: CI check
+        run: nix develop --command just ci

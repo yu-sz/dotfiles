@@ -27,6 +27,13 @@ lint: fmt-check
 check:
     nix flake check
 
+# CI 用チェック（Nix 評価 + lint + dry-run build）
+ci:
+    nix flake check
+    just lint
+    shellcheck -x -e SC1091 scripts/**/*.sh
+    nix build .#darwinConfigurations.yu-sz.system --dry-run
+
 # シェル起動時間のベンチマーク
 bench:
     hyperfine --warmup 3 'zsh -i -c exit'

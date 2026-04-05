@@ -39,6 +39,7 @@
         {
           formatter = pkgs.nixfmt-tree;
 
+          pre-commit.check.enable = false;
           pre-commit.settings.hooks = {
             nixfmt.enable = true;
             statix.enable = true;
