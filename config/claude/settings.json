@@ -156,23 +156,28 @@
     "type": "command",
     "command": "~/.claude/statusline.sh"
   },
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": true,
+    "lua-lsp@claude-plugins-official": false,
+    "vtsls-lsp@dotfiles-lsp": true,
+    "lua-lsp@dotfiles-lsp": true,
+    "nixd-lsp@dotfiles-lsp": true,
+    "bash-lsp@dotfiles-lsp": true,
+    "terraform-lsp@dotfiles-lsp": true
+  },
   "extraKnownMarketplaces": {
     "dotfiles-lsp": {
       "source": {
         "source": "directory",
         "path": "."
       }
+    },
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
     }
-  },
-  "enabledPlugins": {
-    "example-skills@anthropic-agent-skills": true,
-    "lua-lsp@claude-plugins-official": false,
-    "typescript-lsp@claude-plugins-official": false,
-    "vtsls-lsp@dotfiles-lsp": true,
-    "lua-lsp@dotfiles-lsp": true,
-    "nixd-lsp@dotfiles-lsp": true,
-    "bash-lsp@dotfiles-lsp": true,
-    "terraform-lsp@dotfiles-lsp": true
   },
   "alwaysThinkingEnabled": false,
   "feedbackSurveyState": {
