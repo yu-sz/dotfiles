@@ -18,7 +18,7 @@
 `flake.nix`はリポジトリルートに配置し、モジュール群は`nix/`サブディレクトリに整理する。
 共通設定を厚く、OS/ホスト固有設定を薄く保つ。
 
-```
+```text
 dotfiles/
 ├── flake.nix                 # エントリーポイント（ルート）
 ├── flake.lock                # git管理必須
@@ -48,31 +48,31 @@ darwin-rebuild switch --flake .#<hostname>
 
 ## 決定事項
 
-| 項目                      | 決定                                  | 備考                                                                                           |
-| ------------------------- | ------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Nixディストリビューション | **upstream Nix（本家）**              | ベンダーロックインなし、Linux展開もシームレス                                                  |
-| Nixインストーラー         | **NixOS公式** (`NixOS/nix-installer`) | 実装時にURLの有効性を確認すること                                                              |
-| flakes有効化              | `nix.settings.experimental-features`  | darwin-shared.nixで1行設定                                                                     |
-| IME切り替え               | macismのみ                            | im-select削除。macismはnixpkgs既存 (v3.0.10)                                                   |
-| tenv                      | Nix経由で維持                         | nixpkgsに存在                                                                                  |
-| フォント                  | MoralerspaceⅡに統一                   | 既存フォント（PlemolJP, HackGen等）は維持                                                      |
-| 移行戦略                  | Homebrew併存                          | `cleanup = "none"` で安全に段階移行                                                            |
-| terminal-notifier         | nixpkgsで管理                         | 実装時に存在確認                                                                               |
+| 項目                      | 決定                                  | 備考                                                                                              |
+| ------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Nixディストリビューション | **upstream Nix（本家）**              | ベンダーロックインなし、Linux展開もシームレス                                                     |
+| Nixインストーラー         | **NixOS公式** (`NixOS/nix-installer`) | 実装時にURLの有効性を確認すること                                                                 |
+| flakes有効化              | `nix.settings.experimental-features`  | darwin-shared.nixで1行設定                                                                        |
+| IME切り替え               | macismのみ                            | im-select削除。macismはnixpkgs既存 (v3.0.10)                                                      |
+| tenv                      | Nix経由で維持                         | nixpkgsに存在                                                                                     |
+| フォント                  | MoralerspaceⅡに統一                   | 既存フォント（PlemolJP, HackGen等）は維持                                                         |
+| 移行戦略                  | Homebrew併存                          | `cleanup = "none"` で安全に段階移行                                                               |
+| terminal-notifier         | nixpkgsで管理                         | 実装時に存在確認                                                                                  |
 | 設定セット識別子          | **GitHub ユーザー名 `suta-ro`**       | OS のホスト名には依存しない。`darwinConfigurations` のキーは設定セットの識別子（正誤表 5-7 参照） |
-| ユーザー名                | `suta-ro`                             | `specialArgs` で一元管理、ハードコードしない                                                   |
-| direnv                    | フェーズ1で導入                       | nix-direnv付き                                                                                 |
-| Homebrew cask             | nix-darwinで宣言的管理                | upgrade=false                                                                                  |
-| nix-homebrew              | 導入する                              | Homebrew自体の宣言的管理、autoMigrate                                                          |
-| stateVersion              | `"25.11"`                             | `release-25.11` が最新安定版（2026-03時点）。`version.nix` の enum で確認済み                  |
-| WezTerm                   | cask維持                              | Spotlight対応のため                                                                            |
-| mac-app-util              | 不要（検証後判断）                    | HM 25.05+ copyAppsデフォルト化                                                                 |
-| home-manager統合方式      | nix-darwin moduleとして一体構築       | standalone → module移行の二度手間を排除                                                        |
-| dotfilesリンク管理        | home-managerの `mkOutOfStoreSymlink`  | install.shの手動symlink管理を置き換え。mutableワークフロー維持                                 |
-| Gitアカウント             | `config.local` でマシン別管理を維持   | `useConfigOnly = true` で未設定マシンをブロック                                                |
-| Homebrew廃止時のcleanup   | `"uninstall"`                         | `"zap"` は設定データも消すため危険                                                             |
-| Claude Code               | nixpkgs `claude-code`                 | npm由来パッケージ。更新ラグ3〜7日。最新追従が必要なら `ryoppippi/claude-code-overlay` に切替可 |
-| mise install              | install.shまたは手動で実行            | miseバイナリはNix管理、ランタイム(Node.js等)はmise管理                                         |
-| mise config.toml          | マシン固有、git管理外                 | `config.local` と同パターン。各マシンで手動作成                                                |
+| ユーザー名                | `suta-ro`                             | `specialArgs` で一元管理、ハードコードしない                                                      |
+| direnv                    | フェーズ1で導入                       | nix-direnv付き                                                                                    |
+| Homebrew cask             | nix-darwinで宣言的管理                | upgrade=false                                                                                     |
+| nix-homebrew              | 導入する                              | Homebrew自体の宣言的管理、autoMigrate                                                             |
+| stateVersion              | `"25.11"`                             | `release-25.11` が最新安定版（2026-03時点）。`version.nix` の enum で確認済み                     |
+| WezTerm                   | cask維持                              | Spotlight対応のため                                                                               |
+| mac-app-util              | 不要（検証後判断）                    | HM 25.05+ copyAppsデフォルト化                                                                    |
+| home-manager統合方式      | nix-darwin moduleとして一体構築       | standalone → module移行の二度手間を排除                                                           |
+| dotfilesリンク管理        | home-managerの `mkOutOfStoreSymlink`  | install.shの手動symlink管理を置き換え。mutableワークフロー維持                                    |
+| Gitアカウント             | `config.local` でマシン別管理を維持   | `useConfigOnly = true` で未設定マシンをブロック                                                   |
+| Homebrew廃止時のcleanup   | `"uninstall"`                         | `"zap"` は設定データも消すため危険                                                                |
+| Claude Code               | nixpkgs `claude-code`                 | npm由来パッケージ。更新ラグ3〜7日。最新追従が必要なら `ryoppippi/claude-code-overlay` に切替可    |
+| mise install              | install.shまたは手動で実行            | miseバイナリはNix管理、ランタイム(Node.js等)はmise管理                                            |
+| mise config.toml          | マシン固有、git管理外                 | `config.local` と同パターン。各マシンで手動作成                                                   |
 
 ---
 
@@ -80,7 +80,7 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### 複数Mac対応
 
-```
+```nix
 flake.nix
   darwinConfigurations."hostname-a" = mkDarwinConfig { hostname = "hostname-a"; };
   darwinConfigurations."hostname-b" = mkDarwinConfig { hostname = "hostname-b"; };
@@ -758,18 +758,18 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### 実装時の正誤表（フェーズ1）
 
-| # | 計画書の記載 | 実際に必要だった対応 | 原因 |
-|---|---|---|---|
-| 1-2 | `flake.nix`: `sharedOverlays = [];` | direnv の `overrideAttrs` overlay を追加 | nixpkgs-unstable の direnv ビルドリグレッション (PR #486452)。mise が direnv にビルド依存しているため全体に波及。修正 PR #502769 がチャネル到達後に削除する |
-| 1-2 | `flake.nix`: `{ nixpkgs.overlays = sharedOverlays; }` | `nixpkgs.config.allowUnfreePredicate` を追加 | claude-code が unfree パッケージのため許可が必要 |
-| 1-3 | `default.nix`: `imports` で `lib.optionals pkgs.stdenv.isDarwin` | `darwin.nix` を無条件 import + `lib.mkIf` で条件分岐 | `imports` での `pkgs` 参照が infinite recursion を引き起こす |
-| 1-3 | `default.nix`: `home.username` / `home.homeDirectory` を設定 | 削除。`darwin-shared.nix` で `users.users` を設定 | `useUserPackages = true` 時に `common.nix` が `users.users.<name>.home` から自動設定するため重複 |
-| 1-3 | `default.nix`: `sqlite` を `home.packages` に含む | 削除 | `sqldiff` は独立バイナリで sqlite に実行時依存しない (nixpkgs `tools.nix` で確認) |
-| 1-5 | `darwin.nix`: 無条件で `home.packages` | `lib.mkIf pkgs.stdenv.isDarwin` でガード | `imports` から `lib.optionals` を除去したため、darwin.nix 側で条件分岐が必要 |
-| 1-7 | `darwin-shared.nix`: 記載なし | `system.primaryUser = username;` を追加 | nix-darwin 最新版で `homebrew.enable` 等に `system.primaryUser` が必須化 |
-| 1-7 | `darwin-shared.nix`: 記載なし | `users.users.${username}.home` を追加 | home-manager の `common.nix` が `homeDirectory` をここから取得するため必須 |
-| 1-7 | `darwin-shared.nix`: `casks` に `"docker"` | `"docker-desktop"` に変更 | Homebrew 側で cask 名が変更された |
-| 1-9b | `direnv.zsh`: `eval "$(direnv hook zsh)"` | `command -v direnv` でガード追加 | direnv 未インストール時のエラー防止 |
+| #    | 計画書の記載                                                     | 実際に必要だった対応                                 | 原因                                                                                                                                                        |
+| ---- | ---------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1-2  | `flake.nix`: `sharedOverlays = [];`                              | direnv の `overrideAttrs` overlay を追加             | nixpkgs-unstable の direnv ビルドリグレッション (PR #486452)。mise が direnv にビルド依存しているため全体に波及。修正 PR #502769 がチャネル到達後に削除する |
+| 1-2  | `flake.nix`: `{ nixpkgs.overlays = sharedOverlays; }`            | `nixpkgs.config.allowUnfreePredicate` を追加         | claude-code が unfree パッケージのため許可が必要                                                                                                            |
+| 1-3  | `default.nix`: `imports` で `lib.optionals pkgs.stdenv.isDarwin` | `darwin.nix` を無条件 import + `lib.mkIf` で条件分岐 | `imports` での `pkgs` 参照が infinite recursion を引き起こす                                                                                                |
+| 1-3  | `default.nix`: `home.username` / `home.homeDirectory` を設定     | 削除。`darwin-shared.nix` で `users.users` を設定    | `useUserPackages = true` 時に `common.nix` が `users.users.<name>.home` から自動設定するため重複                                                            |
+| 1-3  | `default.nix`: `sqlite` を `home.packages` に含む                | 削除                                                 | `sqldiff` は独立バイナリで sqlite に実行時依存しない (nixpkgs `tools.nix` で確認)                                                                           |
+| 1-5  | `darwin.nix`: 無条件で `home.packages`                           | `lib.mkIf pkgs.stdenv.isDarwin` でガード             | `imports` から `lib.optionals` を除去したため、darwin.nix 側で条件分岐が必要                                                                                |
+| 1-7  | `darwin-shared.nix`: 記載なし                                    | `system.primaryUser = username;` を追加              | nix-darwin 最新版で `homebrew.enable` 等に `system.primaryUser` が必須化                                                                                    |
+| 1-7  | `darwin-shared.nix`: 記載なし                                    | `users.users.${username}.home` を追加                | home-manager の `common.nix` が `homeDirectory` をここから取得するため必須                                                                                  |
+| 1-7  | `darwin-shared.nix`: `casks` に `"docker"`                       | `"docker-desktop"` に変更                            | Homebrew 側で cask 名が変更された                                                                                                                           |
+| 1-9b | `direnv.zsh`: `eval "$(direnv hook zsh)"`                        | `command -v direnv` でガード追加                     | direnv 未インストール時のエラー防止                                                                                                                         |
 
 ### フェーズ2: Overlay（zabrzeのみ。gomiはnixpkgsに存在）
 
@@ -781,12 +781,12 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### 実装時の正誤表（フェーズ2）
 
-| # | 計画書の記載 | 実際に必要だった対応 | 原因 |
-|---|---|---|---|
-| 2-2 | `zabrze.nix`: `hash = "";` / `cargoHash = "";` | `nix build` でハッシュミスマッチエラーから正しいハッシュを取得 | Nixの標準的なハッシュ取得手順。計画書では空文字で記載されていた |
-| 2-2 | `zabrze.nix`: テストに関する記載なし | `environment.variables.EDITOR = "vim"` を `darwin-shared.nix` に追加 | nix-darwin のデフォルト `EDITOR=nano` が `/etc/zshenv` → `set-environment` 経由でビルド時の zsh サブプロセスに伝播し、`EDITOR=vim` を期待する zabrze のテストが失敗。macOS では Nix ビルドサンドボックスがデフォルト無効（`sandbox = false`）のため、ホストの `/etc/zshenv` がビルドプロセスから参照される |
-| 2-3 | `sharedOverlays` を `[(import ./nix/overlays)]` に変更 | direnv overlay（フェーズ1正誤表）の後に追加する形 | フェーズ1で direnv overlay が既に追加済みだったため |
-| - | 記載なし | `git add nix/overlays/` が必要 | Flakes は未追跡ファイルを無視するため、overlay ファイルを git add しないとビルドエラーになる |
+| #   | 計画書の記載                           | 実際に必要だった対応                                   | 原因                                                                                                                                |
+| --- | -------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 2-2 | `zabrze.nix`: `hash=""`/`cargoHash=""` | `nix build` でハッシュミスマッチから正しいハッシュ取得 | Nix 標準のハッシュ取得手順。計画書では空文字で記載                                                                                  |
+| 2-2 | `zabrze.nix`: テスト記載なし           | `EDITOR = "vim"` を `darwin-shared.nix` に追加         | nix-darwin の `EDITOR=nano` が `set-environment` 経由で伝播し zabrze テスト失敗。macOS は sandbox=false でホスト `/etc/zshenv` 参照 |
+| 2-3 | `sharedOverlays` を overlays に変更    | direnv overlay の後に追加する形                        | フェーズ1で direnv overlay が追加済み                                                                                               |
+| -   | 記載なし                               | `git add nix/overlays/` が必要                         | Flakes は未追跡ファイルを無視するため                                                                                               |
 
 ### フェーズ3: Homebrew廃止
 
@@ -800,12 +800,12 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### 実装時の正誤表（フェーズ3）
 
-| # | 計画書の記載 | 実際に必要だった対応 | 原因 |
-|---|---|---|---|
-| 3-2 | Brewfile から formulae・tap 削除し cask のみ残す | Brewfile を空にし、cask も含めて darwin-shared.nix に一元化 | cask は既に darwin-shared.nix で宣言的管理されているため、Brewfile に残す意味がない |
-| 3-3 | `cleanup = "uninstall"` で Homebrew formulae が削除される | 一部 formulae が依存関係エラーで削除拒否。`brew uninstall --ignore-dependencies --force` で手動削除が必要だった | `gcloud-cli`（既に削除済み）が依存元として残っていたため `brew bundle cleanup` が一部を拒否 |
-| 3-6 | darwin-rebuild switch 後に Nix ツールが使われる | `path.zsh` で Nix パスが `$path[@]`（末尾）に配置されており、`/usr/bin/git` 等にフォールバック | `nix-daemon.sh` が追加するパスは `path=()` で明示指定したパスより後になる。Nix per-user profile を `/usr/bin` より前に明示的に配置する修正が必要だった |
-| - | starship がプロンプトに使われている | Homebrew formulae 強制削除後にシェルが `starship` を見つけられずエラーループ。ターミナルウィンドウを閉じて新規ウィンドウで復旧 | 既存シェルセッションが削除済みの `/opt/homebrew/bin/starship` を参照し続けた |
+| #   | 計画書の記載                                     | 実際に必要だった対応                                                                      | 原因                                                                                         |
+| --- | ------------------------------------------------ | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 3-2 | Brewfile から formulae・tap 削除し cask のみ残す | Brewfile を空にし cask も darwin-shared.nix に一元化                                      | cask は既に darwin-shared.nix で宣言的管理済みのため Brewfile に残す意味なし                 |
+| 3-3 | `cleanup = "uninstall"` で formulae 削除         | 一部が依存エラーで拒否。`brew uninstall --ignore-dependencies` で手動削除                 | `gcloud-cli`（削除済み）が依存元として残存し cleanup が拒否                                  |
+| 3-6 | switch 後に Nix ツールが使われる                 | `path.zsh` で Nix パスが末尾配置され `/usr/bin/git` 等にフォールバック                    | `nix-daemon.sh` のパスは明示指定より後。Nix profile を `/usr/bin` より前に配置する修正が必要 |
+| -   | starship がプロンプトに使用                      | Homebrew 強制削除後にシェルが `starship` を見つけられずエラーループ。新規ウィンドウで復旧 | 既存セッションが削除済み `/opt/homebrew/bin/starship` を参照し続けた                         |
 
 ### フェーズ4: install.sh 改善
 
@@ -839,31 +839,31 @@ darwin-rebuild switch --flake .#<hostname>
 
 ### 実装時の正誤表（フェーズ5）
 
-| # | 計画書の記載 | 実際に必要だった対応 | 原因 |
-|---|---|---|---|
-| 5-5 | Mason で nil を管理 | nil は Cargo 必須でビルド失敗。nixd を home.packages で管理に変更 | Mason の nil パッケージは Rust ツールチェーンからのソースビルドが必要。環境に Rust がなかった |
+| #   | 計画書の記載                                        | 実際に必要だった対応                                                                                     | 原因                                                                                                                                                                                                                |
+| --- | --------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 5-5 | Mason で nil を管理                                 | nil は Cargo 必須でビルド失敗。nixd を home.packages で管理に変更                                        | Mason の nil パッケージは Rust ツールチェーンからのソースビルドが必要。環境に Rust がなかった                                                                                                                       |
 | 5-7 | `darwinConfigurations` のキーに OS のホスト名を使用 | GitHub ユーザー名 `suta-ro` を設定セット識別子として使用。`drs` と `install.sh` から `scutil` 依存を排除 | `darwinConfigurations` のキーは設定セットの識別子であり、OS のホスト名と一致させる必然性はない（nix-darwin 公式テンプレートも `"simple"` という任意名を使用）。OS のホスト名に依存すると仕事 Mac 展開時に制約になる |
-| 5-7 | `networking.localHostName = hostname;` を追加 | 削除。OS のホスト名を nix-darwin で管理しない | 仕事 Mac で OS のホスト名を変えたくないケースに対応するため |
-| 5-8 | nixd.lua で `scutil --get LocalHostName` を使用 | キー名を直書きに変更 | OS のホスト名への依存を排除 |
+| 5-7 | `networking.localHostName = hostname;` を追加       | 削除。OS のホスト名を nix-darwin で管理しない                                                            | 仕事 Mac で OS のホスト名を変えたくないケースに対応するため                                                                                                                                                         |
+| 5-8 | nixd.lua で `scutil --get LocalHostName` を使用     | キー名を直書きに変更                                                                                     | OS のホスト名への依存を排除                                                                                                                                                                                         |
 
 ---
 
 ## 実装時に要確認事項
 
-| 項目                              | 確認方法                                            | 影響                                                                                             |
-| --------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Nixインストーラー URL             | `curl -I https://artifacts.nixos.org/nix-installer` | 無効なら `https://nixos.org/nix/install` に変更                                                  |
-| stateVersion                      | ✅ `"25.11"` 確認済み                               | `release-25.11` が最新安定版。`modules/misc/version.nix` の enum で有効値確認済み                |
-| terminal-notifier                 | ✅ nixpkgs存在確認済み (v2.0.0)                     | overlay不要                                                                                      |
-| moralerspace                      | ✅ nixpkgs存在確認済み (v2.0.0)                     | overlay不要                                                                                      |
-| moralerspace-hw                   | ✅ nixpkgs存在確認済み                              | 別パッケージとして存在                                                                           |
-| plemoljp-hs                       | ✅ nixpkgs存在確認済み                              | 別パッケージとして存在                                                                           |
-| google-cloud-sdk (aarch64-darwin) | `gcloud version` で動作確認                         | M1で既知issue (#135045)。問題あればcaskにフォールバック                                          |
-| gomi                              | ✅ nixpkgs存在確認済み (v1.6.2)                     | overlay不要                                                                                      |
-| zabrze                            | ❌ nixpkgs不在確認済み                              | overlay必要                                                                                      |
-| poppler                           | ✅ `poppler-utils` を使用                           | `poppler` はライブラリのみ(`utils=false`)。Yaziが必要な `pdftoppm` は `poppler-utils` に含まれる |
-| mac-app-util必要性                | stateVersionでSpotlight動作テスト                   | copyAppsで十分なら不要                                                                           |
-| libpqバイナリ                     | `which pg_dump`                                     | psql等含むか確認                                                                                 |
+| 項目                              | 確認方法                                            | 影響                                                                                              |
+| --------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Nixインストーラー URL             | `curl -I https://artifacts.nixos.org/nix-installer` | 無効なら `https://nixos.org/nix/install` に変更                                                   |
+| stateVersion                      | ✅ `"25.11"` 確認済み                               | `release-25.11` が最新安定版。`modules/misc/version.nix` の enum で有効値確認済み                 |
+| terminal-notifier                 | ✅ nixpkgs存在確認済み (v2.0.0)                     | overlay不要                                                                                       |
+| moralerspace                      | ✅ nixpkgs存在確認済み (v2.0.0)                     | overlay不要                                                                                       |
+| moralerspace-hw                   | ✅ nixpkgs存在確認済み                              | 別パッケージとして存在                                                                            |
+| plemoljp-hs                       | ✅ nixpkgs存在確認済み                              | 別パッケージとして存在                                                                            |
+| google-cloud-sdk (aarch64-darwin) | `gcloud version` で動作確認                         | M1で既知issue (#135045)。問題あればcaskにフォールバック                                           |
+| gomi                              | ✅ nixpkgs存在確認済み (v1.6.2)                     | overlay不要                                                                                       |
+| zabrze                            | ❌ nixpkgs不在確認済み                              | overlay必要                                                                                       |
+| poppler                           | ✅ `poppler-utils` を使用                           | `poppler` はライブラリのみ(`utils=false`)。Yaziが必要な `pdftoppm` は `poppler-utils` に含まれる  |
+| mac-app-util必要性                | stateVersionでSpotlight動作テスト                   | copyAppsで十分なら不要                                                                            |
+| libpqバイナリ                     | `which pg_dump`                                     | psql等含むか確認                                                                                  |
 | ~~scutil --get LocalHostName~~    | ~~各マシンで実行~~                                  | ~~flake.nixのエントリ名と一致させる~~（廃止: OS ホスト名に依存しない設計に変更。正誤表 5-7 参照） |
 
 ---

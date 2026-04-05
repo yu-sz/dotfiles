@@ -17,24 +17,24 @@ macOS システム設定の宣言的管理と lazygit/ghostty/yazi の `programs
 
 ## 決定事項
 
-| 項目            | 決定                                                      | 備考                                                                                                             |
-| --------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| XDG 前提設定    | **`xdg.enable = true`**                                   | macOS で HM モジュールが `~/Library/Application Support/` に書くのを防止。全フェーズの前提条件                   |
-| macOS 設定      | **撤廃**。`system.defaults` 全削除                        | 手動管理。費用対効果が見合わない（2026-04-03）                                                                   |
-| Stylix          | **基盤のみ残置**。`autoEnable = false`、targets 空        | base16 パレットが TokyoNight と乖離するため見送り                                                                |
-| カラースキーム  | 各ツールが個別管理                                        | ghostty: ビルトイン `tokyonight`、yazi: BennyOe flavor、lazygit/bat/fzf: ターミナルカラー                        |
-| lazygit         | **`programs.lazygit`** に移行                             | YAML → Nix 変換。`pagers` はリスト構造を維持。`mkForce` 不要（Stylix 無効のため）                                |
-| ghostty 本体    | **Homebrew cask を維持**                                  | `package = null`。nixpkgs 版は GUI に問題あり                                                                    |
-| ghostty 設定    | **`programs.ghostty`** に移行                             | HM は config のみ管理。`theme = tokyonight`（ビルトイン）                                                        |
-| yazi            | **`programs.yazi`** に移行                                | 非デフォルト値は `sort_by`, `show_hidden`, `title_format` の 3 項目のみ。依存パッケージは `extraPackages` で管理 |
-| yazi プラグイン | **`programs.yazi.plugins`** で Nix 管理                   | `ya pack` は使えなくなる                                                                                         |
-| yazi テーマ     | **BennyOe tokyo-night flavor を直接設定**                 | `programs.yazi.flavors` + `theme`                                                                                |
+| 項目            | 決定                                               | 備考                                                                                                             |
+| --------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| XDG 前提設定    | **`xdg.enable = true`**                            | macOS で HM モジュールが `~/Library/Application Support/` に書くのを防止。全フェーズの前提条件                   |
+| macOS 設定      | **撤廃**。`system.defaults` 全削除                 | 手動管理。費用対効果が見合わない（2026-04-03）                                                                   |
+| Stylix          | **基盤のみ残置**。`autoEnable = false`、targets 空 | base16 パレットが TokyoNight と乖離するため見送り                                                                |
+| カラースキーム  | 各ツールが個別管理                                 | ghostty: ビルトイン `tokyonight`、yazi: BennyOe flavor、lazygit/bat/fzf: ターミナルカラー                        |
+| lazygit         | **`programs.lazygit`** に移行                      | YAML → Nix 変換。`pagers` はリスト構造を維持。`mkForce` 不要（Stylix 無効のため）                                |
+| ghostty 本体    | **Homebrew cask を維持**                           | `package = null`。nixpkgs 版は GUI に問題あり                                                                    |
+| ghostty 設定    | **`programs.ghostty`** に移行                      | HM は config のみ管理。`theme = tokyonight`（ビルトイン）                                                        |
+| yazi            | **`programs.yazi`** に移行                         | 非デフォルト値は `sort_by`, `show_hidden`, `title_format` の 3 項目のみ。依存パッケージは `extraPackages` で管理 |
+| yazi プラグイン | **`programs.yazi.plugins`** で Nix 管理            | `ya pack` は使えなくなる                                                                                         |
+| yazi テーマ     | **BennyOe tokyo-night flavor を直接設定**          | `programs.yazi.flavors` + `theme`                                                                                |
 
 ---
 
 ## 設計: ファイル構成
 
-```
+```text
 nix/
 ├── hosts/
 │   └── darwin-shared.nix  ← system.defaults 撤廃、Stylix core 設定（基盤のみ）
@@ -206,7 +206,7 @@ _: {
 require("starship"):setup()
 require("full-border"):setup()
 require("smart-enter"):setup({
-	open_multi = true,
+  open_multi = true,
 })
 ```
 
@@ -224,7 +224,7 @@ require("smart-enter"):setup({
 > macOS では `xdg.enable = false`（デフォルト）の場合、home-manager の一部モジュール（lazygit, lazydocker 等 10 モジュール）が `~/Library/Application Support/` に設定ファイルを書き出す。
 > `.zshenv` で `XDG_CONFIG_HOME=$HOME/.config` を設定しているため、ツール本体は `~/.config/` を読む。
 > このパスのずれを防ぐため、`xdg.enable = true` を全フェーズの前提条件として設定する。
-
+>
 > **予実差異**: 特になし。
 
 ### フェーズ 1: macOS システム設定
@@ -307,7 +307,7 @@ require("smart-enter"):setup({
 > 5. **`~/.config/lazygit` 残存**: Phase 3 で `config/lazygit/` を削除したが旧 HM シンボリンクが残存し mkdir エラー。`unlink` で手動削除。
 > 6. **`~/.config/ghostty/config.hm-backup`**: `backupFileExtension` により旧 config がバックアップされた。手動削除済み。
 > 7. **statix 警告**: `{ ... }:` → `_:` に修正（空パターン警告）。
-
+>
 > **予実差異**:
 >
 > 1. **nixpkgs `ghostty-bin` の問題**: `package = ghostty-bin` でインストールした nix 版 Ghostty は、Homebrew 版と比較してウィンドウ表示サイズ、縁のドラッグ、起動時の画面・サイズ、キー入力、フォント描画に異常が発生。Homebrew 版はネイティブ macOS アプリとして配布されており、nix のラップ方法が macOS の GUI アプリとして不適切だった可能性。
@@ -336,6 +336,7 @@ require("smart-enter"):setup({
 - [x] 5-13: コミット `74ee564`
 
 > **予実差異**:
+>
 > 1. Stylix 見送りにより `stylix.targets.yazi.enable = true` は追加せず、代わりに `programs.yazi.flavors` + `programs.yazi.theme` で BennyOe tokyo-night flavor を直接設定。
 > 2. `fetchFromGitHub` の hash が不一致。`package.toml` の rev `8e6296f` に対する hash を nix のエラーメッセージから取得して修正。
 > 3. `~/.config/ghostty` の旧 HM シンボリンクが再び残存し mkdir エラー。`unlink` で手動削除。`drs` のたびに旧世代シンボリンクが問題になるパターン。
