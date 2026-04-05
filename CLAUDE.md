@@ -48,6 +48,12 @@ When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
 
 All Lua configs (Neovim, WezTerm, Yazi): module pattern with LuaCATS annotations, `snake_case` naming.
 
+## Code Navigation
+
+- Use LSP tools (goToDefinition, findReferences, documentSymbol, workspaceSymbol) for symbol search and reference lookup
+- Before renaming or changing a function signature, use findReferences to find all call sites first
+- Use Grep only for plain text search or when LSP is unavailable for the file type
+
 ## Skills
 
 Skill auto-invocation is unreliable. Always load the corresponding skill before starting these tasks. Never guess formats without loading the skill first.

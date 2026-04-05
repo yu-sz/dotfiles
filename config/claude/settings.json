@@ -8,7 +8,8 @@
 		"DISABLE_AUTOUPDATER": "1",
 		"ENABLE_TOOL_SEARCH": "true",
 		"ENABLE_EXPERIMENTAL_MCP_CLI": "false",
-		"CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1"
+		"CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
+		"ENABLE_LSP_TOOL": "1"
 	},
 	"includeCoAuthoredBy": false,
 	"permissions": {
@@ -155,9 +156,22 @@
 		"type": "command",
 		"command": "~/.claude/statusline.sh"
 	},
+	"extraKnownMarketplaces": {
+		"dotfiles-lsp": {
+			"source": {
+				"source": "directory",
+				"path": "."
+			}
+		}
+	},
 	"enabledPlugins": {
 		"example-skills@anthropic-agent-skills": true,
-		"lua-lsp@claude-plugins-official": true
+		"lua-lsp@claude-plugins-official": false,
+		"vtsls-lsp@dotfiles-lsp": true,
+		"lua-lsp@dotfiles-lsp": true,
+		"nixd-lsp@dotfiles-lsp": true,
+		"bash-lsp@dotfiles-lsp": true,
+		"terraform-lsp@dotfiles-lsp": true
 	},
 	"alwaysThinkingEnabled": false,
 	"feedbackSurveyState": {

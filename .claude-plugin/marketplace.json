@@ -1,0 +1,101 @@
+{
+  "name": "dotfiles-lsp",
+  "owner": {
+    "name": "yu-sz"
+  },
+  "metadata": {
+    "description": "LSP plugins for this dotfiles environment"
+  },
+  "plugins": [
+    {
+      "name": "vtsls-lsp",
+      "source": "./plugins/vtsls-lsp",
+      "description": "TypeScript/JavaScript language server (vtsls) for code intelligence",
+      "version": "1.0.0",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "vtsls": {
+          "command": "vtsls",
+          "args": ["--stdio"],
+          "extensionToLanguage": {
+            ".ts": "typescript",
+            ".tsx": "typescriptreact",
+            ".js": "javascript",
+            ".jsx": "javascriptreact",
+            ".mjs": "javascript",
+            ".cjs": "javascript"
+          }
+        }
+      }
+    },
+    {
+      "name": "lua-lsp",
+      "source": "./plugins/lua-lsp",
+      "description": "Lua language server for code intelligence",
+      "version": "1.0.0",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "lua": {
+          "command": "lua-language-server",
+          "extensionToLanguage": {
+            ".lua": "lua"
+          }
+        }
+      }
+    },
+    {
+      "name": "nixd-lsp",
+      "source": "./plugins/nixd-lsp",
+      "description": "Nix language server (nixd) for code intelligence",
+      "version": "1.0.0",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "nixd": {
+          "command": "nixd",
+          "extensionToLanguage": {
+            ".nix": "nix"
+          }
+        }
+      }
+    },
+    {
+      "name": "bash-lsp",
+      "source": "./plugins/bash-lsp",
+      "description": "Bash language server for code intelligence",
+      "version": "1.0.0",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "bash": {
+          "command": "bash-language-server",
+          "args": ["start"],
+          "extensionToLanguage": {
+            ".sh": "shellscript",
+            ".bash": "shellscript",
+            ".zsh": "shellscript"
+          }
+        }
+      }
+    },
+    {
+      "name": "terraform-lsp",
+      "source": "./plugins/terraform-lsp",
+      "description": "Terraform language server for code intelligence",
+      "version": "1.0.0",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "terraform": {
+          "command": "terraform-ls",
+          "args": ["serve"],
+          "extensionToLanguage": {
+            ".tf": "terraform"
+          }
+        }
+      }
+    }
+  ]
+}
