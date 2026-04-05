@@ -39,4 +39,4 @@ jobs:
         run: nix flake check
 
       - name: Dry-run build darwin configuration
-        run: nix build .#darwinConfigurations.suta-ro.system --dry-run
+        run: nix build .#darwinConfigurations.yu-sz.system --dry-run

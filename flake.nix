@@ -1,5 +1,5 @@
 {
-  description = "suta-ro's dotfiles";
+  description = "yu-sz's dotfiles";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -132,7 +132,7 @@
         in
         {
           darwinConfigurations = {
-            "suta-ro" = mkDarwinConfig { username = "suta-ro"; };
+            "yu-sz" = mkDarwinConfig { username = "yu-sz"; };
           };
 
           # Linux (standalone home-manager) — 将来用
