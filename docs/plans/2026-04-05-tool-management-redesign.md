@@ -193,8 +193,8 @@ end
 
 ### Phase 3: 検証
 
-- [ ] 3-1: commit で markdownlint + prettier pre-commit フック動作確認
-- [ ] 3-2: markdownlint の警告を確認し、`.markdownlint.yaml` のルール調整が必要か検討
+- [x] 3-1: commit で markdownlint + prettier pre-commit フック動作確認（MD040 検出→修正→Passed）
+- [x] 3-2: markdownlint の警告を確認し、`.markdownlint.yaml` のルール調整が必要か検討（MD040 を有効のまま維持、ディレクトリツリーに `text` 言語指定で対応）
 
 ---
 
@@ -217,3 +217,21 @@ end
 | `config/nvim/lua/plugins/mason.lua`     | -                                                | 削除                                                 |
 | `config/nvim/lua/plugins/conform.lua`   | -                                                | `web_formatter_config` 関数化 + `lsp_fallback` 更��� |
 | `config/nvim/lua/plugins/nvim-lint.lua` | -                                                | markdownlint 追加                                    |
+
+---
+
+## 予実差異
+
+### Phase 1
+
+- **perSystem に `lib` 引数追加**: 計画では明示されていなかったが、`lib.mkForce` に必要だったため追加
+- **gitmux, lazydocker の配置**: 計画のカテゴリ設計に含まれていなかったため `cli.nix` に配置
+- それ以外は予実差異なし
+
+### Phase 2
+
+- 予実差異なし
+
+### Phase 3
+
+- **MD040 (fenced-code-language)**: Plans ファイル内のディレクトリツリー表記でコードブロック言語指定が必要だった。`text` を指定して対応。`.markdownlint.yaml` のルール変更は不要と判断
