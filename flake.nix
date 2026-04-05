@@ -30,7 +30,12 @@
       ];
 
       perSystem =
-        { config, pkgs, ... }:
+        {
+          config,
+          pkgs,
+          lib,
+          ...
+        }:
         {
           formatter = pkgs.nixfmt-tree;
 
@@ -59,6 +64,17 @@
               language = "system";
               pass_filenames = false;
             };
+            markdownlint = {
+              enable = true;
+              entry = lib.mkForce "${pkgs.markdownlint-cli}/bin/markdownlint -c .markdownlint.yaml";
+            };
+            prettier = {
+              enable = true;
+              types_or = [
+                "markdown"
+                "yaml"
+              ];
+            };
           };
 
           devShells.default = pkgs.mkShell {
@@ -66,6 +82,10 @@
             packages = config.pre-commit.settings.enabledPackages ++ [
               pkgs.just
               pkgs.gitleaks
+              pkgs.prettier
+              pkgs.stylua
+              pkgs.shfmt
+              pkgs.luaPackages.luacheck
             ];
           };
         };
@@ -86,7 +106,11 @@
                 {
                   nixpkgs.overlays = sharedOverlays;
                   nixpkgs.config.allowUnfreePredicate =
-                    pkg: builtins.elem (inputs.nixpkgs.lib.getName pkg) [ "claude-code" ];
+                    pkg:
+                    builtins.elem (inputs.nixpkgs.lib.getName pkg) [
+                      "claude-code"
+                      "copilot-language-server"
+                    ];
                 }
                 ./nix/hosts/darwin-shared.nix
                 inputs.nix-homebrew.darwinModules.nix-homebrew
