@@ -39,6 +39,7 @@
     ssm-session-manager-plugin
 
     # dev
+    tree-sitter
     hadolint
     mkcert
     nixd

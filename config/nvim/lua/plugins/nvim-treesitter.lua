@@ -1,53 +1,43 @@
--- treesitter
+local ensure_installed = {
+  "lua",
+  "vim",
+  "vimdoc",
+  "query",
+  "javascript",
+  "typescript",
+  "tsx",
+  "html",
+  "sql",
+  "nix",
+  "prisma",
+  "regex",
+}
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      "yioneko/nvim-yati",
+      { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
     },
-    event = { "BufReadPre", "BufNewFile" },
     build = ":TSUpdate",
-    main = "nvim-treesitter.configs",
-    config = function()
-      ---@type TSConfig
-      ---@diagnostic disable-next-line: missing-fields
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "lua",
-          "vim",
-          "vimdoc",
-          "query",
-          "javascript",
-          "typescript",
-          "tsx",
-          "html",
-          "sql",
-          "nix",
-          "prisma",
-          "regex",
-        },
-        sync_install = false,
-        auto_install = true,
-        ignore_install = {},
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = false,
-        },
-        indent = {
-          enable = false,
-        },
-        autopairs = {
-          enable = true,
-        },
-        -- fix indentation
-        yati = {
-          enable = true,
-          disable = {},
-          default_lazy = true,
-          default_fallback = "auto",
-        },
+    lazy = false,
+    main = "nvim-treesitter",
+    opts = {},
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("treesitter-start", {}),
+        callback = function()
+          pcall(vim.treesitter.start)
+          pcall(function()
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end)
+        end,
       })
+    end,
+    config = function()
+      require("nvim-treesitter").setup({})
+      require("nvim-treesitter").install(ensure_installed)
     end,
   },
 }
