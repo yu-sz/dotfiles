@@ -10,7 +10,6 @@ local ensure_installed = {
   "css",
   "scss",
   "json",
-  "jsonc",
   "yaml",
   "markdown",
   "markdown_inline",
@@ -32,8 +31,6 @@ return {
     },
     build = ":TSUpdate",
     lazy = false,
-    main = "nvim-treesitter",
-    opts = {},
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("treesitter-start", {}),
