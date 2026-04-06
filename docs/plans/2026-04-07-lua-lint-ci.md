@@ -151,7 +151,7 @@ jobs:
 
 - [x] 3-1: `.github/workflows/lua-lint.yml` を作成
 - [x] 3-2: `config/nvim/lua/plugins/nvim-lint.lua` の `luacheck` を `selene` に変更
-- [ ] 3-3: push して GitHub Actions の Lua Lint ワークフロー発火を確認
+- [x] 3-3: push して GitHub Actions の Lua Lint ワークフロー発火を確認
 
 ---
 
