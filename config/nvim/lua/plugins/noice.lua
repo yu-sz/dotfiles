@@ -29,7 +29,7 @@ return {
         {
           filter = {
             any = {
-              { event = "msg_show", error = true,               find = "e486:" },
+              { event = "msg_show", error = true, find = "e486:" },
               { event = "msg_show", find = "no lines in buffer" },
               { event = "msg_show", find = "%d+ lines? yanked" },
               { event = "msg_show", find = "%d+ more lines?" },
@@ -45,21 +45,21 @@ return {
         {
           filter = {
             any = {
-              { event = "msg_show", error = true,   find = "e20:" },
-              { event = "msg_show", error = true,   find = "e42:" },
-              { event = "msg_show", error = true,   find = "e492:" },
-              { event = "msg_show", error = true,   find = "e5107:" },
+              { event = "msg_show", error = true, find = "e20:" },
+              { event = "msg_show", error = true, find = "e42:" },
+              { event = "msg_show", error = true, find = "e492:" },
+              { event = "msg_show", error = true, find = "e5107:" },
               { event = "msg_show", warning = true, find = "search hit bottom, continuing at top" },
               { event = "msg_show", warning = true, find = "search hit top, continuing at bottom" },
-              { event = "notify",   warning = true, find = "aborted" },
-              { event = "notify",   kind = "info",  find = "cwd: " },
-              { event = "notify",   kind = "info",  find = "was properly created" },
-              { event = "notify",   kind = "info",  find = "was properly removed" },
-              { event = "notify",   kind = "info",  find = "added to clipboard" },
-              { event = "notify",   kind = "info",  find = " -> " },
-              { event = "notify",   kind = "info",  find = "no information available" },
-              { event = "notify",   kind = "info",  find = "no code actions available" },
-              { event = "notify",   kind = "warn",  find = "no results for %*%*diagnostics%*%*" },
+              { event = "notify", warning = true, find = "aborted" },
+              { event = "notify", kind = "info", find = "cwd: " },
+              { event = "notify", kind = "info", find = "was properly created" },
+              { event = "notify", kind = "info", find = "was properly removed" },
+              { event = "notify", kind = "info", find = "added to clipboard" },
+              { event = "notify", kind = "info", find = " -> " },
+              { event = "notify", kind = "info", find = "no information available" },
+              { event = "notify", kind = "info", find = "no code actions available" },
+              { event = "notify", kind = "warn", find = "no results for %*%*diagnostics%*%*" },
             },
           },
           view = "mini",

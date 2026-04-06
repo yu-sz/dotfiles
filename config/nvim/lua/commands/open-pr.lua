@@ -23,15 +23,15 @@ local find_pr_query = ([[query='
 
 local function is_valid_result(result)
   return result
-      and result.data
-      and result.data.repository
-      and result.data.repository.object
-      and result.data.repository.object ~= vim.NIL
-      and result.data.repository.object.associatedPullRequests
-      and result.data.repository.object.associatedPullRequests.edges
-      and result.data.repository.object.associatedPullRequests.edges[1]
-      and result.data.repository.object.associatedPullRequests.edges[1].node
-      and result.data.repository.object.associatedPullRequests.edges[1].node.number
+    and result.data
+    and result.data.repository
+    and result.data.repository.object
+    and result.data.repository.object ~= vim.NIL
+    and result.data.repository.object.associatedPullRequests
+    and result.data.repository.object.associatedPullRequests.edges
+    and result.data.repository.object.associatedPullRequests.edges[1]
+    and result.data.repository.object.associatedPullRequests.edges[1].node
+    and result.data.repository.object.associatedPullRequests.edges[1].node.number
 end
 
 local function run_command(cmd)
@@ -87,12 +87,8 @@ local function open_pr_from_hash()
 
   local commit_hash = get_commit_hash_at_cursor()
 
-  local get_pr_cmd = string.format(
-    '%s api graphql -F owner=":owner" -F repo=":repo" -F hash=%s -f %s',
-    gh,
-    commit_hash,
-    find_pr_query
-  )
+  local get_pr_cmd =
+    string.format('%s api graphql -F owner=":owner" -F repo=":repo" -F hash=%s -f %s', gh, commit_hash, find_pr_query)
 
   local output = run_command(get_pr_cmd)
   if not output then

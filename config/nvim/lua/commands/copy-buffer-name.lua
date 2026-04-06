@@ -9,18 +9,18 @@
 
 -- Copy current buffer name (filename only) to clipboard
 vim.api.nvim_create_user_command(
-  'CopyBufferName',  -- Command name (e.g., :CopyBufferName)
+  "CopyBufferName", -- Command name (e.g., :CopyBufferName)
   function()
-    local filename = vim.fn.expand('%:t') -- Get the filename only (tail of the path)
-    local cmd = ''
+    local filename = vim.fn.expand("%:t") -- Get the filename only (tail of the path)
+    local cmd = ""
 
-    if vim.fn.has('mac') then
+    if vim.fn.has("mac") then
       -- For macOS
       cmd = 'echo "' .. filename .. '" | pbcopy'
-    elseif vim.fn.has('win32') then
+    elseif vim.fn.has("win32") then
       -- For Windows
       cmd = 'echo "' .. filename .. '" | clip'
-    elseif vim.fn.has('unix') then
+    elseif vim.fn.has("unix") then
       -- For Linux (assumes xclip is installed)
       -- For Wayland, you might need 'wl-copy' instead
       cmd = 'echo "' .. filename .. '" | xclip -selection clipboard'
@@ -34,7 +34,7 @@ vim.api.nvim_create_user_command(
     print("Buffer name copied to clipboard: " .. filename)
   end,
   {
-    desc = 'Copy current buffer name to clipboard', -- Command description for which-key, etc.
+    desc = "Copy current buffer name to clipboard", -- Command description for which-key, etc.
     nargs = 0, -- Takes no arguments
   }
 )
