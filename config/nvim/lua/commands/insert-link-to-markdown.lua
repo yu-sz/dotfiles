@@ -3,7 +3,7 @@
 -- 2. In a Markdown file, visually select the text you want to make a link.
 -- 3. Press 'p' (paste) to transform the selected text into a Markdown link.
 
-function InsertMarkdownLink()
+local function insert_markdown_link()
   -- Save register 9 temporarily
   local old = vim.fn.getreg("9")
 
@@ -37,12 +37,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   group = "markdown_insert_link",
   callback = function()
-    vim.api.nvim_buf_set_keymap(
-      0,
-      "v",
-      "p",
-      ":<C-u>lua InsertMarkdownLink()<CR>",
-      { noremap = true, silent = true }
-    )
+    vim.keymap.set("v", "p", insert_markdown_link, { buffer = true, silent = true })
   end,
 })
