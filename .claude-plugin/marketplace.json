@@ -98,6 +98,22 @@
       }
     },
     {
+      "name": "rust-analyzer-lsp",
+      "source": "./plugins/rust-analyzer-lsp",
+      "description": "Rust language server (rust-analyzer) for code intelligence",
+      "version": "1.0.0",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "rust-analyzer": {
+          "command": "rust-analyzer",
+          "extensionToLanguage": {
+            ".rs": "rust"
+          }
+        }
+      }
+    },
+    {
       "name": "terraform-lsp",
       "source": "./plugins/terraform-lsp",
       "description": "Terraform language server for code intelligence",

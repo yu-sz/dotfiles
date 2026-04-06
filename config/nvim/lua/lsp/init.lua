@@ -11,6 +11,7 @@ vim.lsp.enable({
   "eslint",
   "biome",
   "gopls",
+  "rust_analyzer",
   "jsonls",
   "yamlls",
   "copilot",

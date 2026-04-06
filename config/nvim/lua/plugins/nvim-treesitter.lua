@@ -18,6 +18,8 @@ local ensure_installed = {
   "gomod",
   "gosum",
   "gowork",
+  "rust",
+  "toml",
   "sql",
   "nix",
   "prisma",
