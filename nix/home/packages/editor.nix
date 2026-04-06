@@ -2,8 +2,10 @@
 {
   home.packages = with pkgs; [
     claude-code
-    mise
-    sheldon
-    tenv
+    luarocks
+    neovim
+    tmux
+    tree-sitter
+    vim
   ];
 }

@@ -1,10 +1,13 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    ripgrep
     fd
+    gitmux
     gomi
     hyperfine
+    jq
+    ripgrep
+    sheldon
     zabrze
   ];
 }
