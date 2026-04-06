@@ -231,6 +231,7 @@ return {
             list = {
               keys = {
                 ["o"] = { "open_in_oil", desc = "Open in Oil" },
+                ["<C-c>"] = { "close", desc = "Close" },
               },
             },
           },
