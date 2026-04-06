@@ -29,14 +29,13 @@ check:
 
 # Lua ファイルの lint + フォーマットチェック
 lint-lua:
-    selene config/nvim/ config/wezterm/
-    stylua --check config/nvim/ config/wezterm/
+    selene config/ nix/
+    stylua --check config/ nix/
 
 # CI 用チェック（Nix 評価 + lint + dry-run build）
 ci:
     nix flake check
     just lint
-    just lint-lua
     shellcheck -x -e SC1091 scripts/**/*.sh
     nix build .#darwinConfigurations.yu-sz.system --dry-run
 

@@ -3,8 +3,7 @@ name: Lua Lint
 on:
   push:
     paths:
-      - "config/nvim/**"
-      - "config/wezterm/**"
+      - "**/*.lua"
       - "selene.toml"
       - "vim.yml"
       - "stylua.toml"
