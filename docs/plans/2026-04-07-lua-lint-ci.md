@@ -128,25 +128,29 @@ jobs:
 
 ### Phase 1: パッケージ + 設定ファイル
 
-- [ ] 1-1: `flake.nix` devShell の `pkgs.luaPackages.luacheck` を `pkgs.selene` に変更
-- [ ] 1-2: `nix/home/packages/lsp-tools.nix` の `luaPackages.luacheck` を `selene` に変更
-- [ ] 1-3: `selene.toml` をルートに作成
-- [ ] 1-4: `vim.yml` をルートに作成
-- [ ] 1-5: `config/nvim/stylua.toml` をルートに移動
-- [ ] 1-6: `.luacheckrc` と `config/nvim/.luacheckrc` を削除
-- [ ] 1-7: `git add` して `drs` を実行（ユーザー操作）
+- [x] 1-1: `flake.nix` devShell の `pkgs.luaPackages.luacheck` を `pkgs.selene` に変更
+- [x] 1-2: `nix/home/packages/lsp-tools.nix` の `luaPackages.luacheck` を `selene` に変更
+- [x] 1-3: `selene.toml` をルートに作成
+- [x] 1-4: `vim.yml` をルートに作成
+- [x] 1-5: `config/nvim/stylua.toml` をルートに移動
+- [x] 1-6: `.luacheckrc` と `config/nvim/.luacheckrc` を削除
+- [x] 1-7: `git add` して `drs` を実行（ユーザー操作）
+
+> **予実差異**: selene 実行時に `mixed_table` 警告が 111 件発生。folke/lazy.nvim と同様に `[lints] mixed_table = "allow"` で抑制。`Snacks` グローバルと `lua_versions = ["luajit"]` も `vim.yml` に追加。
 
 ### Phase 2: pre-commit hooks + Justfile
 
-- [ ] 2-1: `flake.nix` に `selene.enable = true` と `stylua-check` hook を追加
-- [ ] 2-2: Justfile に `lint-lua` タスクを追加
-- [ ] 2-3: Justfile の `ci` タスクに `just lint-lua` を追加
-- [ ] 2-4: `nix develop --command just lint-lua` で動作確認
+- [x] 2-1: `flake.nix` に `selene.enable = true` と `stylua-check` hook を追加
+- [x] 2-2: Justfile に `lint-lua` タスクを追加
+- [x] 2-3: Justfile の `ci` タスクに `just lint-lua` を追加
+- [x] 2-4: `nix develop --command just lint-lua` で動作確認
+
+> **予実差���**: `stylua --check` で既存 Lua ファイルにフォーマット差分が検出された（インデントずれ等）。`stylua` で自動修正を実施。`insert-link-to-markdown.lua` のグローバル関数を `local function` + `vim.keymap.set` にリファクタ。
 
 ### Phase 3: CI ワークフロー + エディタ連携
 
-- [ ] 3-1: `.github/workflows/lua-lint.yml` を作成
-- [ ] 3-2: `config/nvim/lua/plugins/nvim-lint.lua` の `luacheck` を `selene` に変更
+- [x] 3-1: `.github/workflows/lua-lint.yml` を作成
+- [x] 3-2: `config/nvim/lua/plugins/nvim-lint.lua` の `luacheck` を `selene` に変更
 - [ ] 3-3: push して GitHub Actions の Lua Lint ワークフロー発火を確認
 
 ---
