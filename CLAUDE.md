@@ -4,8 +4,9 @@
 
 ```bash
 drs                # Apply Nix config changes (macOS, uses nh)
-just switch        # Alternative (from dotfiles directory)
 ```
+
+Other tasks are managed by `just`. Run `just` to see all available recipes.
 
 No tests or build system.
 
