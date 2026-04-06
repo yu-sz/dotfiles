@@ -10,6 +10,7 @@ vim.lsp.enable({
   "terraform-ls",
   "eslint",
   "biome",
+  "gopls",
   "jsonls",
   "yamlls",
   "copilot",

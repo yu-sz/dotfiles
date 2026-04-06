@@ -7,6 +7,7 @@ return {
     lint.linters_by_ft = {
       lua = { "luacheck" },
       nix = { "statix", "deadnix" },
+      go = { "golangcilint" },
       javascript = { "biomejs", "eslint" },
       typescript = { "biomejs", "eslint" },
       typescriptreact = { "biomejs", "eslint" },

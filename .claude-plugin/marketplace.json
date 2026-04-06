@@ -81,6 +81,23 @@
       }
     },
     {
+      "name": "gopls-lsp",
+      "source": "./plugins/gopls-lsp",
+      "description": "Go language server (gopls) for code intelligence",
+      "version": "1.0.0",
+      "category": "development",
+      "strict": false,
+      "lspServers": {
+        "gopls": {
+          "command": "gopls",
+          "extensionToLanguage": {
+            ".go": "go",
+            ".mod": "gomod"
+          }
+        }
+      }
+    },
+    {
       "name": "terraform-lsp",
       "source": "./plugins/terraform-lsp",
       "description": "Terraform language server for code intelligence",

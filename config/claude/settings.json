@@ -154,7 +154,8 @@
     "lua-lsp@dotfiles-lsp": true,
     "nixd-lsp@dotfiles-lsp": true,
     "bash-lsp@dotfiles-lsp": true,
-    "terraform-lsp@dotfiles-lsp": true
+    "terraform-lsp@dotfiles-lsp": true,
+    "gopls-lsp@dotfiles-lsp": true
   },
   "extraKnownMarketplaces": {
     "dotfiles-lsp": {
