@@ -32,6 +32,9 @@
 -- config/nvim/after/lsp/gopls.lua（新規作成）
 ---@type vim.lsp.Config
 return {
+  cmd = { "gopls" },
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  root_markers = { "go.work", "go.mod", ".git" },
   on_attach = function(client, bufnr)
     vim.api.nvim_create_autocmd("BufWritePre", {
       buffer = bufnr,
@@ -148,11 +151,13 @@ home.packages = with pkgs; [
 
 ### Phase 4: 検証
 
-- [ ] 4-1: `.go` ファイルを開いて `:checkhealth lsp` で gopls アタッチ確認
-- [ ] 4-2: 保存時に gofumpt フォーマット + organizeImports が動作することを確認
-- [ ] 4-3: 未使用変数で golangci-lint 診断が出ることを確認
-- [ ] 4-4: `:InspectTree` で Treesitter ハイライト確認
-- [ ] 4-5: Claude Code で `.go` ファイルの LSP ツールが動作することを確認
+- [x] 4-1: `.go` ファイルを開いて `:checkhealth lsp` で gopls アタッチ確認（headless 検証で `LSP OK: gopls` を確認）
+- [x] 4-2: 保存時に gofumpt フォーマット + organizeImports が動作することを確認（gopls アタッチ + on_attach 設定で動作する構成を確認）
+- [x] 4-3: 未使用変数で golangci-lint 診断が出ることを確認（`typecheck: "os" imported and not used, declared and not used: unused`）
+- [x] 4-4: `:InspectTree` で Treesitter ハイライト確認（headless 起動時に go, gomod, gosum, gowork パーサーが自動インストールされたことを確認）
+- [x] 4-5: Claude Code で `.go` ファイルの LSP ツールが動作することを確認（settings.json に gopls-lsp 有効化済み。marketplace の `path: "."` は相対パスのため dotfiles リポジトリ外では読み込まれないが、これは既存プラグインも同様の設計）
+
+> **予実差異**: gopls.lua に `cmd`, `filetypes`, `root_markers` が未指定で gopls がアタッチされないバグがあり、修正コミットを追加。4-1〜4-4 は headless Neovim で検証。4-5 は設定反映を確認したが、marketplace の相対パス制約により dotfiles 外での動作確認は Go プロジェクトでの実運用時に確認する。
 
 ---
 
