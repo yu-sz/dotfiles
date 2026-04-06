@@ -7,7 +7,7 @@
     golangci-lint
     gopls
     lua-language-server
-    luaPackages.luacheck
+    selene
     markdownlint-cli
     nixd
     prettier

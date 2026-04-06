@@ -76,6 +76,15 @@
                 "yaml"
               ];
             };
+            selene.enable = true;
+            stylua-check = {
+              enable = true;
+              name = "stylua-check";
+              description = "Check Lua formatting with stylua";
+              entry = "${pkgs.stylua}/bin/stylua --check";
+              language = "system";
+              types = [ "lua" ];
+            };
           };
 
           devShells.default = pkgs.mkShell {
@@ -86,7 +95,7 @@
               pkgs.prettier
               pkgs.stylua
               pkgs.shfmt
-              pkgs.luaPackages.luacheck
+              pkgs.selene
             ];
           };
         };
