@@ -21,6 +21,7 @@ fi
 GIT_CONFIG_LOCAL="${HOME}/.config/git/config.local"
 if [[ ! -f "${GIT_CONFIG_LOCAL}" ]]; then
   info "Setting up git config.local..."
+  mkdir -p "$(dirname "${GIT_CONFIG_LOCAL}")"
   read -rp "Git user.name: " git_name < /dev/tty
   read -rp "Git user.email: " git_email < /dev/tty
   git config --file "${GIT_CONFIG_LOCAL}" user.name "${git_name}"
