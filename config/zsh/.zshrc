@@ -10,12 +10,13 @@ if [[ -e "$brew_path" ]]; then
 fi
 
 ### mise ###
-mise_path="${XDG_DATA_HOME:-$HOME/.local/share}/mise/bin/mise"
-if [[ -x "$mise_path" ]]; then
+# Nix ストアは mtime=0 で -nt が効かないため、実パス（ストアハッシュ）の一致で判定
+if mise_path="$(command -v mise)" 2>/dev/null; then
+  mise_real="$(readlink -f "$mise_path")"
   mise_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/mise_activate.zsh"
-  if [[ ! -f "$mise_cache" || "$mise_path" -nt "$mise_cache" ]]; then
+  if [[ ! -f "$mise_cache" ]] || ! head -1 "$mise_cache" | grep -qF "$mise_real"; then
     mkdir -p "${mise_cache:h}"
-    "$mise_path" activate zsh > "$mise_cache"
+    { echo "# $mise_real"; "$mise_path" activate zsh; } > "$mise_cache"
   fi
   source "$mise_cache"
 fi
