@@ -193,3 +193,10 @@ context = '^npx ccusage\s'
 name = "darwin rebuild switch"
 trigger = "drs"
 snippet = "nh darwin switch $DOTFILES_DIR"
+if = '[[ "$OSTYPE" =~ darwin ]]'
+
+[[snippets]]
+name = "home-manager rebuild switch"
+trigger = "drs"
+snippet = "nh home switch $DOTFILES_DIR"
+if = '[[ "$OSTYPE" =~ linux ]]'

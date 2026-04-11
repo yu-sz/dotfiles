@@ -1,9 +1,17 @@
 default:
     @just --list
 
-# nh darwin switch を実行
+# OS判定で switch-darwin / switch-linux を呼び分け
 switch:
+    just switch-{{ if os() == "macos" { "darwin" } else { "linux" } }}
+
+# nh darwin switch を実行
+switch-darwin:
     nh darwin switch .
+
+# nh home switch を実行
+switch-linux:
+    nh home switch .
 
 # flake.lock を更新して switch
 update:
@@ -37,7 +45,15 @@ ci:
     nix flake check
     just lint
     shellcheck -x -e SC1091 scripts/**/*.sh
+    just ci-{{ if os() == "macos" { "darwin" } else { "linux" } }}
+
+# Darwin 用 dry-run build
+ci-darwin:
     nix build .#darwinConfigurations.yu-sz.system --dry-run
+
+# Linux 用 dry-run build
+ci-linux:
+    nix build .#homeConfigurations.ci@linux.activationPackage --dry-run
 
 # シェル起動時間のベンチマーク
 bench:

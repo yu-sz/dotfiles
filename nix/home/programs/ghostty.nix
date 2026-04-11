@@ -1,7 +1,11 @@
-_: {
+{ pkgs, lib, ... }:
+let
+  zshPath = lib.getExe pkgs.zsh;
+in
+{
   programs.ghostty = {
     enable = true;
-    package = null;
+    package = if pkgs.stdenv.isDarwin then null else pkgs.ghostty;
     settings = {
       font-family = "\"Moralerspace Xenon HW\"";
       window-title-font-family = "\"Moralerspace Xenon HW\"";
@@ -22,14 +26,16 @@ _: {
       window-step-resize = false;
       window-save-state = "always";
       window-inherit-working-directory = true;
-      macos-icon = "xray";
-      macos-titlebar-style = "hidden";
       clipboard-read = "allow";
       clipboard-write = "allow";
       clipboard-trim-trailing-spaces = true;
       shell-integration = "detect";
-      command = "/bin/zsh -lic 'ghostty +boo; tmux attach || tmux new-session -s default'";
+      command = "${zshPath} -lic 'ghostty +boo; tmux attach || tmux new-session -s default'";
       keybind = [ "shift+enter=text:\\n" ];
+    }
+    // lib.optionalAttrs pkgs.stdenv.isDarwin {
+      macos-icon = "xray";
+      macos-titlebar-style = "hidden";
     };
   };
 }
