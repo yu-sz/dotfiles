@@ -12,7 +12,7 @@ paths:
 
 ## Module Structure
 
-```
+```text
 flake.nix                    # エントリポイント（flake-parts）
 nix/
 ├── home/
@@ -47,7 +47,7 @@ nix/
 
 | ツール              | 役割                                    | 備考                                        |
 | ------------------- | --------------------------------------- | ------------------------------------------- |
-| nh                  | darwin-rebuild ラッパー（nom/nvd 内蔵） | `drs` / `just switch` / `just clean`        |
+| nh                  | darwin-rebuild ラッパー（nom/nvd 内蔵） | `nrs` / `just switch` / `just clean`        |
 | just                | タスクランナー                          | `Justfile` 参照。`switch`, `fmt`, `lint` 等 |
 | direnv + nix-direnv | `.envrc` で devShell 自動ロード         | `nix develop` 手動不要                      |
 | nixd                | Nix LSP                                 | エディタ補完・定義ジャンプ                  |
@@ -116,7 +116,7 @@ _: { programs.app-name = { enable = true; package = null; settings = { ... }; };
 | 項目                   | 詳細                                                                                          |
 | ---------------------- | --------------------------------------------------------------------------------------------- |
 | `stateVersion`         | `home.stateVersion` と `system.stateVersion` は**絶対に変更しない**（マイグレーション基準値） |
-| `git add` 必須         | Flake は Git 管理ファイルのみ参照。新規ファイル作成後は必ず `git add` してから `drs`          |
+| `git add` 必須         | Flake は Git 管理ファイルのみ参照。新規ファイル作成後は必ず `git add` してから `nrs`          |
 | `sessionVariables`     | `.zshenv` の `unsetopt GLOBAL_RCS` により HM の変数設定は機能しない。明示的パスを使用         |
 | `enableZshIntegration` | 全プログラムで `false`（shell.nix でグローバル設定済み）。Zsh hooks は Sheldon が管理         |
 | `package = null`       | cask でインストールするアプリの programs モジュールに必要（nixpkgs ビルドをスキップ）         |

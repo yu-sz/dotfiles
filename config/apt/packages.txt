@@ -1,5 +1,5 @@
 # System-level packages managed by apt
-# Applied via `drs` (just switch-linux) or `scripts/apt-sync.sh`.
+# Applied via `nrs` (just switch-linux) or `scripts/apt-sync.sh`.
 # Removal is manual — deleting a line here does NOT uninstall the package.
 docker.io
 docker-compose-v2

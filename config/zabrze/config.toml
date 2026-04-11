@@ -190,13 +190,13 @@ context = '^npx ccusage\s'
 # ── Nix ──
 
 [[snippets]]
-name = "darwin rebuild switch"
-trigger = "drs"
+name = "nix rebuild switch (darwin)"
+trigger = "nrs"
 snippet = "nh darwin switch $DOTFILES_DIR"
 if = '[[ "$OSTYPE" =~ darwin ]]'
 
 [[snippets]]
-name = "home-manager rebuild switch"
-trigger = "drs"
+name = "nix rebuild switch (linux)"
+trigger = "nrs"
 snippet = "nh home switch $DOTFILES_DIR"
 if = '[[ "$OSTYPE" =~ linux ]]'
