@@ -58,7 +58,7 @@ tmux のセッション管理に以下の課題がある:
 | UI 変更耐性    | **◎**                    | ×                   | -            |
 | セッション特定 | **○**                    | ○                   | ×            |
 
-- Claude Code の hooks（`Stop`, `Notification`, `PreToolUse` 等）で状態を `$TMPDIR` 配下のファイルに書き出す
+- Claude Code の hooks で状態を `$TMPDIR` 配下のファイルに書き出す。`Stop` で `idle`、`Notification` で `waiting` を書き出し、`PreToolUse` で状態ファイルを削除して idle/waiting 表示を解消する
 - 既存の notification hook を拡張するだけで導入可能
 - ペインスキャンは Claude Code の UI 変更に弱いため、hooks を主軸にする
 
