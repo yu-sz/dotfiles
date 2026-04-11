@@ -36,4 +36,4 @@ jobs:
             Automated weekly update of flake.lock.
 
             ### Updated inputs
-            {{ env.GIT_LOG_OUTPUT }}
+            {{ env.GIT_COMMIT_MESSAGE }}
