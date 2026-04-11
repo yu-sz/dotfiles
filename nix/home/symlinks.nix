@@ -32,6 +32,7 @@ in
     ".claude/commands".source = mkLink "config/claude/commands";
     ".claude/file-suggestion.sh".source = mkLink "config/claude/file-suggestion.sh";
     ".claude/hooks".source = mkLink "config/claude/hooks";
+    ".claude/keybindings.json".source = mkLink "config/claude/keybindings.json";
     ".claude/mcp".source = mkLink "config/claude/mcp";
     ".claude/rules".source = mkLink "config/claude/rules";
     ".claude/settings.json".source = mkLink "config/claude/settings.json";

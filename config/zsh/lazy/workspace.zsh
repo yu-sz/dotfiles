@@ -26,7 +26,7 @@ workspace-session() {
 			local selected
 			selected=$(ws-list-sessions | fzf --ansi --reverse \
 				--prompt "session> " \
-				--header "enter:switch  ctrl-d:delete  ctrl-n:new  ctrl-r:rename  ctrl-g:repos" \
+				--header "enter:switch  ctrl-d:delete  ctrl-n:new  ctrl-r:rename  ctrl-t:repos" \
 				--expect "ctrl-r" \
 				--bind "ctrl-d:execute-silent(
             session=\$(echo {} | sed 's/^● //' | awk '{print \$1}');
@@ -39,9 +39,9 @@ workspace-session() {
             read -r name;
             [[ -n \"\$name\" ]] && tmux new-session -d -s \"\$name\" && tmux switch-client -t \"\$name\"
           )" \
-				--bind "ctrl-g:transform:[[ \$FZF_PROMPT == session* ]] &&
-            echo 'reload(ghq list)+change-header(enter:create  ctrl-g:sessions)+change-prompt(repo> )' ||
-            echo 'reload(ws-list-sessions)+change-header(enter:switch  ctrl-d:delete  ctrl-n:new  ctrl-r:rename  ctrl-g:repos)+change-prompt(session> )'" \
+				--bind "ctrl-t:transform:[[ \$FZF_PROMPT == session* ]] &&
+            echo 'reload(ghq list)+change-header(enter:create  ctrl-t:sessions)+change-prompt(repo> )' ||
+            echo 'reload(ws-list-sessions)+change-header(enter:switch  ctrl-d:delete  ctrl-n:new  ctrl-r:rename  ctrl-t:repos)+change-prompt(session> )'" \
 				--bind "enter:transform:[[ \$FZF_PROMPT == repo* ]] &&
             echo 'become(ws-connect-repo {})' ||
             echo 'accept'")
