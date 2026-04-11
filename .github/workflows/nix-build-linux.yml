@@ -1,0 +1,35 @@
+name: Nix Build (linux)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "flake.lock"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            access-tokens = github.com=${{ github.token }}
+
+      - uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
+          gc-max-store-size-linux: 1G
+          purge: true
+          purge-prefixes: nix-${{ runner.os }}-
+          purge-last-accessed: P7D
+          purge-primary-key: never
+
+      - name: Build Linux home-manager configuration
+        run: nix build .#homeConfigurations.ci@linux.activationPackage --print-build-logs
