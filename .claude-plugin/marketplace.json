@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "vtsls-lsp",
-      "source": "./plugins/vtsls-lsp",
+      "source": "./.claude-plugin/plugins/vtsls-lsp",
       "description": "TypeScript/JavaScript language server (vtsls) for code intelligence",
       "version": "1.0.0",
       "category": "development",
@@ -31,7 +31,7 @@
     },
     {
       "name": "lua-lsp",
-      "source": "./plugins/lua-lsp",
+      "source": "./.claude-plugin/plugins/lua-lsp",
       "description": "Lua language server for code intelligence",
       "version": "1.0.0",
       "category": "development",
@@ -47,7 +47,7 @@
     },
     {
       "name": "nixd-lsp",
-      "source": "./plugins/nixd-lsp",
+      "source": "./.claude-plugin/plugins/nixd-lsp",
       "description": "Nix language server (nixd) for code intelligence",
       "version": "1.0.0",
       "category": "development",
@@ -63,7 +63,7 @@
     },
     {
       "name": "bash-lsp",
-      "source": "./plugins/bash-lsp",
+      "source": "./.claude-plugin/plugins/bash-lsp",
       "description": "Bash language server for code intelligence",
       "version": "1.0.0",
       "category": "development",
@@ -82,7 +82,7 @@
     },
     {
       "name": "gopls-lsp",
-      "source": "./plugins/gopls-lsp",
+      "source": "./.claude-plugin/plugins/gopls-lsp",
       "description": "Go language server (gopls) for code intelligence",
       "version": "1.0.0",
       "category": "development",
@@ -99,7 +99,7 @@
     },
     {
       "name": "rust-analyzer-lsp",
-      "source": "./plugins/rust-analyzer-lsp",
+      "source": "./.claude-plugin/plugins/rust-analyzer-lsp",
       "description": "Rust language server (rust-analyzer) for code intelligence",
       "version": "1.0.0",
       "category": "development",
@@ -115,7 +115,7 @@
     },
     {
       "name": "terraform-lsp",
-      "source": "./plugins/terraform-lsp",
+      "source": "./.claude-plugin/plugins/terraform-lsp",
       "description": "Terraform language server for code intelligence",
       "version": "1.0.0",
       "category": "development",
