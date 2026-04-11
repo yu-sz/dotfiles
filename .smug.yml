@@ -1,0 +1,7 @@
+session: dotfiles
+root: .
+windows:
+  - name: editor
+    commands:
+      - nvim
+  - name: shell

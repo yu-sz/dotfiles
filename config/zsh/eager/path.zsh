@@ -9,6 +9,7 @@ typeset -gU PATH path
 typeset -gU FPATH fpath
 
 path=(
+	"$XDG_CONFIG_HOME/zsh/bin"(N-/)
 	"$HOME/.local/bin"(N-/)
 	"$HOME/.cargo/bin"(N-/)
 	"/etc/profiles/per-user/$USER/bin"(N-/)
