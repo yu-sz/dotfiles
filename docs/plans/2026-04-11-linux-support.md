@@ -284,13 +284,15 @@ Phase 1 で `mkHomeConfig` + `homeConfigurations` を作成した直後に、CI 
 
 ## 予実差異
 
-| Phase  | 差異                                                                                                                                                                                                            |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0      | 計画では独立 Phase だったが実際は Phase 1・2 に統合して実施（計画通り）。追加で `nix-build-linux.yml` を新規作成し Linux 実ビルド CI を整備                                                                     |
-| 1      | 1-5: `mkHomeConfig` に `home.username` / `home.homeDirectory` の設定が必要だった（standalone HM は darwinModules と異なり自動設定されない）。1-8: dry-run build はローカル aarch64-darwin で実行不可、CI で検証 |
-| 2      | 予実差異なし                                                                                                                                                                                                    |
-| 3      | 3-2: `drs` の実行確認は `nix flake check` + `nh darwin switch` で代替                                                                                                                                           |
-| 計画外 | zabrze overlay の `doCheck = false` 追加。テストが `env_clear()` で PATH を消した上で zsh を呼ぶため Linux sandbox で失敗する問題に対処                                                                         |
+| Phase              | 差異                                                                                                                                                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0                  | 計画では独立 Phase だったが実際は Phase 1・2 に統合して実施（計画通り）。追加で `nix-build-linux.yml` を新規作成し Linux 実ビルド CI を整備                                                                     |
+| 1                  | 1-5: `mkHomeConfig` に `home.username` / `home.homeDirectory` の設定が必要だった（standalone HM は darwinModules と異なり自動設定されない）。1-8: dry-run build はローカル aarch64-darwin で実行不可、CI で検証 |
+| 2                  | 予実差異なし                                                                                                                                                                                                    |
+| 3                  | 3-2: `drs` の実行確認は `nix flake check` + `nh darwin switch` で代替                                                                                                                                           |
+| 計画外             | zabrze overlay の `doCheck = false` 追加。テストが `env_clear()` で PATH を消した上で zsh を呼ぶため Linux sandbox で失敗する問題に対処                                                                         |
+| 計画外             | Docker daemon は standalone HM で管理不可のため、`config/apt/packages.txt` + `scripts/apt-sync.sh` による apt 管理を導入（ADR に Addendum 追記）                                                                |
+| チェックリスト漏れ | 決定事項「GUIアプリ管理: `home.packages` で統一管理」のうち wezterm, code-cursor を `linux.nix` に追加。実装済みだがチェックリストへの落とし込みが漏れていた                                                    |
 
 ---
 

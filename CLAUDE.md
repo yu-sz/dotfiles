@@ -3,7 +3,7 @@
 ## Commands
 
 ```bash
-drs                # Apply Nix config changes (macOS, uses nh)
+drs                # Apply Nix config changes (macOS: nh darwin switch, Linux: nh home switch)
 ```
 
 Other tasks are managed by `just`. Run `just` to see all available recipes.
@@ -25,24 +25,28 @@ When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
 
 ## Multi-Machine Strategy
 
-- `darwinConfigurations` in `flake.nix` manages per-host configurations
+- `darwinConfigurations` in `flake.nix` manages per-host macOS configurations
+- `homeConfigurations` in `flake.nix` manages standalone home-manager for Linux
 - `specialArgs` passes `username` to absorb differences across machines
 - Adding a new machine is automated by `scripts/bootstrap.sh`
 
 ## Nix Package Management
 
-- **CLI tools**: `nix/home/default.nix` (`home.packages`)
-- **macOS-only tools**: `nix/home/darwin.nix`
-- **GUI apps (cask)**: `nix/hosts/darwin-shared.nix` (`homebrew.casks`)
-- **Fonts**: `nix/hosts/darwin-shared.nix` (`fonts.packages`)
-- **Custom packages**: `nix/overlays/`
+| Category              | macOS                                          | Linux                     |
+| --------------------- | ---------------------------------------------- | ------------------------- |
+| CLI tools (shared)    | `nix/home/default.nix`                         | ←                         |
+| OS-specific tools     | `nix/home/darwin.nix`                          | `nix/home/linux.nix`      |
+| GUI apps              | `nix/hosts/darwin-shared.nix` (homebrew.casks) | `nix/home/linux.nix`      |
+| Fonts                 | `nix/hosts/darwin-shared.nix` (fonts.packages) | `nix/home/linux.nix`      |
+| System packages (apt) | —                                              | `config/apt/packages.txt` |
+| Custom packages       | `nix/overlays/`                                | ←                         |
 
 ## Nix Flake Workflow
 
 - Nix flake only sees Git-tracked files. **Always `git add` after creating new files.**
 - Run `git status` before `drs` to check for untracked files.
 - When introducing new tools: add package and apply first, then switch configs. Never reference uninstalled tools.
-- `drs` / `nh darwin switch` requires sudo. Do not run directly — ask the user to run `! drs` instead.
+- `drs` requires sudo on macOS (`nh darwin switch`). Do not run directly — ask the user to run `! drs` instead.
 - `.zshenv` has `unsetopt GLOBAL_RCS`, so HM's `hm-session-vars.sh` is never sourced. Environment variables set via `home.sessionVariables` won't work — use explicit paths instead.
 
 ## Lua Config Files

@@ -108,20 +108,10 @@ Nix側でやることは:
 - `config.local` はNix管理**しない**（マシン固有、手動配置を維持）
 - 新しいマシンのセットアップ手順に `config.local` の作成を含める
 
-### Linux展開準備（構造のみ、実装は後）
+### Linux展開（実装済み）
 
-```nix
-# flake.nix に将来用コメント
-# homeConfigurations."suta-ro@ubuntu" = home-manager.lib.homeManagerConfiguration {
-#   pkgs = import nixpkgs { system = "x86_64-linux"; overlays = sharedOverlays; };
-#   modules = [ ./nix/home ];
-#   extraSpecialArgs = { username = "suta-ro"; dotfilesPath = "/home/suta-ro/Projects/dotfiles"; };
-# };
-```
-
-- `nix/home/default.nix` の共通パッケージはLinuxでもそのまま動く
-- macOS専用パッケージは `nix/home/darwin.nix` に分離済み
-- Linux追加時は `nix/home/linux.nix` を作って `lib.optionals stdenv.isLinux` で読み込む
+`mkHomeConfig` ヘルパーと `nix/home/linux.nix` で standalone home-manager をサポート。
+詳細は [Linux support Plans](2026-04-11-linux-support.md) を参照。
 
 ---
 
