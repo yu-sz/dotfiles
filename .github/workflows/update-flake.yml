@@ -32,6 +32,7 @@ jobs:
       - uses: DeterminateSystems/update-flake-lock@v28
         with:
           pr-title: "chore(nix): update flake.lock"
+          pr-labels: dependencies
           pr-body: |
             Automated weekly update of flake.lock.
 
