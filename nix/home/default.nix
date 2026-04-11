@@ -4,6 +4,7 @@
     ./shell.nix
     ./symlinks.nix
     ./darwin.nix
+    ./linux.nix
     ./programs
     ./packages
   ];

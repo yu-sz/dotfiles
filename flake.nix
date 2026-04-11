@@ -104,6 +104,11 @@
         let
           sharedOverlays = [ (import ./nix/overlays) ];
 
+          allowedUnfree = [
+            "claude-code"
+            "copilot-language-server"
+          ];
+
           mkDarwinConfig =
             {
               username,
@@ -116,11 +121,7 @@
                 {
                   nixpkgs.overlays = sharedOverlays;
                   nixpkgs.config.allowUnfreePredicate =
-                    pkg:
-                    builtins.elem (inputs.nixpkgs.lib.getName pkg) [
-                      "claude-code"
-                      "copilot-language-server"
-                    ];
+                    pkg: builtins.elem (inputs.nixpkgs.lib.getName pkg) allowedUnfree;
                 }
                 ./nix/hosts/darwin-shared.nix
                 inputs.nix-homebrew.darwinModules.nix-homebrew
@@ -139,6 +140,24 @@
                 }
               ];
             };
+
+          mkHomeConfig =
+            {
+              username,
+              system ? "x86_64-linux",
+            }:
+            inputs.home-manager.lib.homeManagerConfiguration {
+              pkgs = import inputs.nixpkgs {
+                inherit system;
+                overlays = sharedOverlays;
+                config.allowUnfreePredicate = pkg: builtins.elem (inputs.nixpkgs.lib.getName pkg) allowedUnfree;
+              };
+              modules = [ ./nix/home ];
+              extraSpecialArgs = {
+                inherit username;
+                dotfilesRelPath = "Projects/dotfiles";
+              };
+            };
         in
         {
           darwinConfigurations = {
@@ -146,12 +165,9 @@
             "yutasuzukinoMacBook-Pro" = mkDarwinConfig { username = "yuta.suzuki"; };
           };
 
-          # Linux (standalone home-manager) — 将来用
-          # homeConfigurations."<user>@ubuntu" = home-manager.lib.homeManagerConfiguration {
-          #   pkgs = import inputs.nixpkgs { system = "x86_64-linux"; overlays = sharedOverlays; };
-          #   modules = [ ./nix/home ];
-          #   extraSpecialArgs = { username = "<user>"; };
-          # };
+          homeConfigurations = {
+            "ci@linux" = mkHomeConfig { username = "ci"; };
+          };
         };
     };
 }

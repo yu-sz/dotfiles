@@ -1,10 +1,7 @@
 { pkgs, lib, ... }:
-{
-  home.packages = lib.mkIf pkgs.stdenv.isDarwin (
-    with pkgs;
-    [
-      terminal-notifier
-      macism
-    ]
-  );
+lib.mkIf pkgs.stdenv.isDarwin {
+  home.packages = with pkgs; [
+    terminal-notifier
+    macism
+  ];
 }

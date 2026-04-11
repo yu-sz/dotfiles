@@ -10,5 +10,6 @@
     sheldon
     smug
     zabrze
+    zsh
   ];
 }

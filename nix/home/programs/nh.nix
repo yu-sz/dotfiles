@@ -2,6 +2,6 @@
 {
   programs.nh = {
     enable = true;
-    darwinFlake = "${config.home.homeDirectory}/${dotfilesRelPath}";
+    flake = "${config.home.homeDirectory}/${dotfilesRelPath}";
   };
 }
