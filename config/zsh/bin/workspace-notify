@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# スタンドアロンスクリプト: bash/sh/zsh いずれからも呼べる
+# 呼び出し元: Claude Code hooks (bash), tmux run-shell, fzf execute ($SHELL -c)
+
+subcmd="${1}"
+shift 2>/dev/null
+state_dir="${TMPDIR%/}/ws-state"
+mkdir -p "$state_dir"
+
+case "$subcmd" in
+  state)
+    session="$1" ai="$2" status="$3"
+    [[ -z "$session" ]] && exit 0
+    state_file="$state_dir/${ai}_${session}"
+    if [[ "$status" == "end" ]]; then
+      rm -f "$state_file"
+    else
+      echo "${status}:$(date +%s)" > "$state_file"
+    fi
+    ;;
+  send)
+    session="$1" message="$2"
+    echo "$(date +%H:%M):${message}" >> "$state_dir/notifications-${session}"
+    ;;
+  read)
+    session="$1"
+    rm -f "$state_dir/notifications-${session}"
+    rm -f "$state_dir"/*_"${session}"
+    ;;
+  rename)
+    old="$1" new="$2"
+    [[ -z "$old" || -z "$new" ]] && exit 0
+    for f in "$state_dir"/*_"$old"; do
+      [[ -e "$f" ]] || continue
+      mv "$f" "${f%_"$old"}_$new"
+    done
+    [[ -f "$state_dir/notifications-$old" ]] && mv "$state_dir/notifications-$old" "$state_dir/notifications-$new"
+    ;;
+  badge)
+    count=0
+    for f in "$state_dir"/notifications-*; do
+      [[ -e "$f" ]] || continue
+      c=$(wc -l < "$f" | tr -d ' ')
+      count=$((count + c))
+    done
+    [[ $count -gt 0 ]] && echo "● $count"
+    ;;
+  clear)
+    rm -f "$state_dir"/notifications-*
+    rm -f "$state_dir"/*
+    ;;
+esac

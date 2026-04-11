@@ -8,6 +8,7 @@
     jq
     ripgrep
     sheldon
+    smug
     zabrze
   ];
 }

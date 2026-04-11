@@ -1,0 +1,44 @@
+#!/usr/bin/env zsh
+# セッション接続の共通ロジック（唯一の実装）
+# 呼び出し元: fzf become, workspace-session
+#
+# 使い方:
+#   ws-connect-repo <ghq-repo-path>          # ghq リポジトリパスから接続
+#   ws-connect-repo --name <name> --dir <dir> # 名前とディレクトリを直接指定
+
+typeset -A opts
+zparseopts -A opts -D -- -name: -dir:
+
+if [[ -n "${opts[--name]}" ]]; then
+  name="${opts[--name]}" dir="${opts[--dir]}"
+else
+  repo="$1"
+  [[ -z "$repo" ]] && exit 1
+  dir="$(ghq root)/$repo"
+  [[ ! -d "$dir" ]] && exit 1
+  name="$(basename "$repo")"
+fi
+
+if tmux has-session -t "$name" 2>/dev/null; then
+  if [[ -n "$TMUX" ]]; then
+    tmux switch-client -t "$name"
+  else
+    tmux attach-session -t "$name"
+  fi
+else
+  if [[ -n "$dir" && -f "$dir/.smug.yml" ]] && command -v smug >/dev/null 2>&1; then
+    smug_name=$(grep '^session:' "$dir/.smug.yml" | awk '{print $2}' | tr -d "\"'")
+    if (cd "$dir" && smug start -f "$dir/.smug.yml"); then
+      name="${smug_name:-$name}"
+    else
+      tmux new-session -d -c "$dir" -s "$name"
+    fi
+  else
+    tmux new-session -d -c "${dir:-.}" -s "$name"
+  fi
+  if [[ -n "$TMUX" ]]; then
+    tmux switch-client -t "$name"
+  else
+    tmux attach-session -t "$name"
+  fi
+fi

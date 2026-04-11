@@ -107,6 +107,14 @@
             "command": "jq -r 'if .tool_input.command | test(\"rm -rf|dd if=|:(){ :|:& };:\") then {\"decision\": \"block\", \"reason\": \"危険なコマンドは実行できません。別の方法を検討してください。\"} else empty end'"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "state_file=\"${TMPDIR%/}/ws-state/claude_$(tmux display-message -p '#{session_name}' 2>/dev/null)\"; [[ -f \"$state_file\" ]] && rm -f \"$state_file\"; exit 0"
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -122,11 +130,14 @@
     ],
     "Stop": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
             "command": "~/.claude/hooks/notify.sh 'Task Completed!'"
+          },
+          {
+            "type": "command",
+            "command": "[[ -n \"$TMUX\" ]] && ~/.config/zsh/bin/workspace-notify state \"$(tmux display-message -p '#{session_name}')\" claude idle"
           }
         ]
       }
@@ -138,6 +149,21 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/notify.sh 'Awaiting Confirmation...'"
+          },
+          {
+            "type": "command",
+            "command": "[[ -n \"$TMUX\" ]] && ~/.config/zsh/bin/workspace-notify state \"$(tmux display-message -p '#{session_name}')\" claude waiting"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "prompt_input_exit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[[ -n \"$TMUX\" ]] && ~/.config/zsh/bin/workspace-notify state \"$(tmux display-message -p '#{session_name}')\" claude end"
           }
         ]
       }
