@@ -1,6 +1,7 @@
 ### setup ###
+[[ -d "$XDG_CACHE_HOME/zsh" ]] || mkdir -p "$XDG_CACHE_HOME/zsh"
 autoload -Uz compinit
-compinit -d "$XDG_STATE_HOME/zcompdump"
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
 
 # direnv による XDG_DATA_DIRS の変更を検知し、fpath と zcompdump を同期する
 # cd でdevShellに出入りするたびに発火し、変更がなければ即 return
@@ -12,7 +13,7 @@ _comp_sync_xdg() {
 		[[ -d "$p" ]] && ((!${fpath[(I)$p]})) && fpath+=("$p")
 	done
 	local fpath_hash=$(echo "${(j.:.)fpath}" | cksum | cut -d' ' -f1)
-	compinit -d "$XDG_STATE_HOME/zcompdump-$fpath_hash"
+	compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$fpath_hash"
 }
 precmd_functions+=(_comp_sync_xdg)
 
@@ -22,6 +23,7 @@ if command -v terraform &>/dev/null; then
 fi
 
 zmodload -i zsh/complist
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 # 補完候補をソースの返却順で表示（fzf-tab で絞り込めるのでアルファベット順は不要）
 zstyle ':completion:*' sort false
