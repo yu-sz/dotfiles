@@ -20,7 +20,4 @@ export SHELDON_CONFIG_DIR="$ZDOTDIR/sheldon"
 export SHELDON_CONFIG_FILE="$SHELDON_CONFIG_DIR/plugins.toml"
 
 ### less ###
-if [[ -f "$XDG_CACHE_HOME/lesshst" && ! -f "$XDG_STATE_HOME/lesshst" ]]; then
-	mv "$XDG_CACHE_HOME/lesshst" "$XDG_STATE_HOME/lesshst"
-fi
 export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
