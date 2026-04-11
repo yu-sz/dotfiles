@@ -152,7 +152,13 @@
                 overlays = sharedOverlays;
                 config.allowUnfreePredicate = pkg: builtins.elem (inputs.nixpkgs.lib.getName pkg) allowedUnfree;
               };
-              modules = [ ./nix/home ];
+              modules = [
+                ./nix/home
+                {
+                  home.username = username;
+                  home.homeDirectory = "/home/${username}";
+                }
+              ];
               extraSpecialArgs = {
                 inherit username;
                 dotfilesRelPath = "Projects/dotfiles";
