@@ -29,10 +29,12 @@ sheldon::load() {
     local cache_file="$cache_dir/$profile.zsh"
     local lock_file="$XDG_DATA_HOME/sheldon/plugins.$profile.lock"
 
+    local newest_eager=("$ZDOTDIR"/eager/*.zsh(Nom[1]))
+    local newest_lazy=("$ZDOTDIR"/lazy/*.zsh(Nom[1]))
     if [[ ! -f "$lock_file"
        || "$plugins_file" -nt "$lock_file"
-       || "$ZDOTDIR/eager" -nt "$lock_file"
-       || "$ZDOTDIR/lazy" -nt "$lock_file" ]]; then
+       || "$newest_eager" -nt "$lock_file"
+       || "$newest_lazy" -nt "$lock_file" ]]; then
         sheldon --profile="$profile" lock
     fi
 
