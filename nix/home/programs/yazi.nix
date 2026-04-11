@@ -2,7 +2,13 @@
 {
   programs.yazi = {
     enable = true;
-    initLua = ./yazi-init.lua;
+    initLua = ''
+      require("starship"):setup()
+      require("full-border"):setup()
+      require("smart-enter"):setup({
+        open_multi = true,
+      })
+    '';
     plugins = {
       inherit (pkgs.yaziPlugins) smart-enter starship full-border;
     };
