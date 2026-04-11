@@ -44,6 +44,10 @@ github = "zsh-users/zsh-completions"
 dir = "src"
 apply = ["fpath"]
 
+# compinitより後（lazy/completion.zsh）、他プラグインより前に読み込まれる
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+
 [plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
 
