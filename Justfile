@@ -9,8 +9,9 @@ switch:
 switch-darwin:
     nh darwin switch .
 
-# nh home switch を実行
+# apt-sync + nh home switch を実行
 switch-linux:
+    ./scripts/apt-sync.sh
     nh home switch .
 
 # flake.lock を更新して switch

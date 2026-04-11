@@ -9,8 +9,11 @@ REPO_DIR="${1:?Usage: linux.sh <repo_dir>}"
 
 # Ensure nix is in PATH
 if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-  source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+	source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
+
+# Sync apt packages
+"${REPO_DIR}/scripts/apt-sync.sh"
 
 # Apply config
 USERNAME="$(whoami)"
