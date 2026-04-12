@@ -2,6 +2,16 @@
 
 tmux セッション管理の sheldon プラグイン。セッションの作成・切替・削除と、Claude Code の AI 状態追跡を提供する。
 
+## 依存ツール
+
+| ツール | 必須 | 用途                                   |
+| ------ | ---- | -------------------------------------- |
+| tmux   | yes  | セッション管理                         |
+| fzf    | yes  | 対話的選択 UI                          |
+| ghq    | yes  | リポジトリパス解決                     |
+| git    | yes  | worktree 操作、ブランチ表示            |
+| smug   | no   | `.smug.yml` がある場合のレイアウト復元 |
+
 ## サブコマンド
 
 ### 対話操作
@@ -13,7 +23,8 @@ tmux セッション管理の sheldon プラグイン。セッションの作成
 | `workspace new [repo]`         | セッション作成（ghq + smug 対応）          |
 | `workspace delete [session]`   | セッション削除                             |
 | `workspace rename <old> <new>` | セッションリネーム                         |
-| `workspace wt`                 | git worktree からセッション作成            |
+| `workspace wt [branch]`        | 新規 worktree 作成 + セッション接続        |
+| `workspace wt-rm`              | worktree + セッション削除                  |
 
 ### 状態管理（Claude Code hooks / tmux から呼ばれる）
 

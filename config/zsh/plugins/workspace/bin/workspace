@@ -163,12 +163,38 @@ rename)
   ;;
 
 wt)
+  local branch="$1"
+  if [[ -z "$branch" ]]; then
+    printf "Branch name: "
+    read -r branch
+  fi
+  [[ -z "$branch" ]] && exit 0
+  local dir="../$(basename "$PWD")-$branch"
+  git fetch origin 2>/dev/null
+  git worktree add -b "$branch" "$dir" || exit 1
+  dir="${dir:a}"
+  _connect_repo --name "$(basename "$dir")" --dir "$dir"
+  ;;
+
+wt-rm)
   local selected dir name
-  selected=$(git worktree list 2>/dev/null | grep -v "$(pwd)" | fzf --reverse --header "Select worktree")
+  selected=$(git worktree list 2>/dev/null | grep -v "$(pwd)" | fzf --reverse --header "Select worktree to remove")
   [[ -z "$selected" ]] && exit 0
   dir=$(echo "$selected" | awk '{print $1}')
   name=$(basename "$dir")
-  _connect_repo --name "$name" --dir "$dir"
+  read -q "?Remove worktree '$dir'? [y/N] " || exit 0
+  echo
+  git worktree remove "$dir" || exit 1
+  git worktree prune
+  if tmux has-session -t "$name" 2>/dev/null; then
+    read -q "?Delete session '$name'? [y/N] " || exit 0
+    echo
+    local count
+    count=$(tmux list-sessions 2>/dev/null | wc -l)
+    [[ $count -le 1 ]] && echo "Cannot delete the last session" && exit 0
+    tmux kill-session -t "$name"
+    rm -f "$state_dir"/*_"$name" "$state_dir/notifications-$name"
+  fi
   ;;
 
 notify)

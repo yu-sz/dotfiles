@@ -7,7 +7,8 @@ commands=(
   'new:Create new session'
   'delete:Delete session'
   'rename:Rename session'
-  'wt:Create session from git worktree'
+  'wt:Create new worktree and session'
+  'wt-rm:Remove worktree and session'
   'notify:Notification management'
 )
 _describe -t commands 'workspace commands' commands
