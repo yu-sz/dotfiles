@@ -106,7 +106,7 @@
 
           allowedUnfree = [
             "claude-code"
-            "code-cursor"
+            "cursor"
             "copilot-language-server"
           ];
 
