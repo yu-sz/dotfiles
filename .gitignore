@@ -24,5 +24,8 @@ config/karabiner/automatic_backups/
 ### Neovim ###
 .netrwhist
 
+### Playwright MCP ###
+.playwright-mcp/
+
 ### Local scratch ###
 tmp/
