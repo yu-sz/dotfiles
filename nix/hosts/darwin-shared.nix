@@ -28,15 +28,13 @@
       upgrade = false;
     };
     casks = [
-      "raycast"
-      "warp"
-      "docker-desktop"
-      "dbeaver-community"
-      "karabiner-elements"
-      "visual-studio-code"
       "cursor"
       "cursor-cli"
+      "dbeaver-community"
+      "docker-desktop"
       "google-japanese-ime"
+      "karabiner-elements"
+      "raycast"
     ];
   };
 

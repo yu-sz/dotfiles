@@ -106,8 +106,8 @@
 
           allowedUnfree = [
             "claude-code"
-            "cursor"
             "copilot-language-server"
+            "vscode"
           ];
 
           mkDarwinConfig =

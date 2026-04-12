@@ -7,5 +7,6 @@
     tmux
     tree-sitter
     vim
+    vscode
   ];
 }

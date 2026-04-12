@@ -4,9 +4,6 @@ lib.mkIf pkgs.stdenv.isLinux {
 
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
-    # GUI
-    code-cursor
-
     # Fonts
     hackgen-font
     hackgen-nf-font
