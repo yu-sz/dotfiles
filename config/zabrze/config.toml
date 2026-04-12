@@ -1,6 +1,11 @@
 # ── General ──
 
 [[snippets]]
+name = "workspace"
+trigger = "ws"
+snippet = "workspace"
+
+[[snippets]]
 name = "nvim"
 trigger = "v"
 snippet = "nvim"

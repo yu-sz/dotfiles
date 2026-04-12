@@ -1,0 +1,13 @@
+#compdef workspace
+
+local -a commands
+commands=(
+  'list:Session list (interactive)'
+  'switch:Switch session'
+  'new:Create new session'
+  'delete:Delete session'
+  'rename:Rename session'
+  'wt:Create session from git worktree'
+  'notify:Notification management'
+)
+_describe -t commands 'workspace commands' commands

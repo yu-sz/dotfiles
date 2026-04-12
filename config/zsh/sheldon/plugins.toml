@@ -31,6 +31,12 @@ local = "~/.config/zsh"
 use = ["eager/*.zsh"]
 apply = ["source"]
 
+# tmux popup から PATH 経由で呼ぶため eager（defer だと popup 環境に反映されない）
+[plugins.workspace]
+local = "~/.config/zsh/plugins/workspace"
+use = ["plugin.zsh"]
+apply = ["source"]
+
 [plugins.starship]
 inline = """
 eval "$(starship init zsh)"

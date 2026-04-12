@@ -1,0 +1,271 @@
+#!/usr/bin/env zsh
+
+subcmd="${1:-list}"
+shift 2>/dev/null
+
+state_dir="${TMPDIR%/}/ws-state"
+
+_switch() {
+  if [[ -n "$TMUX" ]]; then
+    tmux switch-client -t "$1"
+  else
+    tmux attach-session -t "$1"
+  fi
+}
+
+_current_session() {
+  tmux display-message -p '#{session_name}' 2>/dev/null
+}
+
+_connect_repo() {
+  typeset -A opts
+  zparseopts -A opts -D -- -name: -dir:
+
+  local name dir repo
+  if [[ -n "${opts[--name]}" ]]; then
+    name="${opts[--name]}" dir="${opts[--dir]}"
+  else
+    repo="$1"
+    [[ -z "$repo" ]] && exit 1
+    dir="$(ghq root)/$repo"
+    [[ ! -d "$dir" ]] && exit 1
+    name="$(basename "$repo")"
+  fi
+
+  if tmux has-session -t "$name" 2>/dev/null; then
+    _switch "$name"
+  else
+    if [[ -n "$dir" && -f "$dir/.smug.yml" ]] && command -v smug >/dev/null 2>&1; then
+      local smug_name
+      smug_name=$(grep '^session:' "$dir/.smug.yml" | awk '{print $2}' | tr -d "\"'")
+      if (cd "$dir" && smug start -f "$dir/.smug.yml"); then
+        name="${smug_name:-$name}"
+      else
+        tmux new-session -d -c "$dir" -s "$name"
+      fi
+    else
+      tmux new-session -d -c "${dir:-.}" -s "$name"
+    fi
+    _switch "$name"
+  fi
+}
+
+case "$subcmd" in
+list)
+  while true; do
+    local selected
+    selected=$("$0" list-sessions | fzf --ansi --reverse \
+      --prompt "session> " \
+      --header "⏎ switch │ ^D delete │ ^N new │ ^R rename │ ^T repos" \
+      --expect "ctrl-r" \
+      --bind "ctrl-d:execute-silent(
+          session=\$(echo {} | sed 's/^● //' | awk '{print \$1}');
+          count=\$(tmux list-sessions 2>/dev/null | wc -l);
+          [[ \$count -le 1 ]] && exit 0;
+          tmux kill-session -t \"\$session\"
+        )+reload($0 list-sessions)" \
+      --bind "ctrl-n:become(
+          printf 'Session name: ';
+          read -r name;
+          [[ -n \"\$name\" ]] && tmux new-session -d -s \"\$name\" && tmux switch-client -t \"\$name\"
+        )" \
+      --bind "ctrl-t:transform:[[ \$FZF_PROMPT == session* ]] &&
+          echo 'reload(ghq list)+change-header(⏎ create │ ^T sessions)+change-prompt(repo> )' ||
+          echo 'reload($0 list-sessions)+change-header(⏎ switch │ ^D delete │ ^N new │ ^R rename │ ^T repos)+change-prompt(session> )'" \
+      --bind "enter:transform:[[ \$FZF_PROMPT == repo* ]] &&
+          echo 'become($0 connect-repo {})' ||
+          echo 'accept'")
+
+    local key line
+    key=$(echo "$selected" | head -1)
+    line=$(echo "$selected" | tail -1)
+
+    if [[ "$key" == "ctrl-r" && -n "$line" ]]; then
+      local session
+      session=$(echo "$line" | sed 's/^● //' | awk '{print $1}')
+      printf 'Rename "%s" to: ' "$session"
+      read -r name
+      if [[ -n "$name" ]]; then
+        tmux rename-session -t "$session" "$name"
+        "$0" notify rename "$session" "$name"
+      fi
+      continue
+    fi
+
+    [[ -z "$line" ]] && exit 0
+    local session_name
+    session_name=$(echo "$line" | sed 's/^● //' | awk '{print $1}')
+    _switch "$session_name"
+    break
+  done
+  ;;
+
+switch)
+  if [[ -n "$1" ]]; then
+    if ! tmux has-session -t "$1" 2>/dev/null; then
+      echo "Session not found: $1" >&2
+      exit 1
+    fi
+    _switch "$1"
+  else
+    local selected
+    selected=$("$0" list-sessions | fzf --ansi --reverse --header "Select session")
+    [[ -z "$selected" ]] && exit 0
+    local name
+    name=$(echo "$selected" | sed 's/^● //' | awk '{print $1}')
+    _switch "$name"
+  fi
+  ;;
+
+new)
+  if [[ "$1" == "--bare" ]]; then
+    local name="${2:?Session name required}"
+    tmux new-session -d -s "$name"
+    _switch "$name"
+  elif [[ -n "$1" ]]; then
+    local dir
+    dir="$(ghq root)/$1"
+    [[ ! -d "$dir" ]] && dir="$(ghq root)/$(ghq list | grep -E "/$1$" | head -1)"
+    [[ ! -d "$dir" ]] && echo "Repository not found: $1" && exit 1
+    _connect_repo --name "$(basename "$dir")" --dir "$dir"
+  else
+    local repo
+    repo=$(ghq list | fzf --reverse --header "Select repository")
+    [[ -z "$repo" ]] && exit 0
+    local dir="$(ghq root)/$repo"
+    _connect_repo --name "$(basename "$repo")" --dir "$dir"
+  fi
+  ;;
+
+delete)
+  local session="${1}"
+  if [[ -z "$session" ]]; then
+    session=$(tmux list-sessions -F "#{session_name}" | fzf --reverse --header "Delete session")
+  fi
+  [[ -z "$session" ]] && exit 0
+  local count
+  count=$(tmux list-sessions 2>/dev/null | wc -l)
+  if [[ $count -le 1 ]]; then
+    echo "Cannot delete the last session"
+    exit 1
+  fi
+  read -q "?Delete session '$session'? [y/N] " || exit 0
+  echo
+  tmux kill-session -t "$session"
+  rm -f "$state_dir"/*_"$session" "$state_dir/notifications-$session"
+  ;;
+
+rename)
+  local old="${1}" new="${2}"
+  [[ -z "$old" || -z "$new" ]] && echo "Usage: workspace rename <old> <new>" && exit 1
+  tmux rename-session -t "$old" "$new"
+  "$0" notify rename "$old" "$new"
+  ;;
+
+wt)
+  local selected dir name
+  selected=$(git worktree list 2>/dev/null | grep -v "$(pwd)" | fzf --reverse --header "Select worktree")
+  [[ -z "$selected" ]] && exit 0
+  dir=$(echo "$selected" | awk '{print $1}')
+  name=$(basename "$dir")
+  _connect_repo --name "$name" --dir "$dir"
+  ;;
+
+notify)
+  local notify_cmd="$1"
+  shift 2>/dev/null
+  mkdir -p "$state_dir"
+
+  case "$notify_cmd" in
+  idle|waiting)
+    [[ -z "$TMUX" ]] && exit 0
+    local session=$(_current_session)
+    [[ -z "$session" ]] && exit 0
+    echo "${notify_cmd}:$(date +%s)" > "$state_dir/claude_${session}"
+    ;;
+  end)
+    [[ -z "$TMUX" ]] && exit 0
+    local session=$(_current_session)
+    [[ -z "$session" ]] && exit 0
+    rm -f "$state_dir/claude_${session}"
+    ;;
+  clear-state)
+    [[ -z "$TMUX" ]] && exit 0
+    local session=$(_current_session)
+    [[ -z "$session" ]] && exit 0
+    rm -f "$state_dir/claude_${session}"
+    ;;
+  read)
+    local session="${1:-$(_current_session)}"
+    [[ -z "$session" ]] && exit 0
+    rm -f "$state_dir/notifications-${session}"
+    rm -f "$state_dir"/*_"${session}"
+    ;;
+  rename)
+    local old="$1" new="$2"
+    [[ -z "$old" || -z "$new" ]] && exit 0
+    for f in "$state_dir"/*_"$old"; do
+      [[ -e "$f" ]] || continue
+      mv "$f" "${f%_"$old"}_$new"
+    done
+    [[ -f "$state_dir/notifications-$old" ]] && mv "$state_dir/notifications-$old" "$state_dir/notifications-$new"
+    ;;
+  clear)
+    rm -f "$state_dir"/notifications-*
+    rm -f "$state_dir"/*
+    ;;
+  esac
+  ;;
+
+list-sessions)
+  # tmux セッション不在の状態ファイルを cleanup
+  if [[ -d "$state_dir" ]]; then
+    local sessions=(${(f)"$(tmux list-sessions -F '#{session_name}' 2>/dev/null)"})
+    for f in "$state_dir"/*_*(N); do
+      local fname="$(basename "$f")"
+      [[ "$fname" == notifications-* ]] && continue
+      local sess="${fname#*_}"
+      if (( ! ${sessions[(Ie)$sess]} )); then
+        rm -f "$f"
+      fi
+    done
+  fi
+
+  tmux list-sessions -F "#{session_name}" 2>/dev/null | while IFS= read -r session; do
+    local ai_label=""
+    for state_file in "$state_dir"/*_"$session"(N); do
+      [[ -f "$state_file" ]] || continue
+      local ai_name="${$(basename "$state_file")%_$session}"
+      local ai_status
+      IFS=: read -r ai_status _ < "$state_file"
+      ai_label+="🤖 ai $ai_name $ai_status "
+    done
+
+    local notify_file="$state_dir/notifications-${session}"
+    local count=0
+    [[ -f "$notify_file" ]] && count=$(wc -l < "$notify_file" | tr -d ' ')
+
+    local branch=""
+    local session_path=$(tmux display-message -t "$session" -p '#{pane_current_path}' 2>/dev/null)
+    [[ -n "$session_path" ]] && branch=$(git -C "$session_path" branch --show-current 2>/dev/null)
+
+    local active=""
+    local attached=$(tmux display-message -t "$session" -p '#{session_attached}' 2>/dev/null)
+    [[ "$attached" -gt 0 ]] && active="[active] "
+
+    local badge=""
+    [[ $count -gt 0 || -n "$ai_label" ]] && badge="● "
+    local branch_label=""
+    [[ -n "$branch" ]] && branch_label=" ($branch)"
+    printf "%s%s%s %s%s\n" "$badge" "$session" "$branch_label" "$active" "$ai_label"
+  done
+  ;;
+
+connect-repo)
+  _connect_repo "$@"
+  ;;
+
+*)
+  exec "$0" list
+  ;;
+esac

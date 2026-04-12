@@ -112,7 +112,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "state_file=\"${TMPDIR%/}/ws-state/claude_$(tmux display-message -p '#{session_name}' 2>/dev/null)\"; [[ -f \"$state_file\" ]] && rm -f \"$state_file\"; exit 0"
+            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify clear-state"
           }
         ]
       }
@@ -137,7 +137,7 @@
           },
           {
             "type": "command",
-            "command": "[[ -n \"$TMUX\" ]] && ~/.config/zsh/bin/workspace-notify state \"$(tmux display-message -p '#{session_name}')\" claude idle"
+            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify idle"
           }
         ]
       }
@@ -152,7 +152,7 @@
           },
           {
             "type": "command",
-            "command": "[[ -n \"$TMUX\" ]] && ~/.config/zsh/bin/workspace-notify state \"$(tmux display-message -p '#{session_name}')\" claude waiting"
+            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify waiting"
           }
         ]
       }
@@ -163,7 +163,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[[ -n \"$TMUX\" ]] && ~/.config/zsh/bin/workspace-notify state \"$(tmux display-message -p '#{session_name}')\" claude end"
+            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify end"
           }
         ]
       }
