@@ -29,8 +29,6 @@
     };
     casks = [
       "raycast"
-      "ghostty"
-      "wezterm"
       "warp"
       "docker-desktop"
       "dbeaver-community"

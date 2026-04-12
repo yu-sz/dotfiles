@@ -5,7 +5,7 @@ in
 {
   programs.ghostty = {
     enable = true;
-    package = if pkgs.stdenv.isDarwin then null else pkgs.ghostty;
+    package = if pkgs.stdenv.isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
     settings = {
       font-family = "\"Moralerspace Xenon HW\"";
       window-title-font-family = "\"Moralerspace Xenon HW\"";

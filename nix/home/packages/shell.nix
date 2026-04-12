@@ -9,6 +9,7 @@
     ripgrep
     sheldon
     smug
+    wezterm
     zabrze
     zsh
   ];
