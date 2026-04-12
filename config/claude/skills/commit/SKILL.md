@@ -19,8 +19,8 @@ user-invocable: false
 ## Rules
 
 - **description**: 命令形、小文字開始、末尾ピリオドなし、50文字以下
-- **body**: description だけでは「なぜ」が伝わらない場合に書く（空行で区切る、72文字折り返し）
-  - 端的に。箇条書き推奨
+- **body**: description だけでは動機が伝わらない場合に「なぜ」を端的に書く（空行で区切る、72文字折り返し）
+  - diff を見ればわかる「何を変えたか」は書かない
   - e.g. revert reason, migration/deletion background, technical tradeoffs, bug root cause
 - **1コミット = 1つの論理的変更**（`and` が出たら分割を検討）
 
