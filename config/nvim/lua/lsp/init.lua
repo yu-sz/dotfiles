@@ -6,7 +6,7 @@ vim.lsp.enable({
   "html",
   "cssls",
   "tailwindcss",
-  "prisma",
+  "prismals",
   "terraform-ls",
   "eslint",
   "biome",
