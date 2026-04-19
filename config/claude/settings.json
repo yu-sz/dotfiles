@@ -10,6 +10,7 @@
     "ENABLE_EXPERIMENTAL_MCP_CLI": "false",
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
     "ENABLE_LSP_TOOL": "1",
+    "CLAUDE_CODE_CODE_EFFORT_REVEL": "xhigh",
     "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1"
   },
   "includeCoAuthoredBy": false,
@@ -179,7 +180,6 @@
     "type": "command",
     "command": "~/.claude/statusline.sh"
   },
-  "effortLevel": "high",
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
     "lua-lsp@claude-plugins-official": false,
