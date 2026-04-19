@@ -17,6 +17,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
+    nix-claude-code.url = "github:ryoppippi/nix-claude-code";
+  };
+
+  nixConfig = {
+    extra-substituters = [ "https://ryoppippi.cachix.org" ];
+    extra-trusted-public-keys = [
+      "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms="
+    ];
   };
 
   outputs =
@@ -102,10 +110,13 @@
 
       flake =
         let
-          sharedOverlays = [ (import ./nix/overlays) ];
+          sharedOverlays = [
+            inputs.nix-claude-code.overlays.default
+            (import ./nix/overlays)
+          ];
 
           allowedUnfree = [
-            "claude-code"
+            "claude"
             "copilot-language-server"
             "vscode"
           ];
