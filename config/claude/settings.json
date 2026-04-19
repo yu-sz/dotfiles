@@ -179,9 +179,7 @@
     "type": "command",
     "command": "~/.claude/statusline.sh"
   },
-  "preferences": {
-    "effort": "high"
-  },
+  "effortLevel": "high",
   "enabledPlugins": {
     "example-skills@anthropic-agent-skills": true,
     "lua-lsp@claude-plugins-official": false,
