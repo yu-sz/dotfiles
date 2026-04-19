@@ -159,10 +159,11 @@
                 {
                     "identifiers": {
                         "is_keyboard": true,
+                        "is_pointing_device": true,
                         "product_id": 4,
                         "vendor_id": 18003
                     },
-                    "ignore": true
+                    "ignore": false
                 }
             ],
             "name": "Default profile",
