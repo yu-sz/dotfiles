@@ -18,10 +18,15 @@ install_nix
 load_nix_env
 
 case "${OS}" in
-  Darwin) "${SETUP}/darwin.sh" "${REPO_DIR}" ;;
-  Linux)  "${SETUP}/linux.sh" "${REPO_DIR}" ;;
-  *)      error "Unsupported OS: ${OS}"; exit 1 ;;
+Darwin) "${SETUP}/darwin.sh" "${REPO_DIR}" ;;
+Linux) "${SETUP}/linux.sh" "${REPO_DIR}" ;;
+*)
+	error "Unsupported OS: ${OS}"
+	exit 1
+	;;
 esac
+
+install_mise
 
 "${SETUP}/install_runtimes.sh"
 
