@@ -12,7 +12,6 @@
     hadolint
     lazydocker
     mkcert
-    mise
     pgcli
     postgresql
     rustup
