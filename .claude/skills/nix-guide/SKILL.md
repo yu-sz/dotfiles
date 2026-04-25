@@ -55,15 +55,15 @@ nix/
 
 ## Conventions
 
-| 項目                          | 規約                                                                   |
-| ----------------------------- | ---------------------------------------------------------------------- |
-| 関数シグネチャ                | 引数を使う場合 `{ pkgs, ... }:`、使わない場合 `_:`                     |
-| programs モジュール           | `nix/home/programs/<name>.nix` に 1 ファイル 1 プログラム              |
-| `home.packages` vs `programs` | HM モジュールがある場合は `programs.<name>` を優先（宣言的設定が可能） |
-| Zsh integration               | `home.shell.enableZshIntegration = false`（Sheldon が管理）            |
-| フォーマッタ / リンタ         | `nixfmt-tree`, `statix`, `deadnix`（pre-commit で自動適用）            |
-| flake-parts                   | `perSystem` = dev tooling、`flake` = マシン構成                        |
-| unfree パッケージ             | `flake.nix` の `allowUnfreePredicate` にパッケージ名を追加             |
+| 項目                          | 規約                                                                               |
+| ----------------------------- | ---------------------------------------------------------------------------------- |
+| 関数シグネチャ                | 引数を使う場合 `{ pkgs, ... }:`、使わない場合 `_:`（2 引数 overlay も `_: prev:`） |
+| programs モジュール           | `nix/home/programs/<name>.nix` に 1 ファイル 1 プログラム                          |
+| `home.packages` vs `programs` | HM モジュールがある場合は `programs.<name>` を優先（宣言的設定が可能）             |
+| Zsh integration               | `home.shell.enableZshIntegration = false`（Sheldon が管理）                        |
+| フォーマッタ / リンタ         | `nixfmt-tree`, `statix`, `deadnix`（pre-commit で自動適用）                        |
+| flake-parts                   | `perSystem` = dev tooling、`flake` = マシン構成                                    |
+| unfree パッケージ             | `flake.nix` の `allowUnfreePredicate` にパッケージ名を追加                         |
 
 ## Key Patterns
 
@@ -91,12 +91,45 @@ home.file."<path>".source = mkLink "config/<source>";
 
 ### Overlay
 
+#### 新規パッケージ追加
+
 ```nix
 # nix/overlays/default.nix
-_final: prev: {
+_: prev: {
   package-name = prev.callPackage ./package-name.nix { };
 }
 ```
+
+#### Upstream バグの workaround
+
+nixpkgs のバグを一時回避する overlay は、対象パッケージの **バージョンと書き換え対象属性を `lib.assertMsg` で固定** し、上流が修正されたら eval を止めて再評価を強制する。これにより workaround の死蔵を構造的に防ぐ。
+
+```nix
+# nix/overlays/<pkg>.nix
+# FIXME(nixpkgs#XXXX): 症状の1行説明
+# - Issue: https://github.com/NixOS/nixpkgs/issues/XXXX
+# - Fix:   https://github.com/NixOS/nixpkgs/pull/YYYY
+{ lib }:
+_: prev: {
+  <pkg> =
+    assert lib.assertMsg
+      (prev.<pkg>.version == "X.Y.Z" && (prev.<pkg>.<attr> or true))
+      "Overlay may no longer be needed: <pkg>=${prev.<pkg>.version}. Try removing.";
+    prev.<pkg>.overrideAttrs (_: { <attr> = <value>; });
+}
+```
+
+assertion の条件は **「現状の workaround が必要な状態」と等価** にする。バージョン bump で fix される想定なら version、属性変更で fix される想定なら属性値を含める（両方該当する場合は AND で連結）。
+
+##### 設計原則
+
+| 原則                         | 理由                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------- |
+| **assertion で self-expire** | 主題。修正反映時に必ず eval が止まり workaround の放置を構造的に防ぐ            |
+| 固定する属性は最小限         | 「workaround が必要な条件」と等価にする。広すぎると誤発火、狭すぎると検知漏れ   |
+| scope を最小化               | `doCheck = false` より `disabledTests = [ ... ]` 等、検知能力を残す上書きを優先 |
+| URL を併記                   | Issue / Fix PR / 根本原因の 3 点を残し、半年後でも文脈を辿れる                  |
+| 1 ファイル 1 workaround      | 削除タイミングが個別なため                                                      |
 
 ### programs モジュール
 
