@@ -6,7 +6,7 @@ user-invocable: false
 
 # Commit Message Rules
 
-[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) ベース。
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) に従う。
 
 ## Format
 
@@ -16,13 +16,11 @@ user-invocable: false
 [body]
 ```
 
-## Rules
+## Language
 
-- **description**: 命令形、小文字開始、末尾ピリオドなし、50文字以下
-- **body**: description だけでは動機が伝わらない場合に「なぜ」を端的に書く（空行で区切る、72文字折り返し）
-  - diff を見ればわかる「何を変えたか」は書かない
-  - e.g. revert reason, migration/deletion background, technical tradeoffs, bug root cause
-- **1コミット = 1つの論理的変更**（`and` が出たら分割を検討）
+- デフォルトは英語（description / body 共に）
+- 既存ログが日本語主体ならそれに合わせる（`git log --oneline -20` で確認）
+- 1 コミット内で英語と日本語を混在させない
 
 ## Types
 
@@ -38,14 +36,75 @@ user-invocable: false
 | `ci`       | CI/CD 設定の変更                             |
 | `perf`     | パフォーマンス改善                           |
 
+`config/claude/skills/` 配下の SKILL.md は Claude の挙動を規定するため、テキスト変更でも `docs` 扱いせず変更性質に応じた type を使う。
+
 ## Scope
 
 - 変更の影響範囲を端的に示す名前を使う（モジュール名、パッケージ名、ディレクトリ名等）
 - 複数領域にまたがる場合や自明な場合は省略可
 - プロジェクトの既存コミットログの慣習に従う
 
-## Anti-patterns
+## Rules
 
-- `and` で繋ぐ → コミットを分割
-- ファイル名の羅列 → 意味的な変更内容を書く
-- 「why」なしの大きな変更 → body で動機を説明
+- description: 命令形・小文字開始・末尾ピリオドなし・50 字以下
+- body: 既定で書かない（diff から読める情報を重複させないため）。以下のいずれかに該当する場合のみ 72 字折り返しで追加:
+  - migration / 削除の背景
+  - 技術的トレードオフ
+  - バグの根本原因
+  - workaround / hack の背景
+- 1 コミット = 1 つの論理的変更（description に `and` が出るなら分割）
+
+## Checklist
+
+コミット前に以下をコピーして埋める:
+
+```markdown
+Commit checklist:
+
+- [ ] description は命令形・小文字開始・末尾ピリオドなし・50 字以下
+- [ ] description に `and` が含まれない（含まれるならコミット分割）
+- [ ] type は変更性質を反映している（Types セクションの注記参照）
+- [ ] body は既定で書かない。書いた場合 4 条件のいずれかを明示できる
+- [ ] body は diff から読める「what」になっていない
+- [ ] 言語が既存ログと一致している
+```
+
+## Examples
+
+### 短い description / body 無し
+
+Input: 文字列切り詰めのユーティリティを追加した。
+
+```text
+feat(utils): add string truncation helper
+```
+
+description だけで what が読めるので body 不要。
+
+### body 有り（workaround）
+
+Input: aarch64-darwin で direnv の checkPhase が hang するので doCheck を切った。
+
+```text
+fix(nix): skip direnv test on aarch64-darwin
+
+cache.nixos.org serves broken-signed fish/zsh, so direnv's
+fish-based test hangs under Gatekeeper. Test-harness issue,
+not direnv itself.
+```
+
+body は 4 条件中「workaround / hack の背景」に該当。
+
+### `and` 分割
+
+Input: zsh で fpath を direnv の DATA_DIRS から同期し、ついでに fzf-tab を導入した。
+
+description に `and` が出るので 2 commit に分割:
+
+```text
+feat(zsh): sync completions via XDG_DATA_DIRS
+```
+
+```text
+feat(zsh): replace menu-select with fzf-tab
+```
