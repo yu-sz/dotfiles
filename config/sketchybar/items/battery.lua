@@ -1,6 +1,7 @@
 local sbar = require("sketchybar")
 local colors = require("colors")
 local settings = require("settings")
+local nf = require("helpers.icons").nf
 
 local battery = sbar.add("item", "battery", {
   position = "right",
@@ -21,17 +22,17 @@ local battery = sbar.add("item", "battery", {
 
 local function pick_icon(percent, charging)
   if charging then
-    return "􀋦"
+    return nf(0xF0E7)
   elseif percent <= 20 then
-    return "􀛪"
+    return nf(0xF244)
   elseif percent <= 40 then
-    return "􀛩"
+    return nf(0xF243)
   elseif percent <= 60 then
-    return "􀛨"
+    return nf(0xF242)
   elseif percent <= 80 then
-    return "􀺸"
+    return nf(0xF241)
   else
-    return "􀛨"
+    return nf(0xF240)
   end
 end
 

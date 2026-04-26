@@ -18,9 +18,9 @@ sbar.default({
   },
   background = {
     color = colors.bg_dark,
-    height = 26,
-    corner_radius = 9,
-    border_width = 1,
+    height = 34,
+    corner_radius = 10,
+    border_width = 2,
     border_color = colors.bg_highlight,
   },
   popup = {

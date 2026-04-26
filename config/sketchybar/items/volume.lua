@@ -1,16 +1,19 @@
 local sbar = require("sketchybar")
 local colors = require("colors")
 local settings = require("settings")
+local nf = require("helpers.icons").nf
 
 local volume = sbar.add("item", "volume", {
   position = "right",
   icon = {
+    string = nf(0xF028),
     color = colors.cyan,
     font = settings.font.icons,
     padding_left = 10,
     padding_right = 6,
   },
   label = {
+    string = "--",
     font = settings.font.numbers,
     color = colors.fg,
     padding_right = 10,
@@ -20,13 +23,13 @@ local volume = sbar.add("item", "volume", {
 
 local function pick_icon(percent)
   if percent == 0 then
-    return "􀊠"
+    return nf(0xF026)
   elseif percent <= 33 then
-    return "􀊡"
+    return nf(0xF027)
   elseif percent <= 66 then
-    return "􀊢"
+    return nf(0xF027)
   else
-    return "􀊣"
+    return nf(0xF028)
   end
 end
 

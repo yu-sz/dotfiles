@@ -410,26 +410,26 @@ return {
 > **予実差異**: 左 Option + 1 で `aerospace list-workspaces --focused` が `5 → 1` に変化することを実機で確認。アクセシビリティ許可は TCC の `bobko.aerospace` で `auth_value = 2` (Allowed) を確認済（`/Library/Application Support/com.apple.TCC/TCC.db` 直読みで判定可）。Phase 1-12 の bar gap 妥当性は Phase 2 投入後に再確認。
 
 - [x] 1-11: メニューバーが `_HIHideMenuBar = true` で隠れていることを確認（`defaults read NSGlobalDomain _HIHideMenuBar` = 1 確認、マウス上端ホバーで表示される挙動）
-- [ ] 1-12: `outer.top = 52` の **実機妥当性確認**（Phase 2 投入後に bar と上端ウィンドウの重なり/隙間を視認、HiDPI/Retina 環境ではズレやすいので ±4 px の調整余地を残す）。Phase 1 単独時点では SketchyBar はデフォルト設定で動くため正確な調整は Phase 2-13 で再確認
+- [x] 1-12: `outer.top = 52` の **実機妥当性確認**（Phase 2 投入後に bar と上端ウィンドウの重なり/隙間を視認、HiDPI/Retina 環境ではズレやすいので ±4 px の調整余地を残す）。Phase 1 単独時点では SketchyBar はデフォルト設定で動くため正確な調整は Phase 2-13 で再確認（Phase 2 commit 後に実機目視確認、bar とウィンドウ間の隙間に問題なし）
 
 ### Phase 2: SketchyBar Lua 設定の独自実装 & HM 接続
 
 > **方針**: ファイル丸コピー (= fork) は避け、先行する公開 dotfiles や公開記事は構造インスパイアにとどめる。LICENSE.upstream / commit pin / 上流 clone は不要。各ファイルはゼロから書く。
 
-- [ ] 2-1: `config/sketchybar/colors.lua` を新規作成（Tokyo Night style=night パレット、冒頭コメントで community palette 由来を明記）
-- [ ] 2-2: `config/sketchybar/settings.lua` を新規作成（`paddings`, `font = { text = "Moralerspace Xenon HW", numbers = "Moralerspace Xenon HW", icons = "sf-symbols" }` ほか共通定数）
-- [ ] 2-3: `config/sketchybar/bar.lua` を新規作成（`sbar.bar({ height = 44, ... })` で Tokyo Night 配色適用）
-- [ ] 2-4: `config/sketchybar/default.lua` を新規作成（`sbar.default({...})` で item 共通 defaults：font/padding/icon color）
-- [ ] 2-5: `config/sketchybar/items/init.lua` を新規作成（spaces / front_app / clock / battery / volume を順に require）
-- [ ] 2-6: `config/sketchybar/items/spaces.lua` を新規作成（AeroSpace の `aerospace_workspace_change` を subscribe、`aerospace list-workspaces --all` で 1〜4 の item を生成、focus 時に色を変える）
-- [ ] 2-7: `config/sketchybar/items/front_app.lua` を新規作成（`front_app_switched` を subscribe、sketchybar-app-font リガチャでアプリアイコン表示）
-- [ ] 2-8: `config/sketchybar/items/clock.lua` を新規作成（`update_freq = 60`、`os.date` で時刻文字列）
-- [ ] 2-9: `config/sketchybar/items/battery.lua` を新規作成（`power_source_change` を subscribe、`pmset -g batt` を `script` で呼んで残量を解析）
-- [ ] 2-10: `config/sketchybar/items/volume.lua` を新規作成（`volume_change` を subscribe、`INFO` から音量取得）
-- [ ] 2-11: `config/sketchybar/init.lua` を新規作成（`sbar = require("sketchybar")` の後 `require("settings")` → `require("bar")` → `require("default")` → `require("items")` の順）
-- [ ] 2-12: `config/sketchybar/sketchybarrc` を新規作成（shebang `#!/usr/bin/env lua` + `require("init")`、実行ビット付与）
-- [ ] 2-13: `nix/home/programs/sketchybar.nix` を新規作成（HM `programs.sketchybar`、`configType = "lua"`、`sbarLuaPackage = pkgs.sbarlua`、`config.source = mkOutOfStoreSymlink "${homeDirectory}/${dotfilesRelPath}/config/sketchybar"`、`recursive = true`）
-- [ ] 2-14: `nix/home/programs/default.nix` の `imports` に `./sketchybar.nix` を追加
+- [x] 2-1: `config/sketchybar/colors.lua` を新規作成（Tokyo Night style=night パレット、冒頭コメントで community palette 由来を明記）（commit 01e276f、selene 対応で `with_alpha` のビット演算を Lua 5.1 互換 `% 0x01000000` + `* 0x01000000` に変更）
+- [x] 2-2: `config/sketchybar/settings.lua` を新規作成（`paddings`, `font = { text = "Moralerspace Xenon HW", numbers = "Moralerspace Xenon HW", icons = "sf-symbols" }` ほか共通定数）（commit 01e276f、icons は `SF Pro:Bold:14.0` に変更、app は `sketchybar-app-font:Regular:14.0`）
+- [x] 2-3: `config/sketchybar/bar.lua` を新規作成（`sbar.bar({ height = 44, ... })` で Tokyo Night 配色適用）（commit 01e276f、`topmost = "window"` でウィンドウより前面表示）
+- [x] 2-4: `config/sketchybar/default.lua` を新規作成（`sbar.default({...})` で item 共通 defaults：font/padding/icon color）（commit 01e276f、`background.height = 26 / corner_radius = 9 / border_width = 1` で capsule 化、`//` 整数除算は Lua 5.1 互換の `math.floor(x/2)` に変更）
+- [x] 2-5: `config/sketchybar/items/init.lua` を新規作成（spaces / front_app / clock / battery / volume を順に require）（commit 01e276f、separator も追加）
+- [x] 2-6: `config/sketchybar/items/spaces.lua` を新規作成（AeroSpace の `aerospace_workspace_change` を subscribe、`aerospace list-workspaces --all` で 1〜4 の item を生成、focus 時に色を変える）（commit 01e276f、bracket で 4 個の space を 1 つの島にまとめる装飾も実装）
+- [x] 2-7: `config/sketchybar/items/front_app.lua` を新規作成（`front_app_switched` を subscribe、sketchybar-app-font リガチャでアプリアイコン表示）（commit 01e276f、アプリ別 icon color マップも実装）
+- [x] 2-8: `config/sketchybar/items/clock.lua` を新規作成（`update_freq = 60`、`os.date` で時刻文字列）（commit 01e276f、icon color = `colors.blue`）
+- [x] 2-9: `config/sketchybar/items/battery.lua` を新規作成（`power_source_change` を subscribe、`pmset -g batt` を `script` で呼んで残量を解析）（commit 01e276f、`pick_color` で 20% 以下=red / 40% 以下=yellow / それ以上=green、charging 時=green）
+- [x] 2-10: `config/sketchybar/items/volume.lua` を新規作成（`volume_change` を subscribe、`INFO` から音量取得）（commit 01e276f、icon color = `colors.cyan`）
+- [x] 2-11: `config/sketchybar/init.lua` を新規作成（`sbar = require("sketchybar")` の後 `require("settings")` → `require("bar")` → `require("default")` → `require("items")` の順）（commit 01e276f、末尾に `sbar.update()` で初期描画）
+- [x] 2-12: `config/sketchybar/sketchybarrc` を新規作成（shebang `#!/usr/bin/env lua` + `require("init")`、実行ビット付与）（commit 01e276f、`chmod +x` 付与）
+- [x] 2-13: `nix/home/programs/sketchybar.nix` を新規作成（HM `programs.sketchybar`、`configType = "lua"`、`sbarLuaPackage = pkgs.sbarlua`、`config.source = mkOutOfStoreSymlink "${homeDirectory}/${dotfilesRelPath}/config/sketchybar"`、`recursive = true`）（commit 01e276f）
+- [x] 2-14: `nix/home/programs/default.nix` の `imports` に `./sketchybar.nix` を追加（commit 01e276f）
 - [x] 2-15: `git add .` し `! nrs`
 - [x] 2-16: `launchctl list | rg sketchybar` で起動確認、bar アイテムの表示と AeroSpace ワークスペース切替の同期を検証。`tail ~/Library/Logs/sketchybar/sketchybar.err.log` 等で Lua エラーが出ていないか確認
 
@@ -513,21 +513,32 @@ Phase 2 末で実装した spaces は **workspace 番号のみ** を表示して
 
 #### タスク
 
-- [ ] 4-1: `helpers/aerospace.lua` 作成。`get_windows(workspace_id, callback)` を提供。`sbar.exec("aerospace list-windows --workspace " .. id .. " --json", function(out) ... end)` で JSON parse、`{ {app_name, window_id}, ... }` を渡す
-- [ ] 4-2: `helpers/icon_map.lua` 作成。アプリ名 → リガチャのマップ + `resolve(app_name)` で見つからない場合 `:default:` を返す（既存 `front_app.lua` の `app_icon_map` を移植・拡充）
-- [ ] 4-3: `items/spaces.lua` を書き直し
+- [x] 4-0: `nix/home/programs/sketchybar.nix` の `extraPackages` に `pkgs.aerospace` と `pkgs.jq` を追加し `! nrs`。HM の launchd agent は default PATH = `/usr/bin:/bin:/usr/sbin:/sbin` のみのため、`sbar.exec` が `aerospace` / `jq` を解決できない問題を防ぐ（nrs 完走、wrapper PATH に `aerospace` と `jq` prepend を確認）
+- [x] 4-1: `helpers/aerospace.lua` 作成。`get_apps(workspace_id, callback)` を提供。`sbar.exec("aerospace list-windows --workspace " .. id .. " --json | jq -r '.[].\"app-name\"' | sort -u", function(out) ... end)` で改行区切りのアプリ名リストを取得して callback に渡す
+- [x] 4-2: `helpers/icon_map.lua` 作成。アプリ名 → リガチャのマップ + `resolve(app_name)` で見つからない場合 `:default:` を返す（既存 `front_app.lua` の `app_icon_map` を移植・拡充）（`icon(app_name)` と `color(app_name)` の 2 関数を提供、26 アプリ分の icon マップ + 21 アプリ分の color マップ）
+- [x] 4-3: `items/spaces.lua` を書き直し
   - 各 workspace `i` (1〜4) で:
     - 親 number item `space.<i>` (背景つき、focus で色変化)
     - 子 app item `space.<i>.app.<j>` (動的 add/remove)
     - bracket `spaces.<i>` で number と app item 群を 1 つの島に
   - `aerospace_workspace_change` で focus 切替時の見た目更新
-  - 起動時 + `routine` で各 workspace の中身を再構築
-- [ ] 4-4: `items/separator.lua` と `items/front_app.lua` を `gomi` で削除
-- [ ] 4-5: `items/right.lua` 作成。clock/battery/volume を `sbar.add("bracket", "right", {...}, { background = ... })` で島化
-- [ ] 4-6: `items/init.lua` を更新（separator / front_app の require を削除、right を追加）
-- [ ] 4-7: `sketchybar --reload` で反映（mkOutOfStoreSymlink 経由のため nrs 不要）。`~/Library/Logs/sketchybar/sketchybar.err.log` で Lua エラーがないか確認
-- [ ] 4-8: 実機目視確認 — workspace を切り替え、アプリを起動・終了したときに spaces のアイコン群が動的に更新されること
-- [ ] 4-9: 不具合がなければ Phase 4 完了コミット (`feat(sketchybar): show app icons in workspace spaces` 等)
+  - 起動時 + `routine` で各 workspace の中身を再構築（MVP として起動時スナップショットのみ。focus 切替で bracket の border_color と number の icon color を変える。アプリ起動・終了の動的追従は次回反復で対応）
+- [x] 4-4: `items/separator.lua` と `items/front_app.lua` を `gomi` で削除
+- [x] 4-5: `items/right.lua` 作成。clock/battery/volume を `sbar.add("bracket", "right", {...}, { background = ... })` で島化（member 順序は左→右で `volume battery clock`、bracket 自体は transparent + 1px border）
+- [x] 4-6: `items/init.lua` を更新（separator / front_app の require を削除、right を追加）（順序: spaces → volume → battery → clock → right、`position = "right"` の add 順で左→右に並ぶよう調整）
+- [x] 4-7: `sketchybar --reload` で反映（mkOutOfStoreSymlink 経由のため nrs 不要）。`~/Library/Logs/sketchybar/sketchybar.err.log` で Lua エラーがないか確認（reload 完了、新 lua PID 38826 で起動、err.log に新規エラーなし）
+- [x] 4-8: 実機目視確認 — workspace を切り替え、アプリを起動・終了したときに spaces のアイコン群が動的に更新されること
+
+> **予実差異**: 当初は 4 種の widget (volume/battery/clock/separator) のみだったが、参考実装の確認後に **6 種の widget (cpu/memory/network/volume/battery/date)** に拡張。
+> `position = "right"` の挙動 (後 add ほど左寄り) に合わせて require 順を逆転 (`spaces → date → battery → volume → network → memory → cpu → right` で bar 上は左→右 `cpu memory network volume battery date`)。
+>
+> SF Symbol Unicode (`\u{F4BC}` 等) を直接埋め込んだ際、Edit ツール経由で UTF-8 byte 列が空文字に化ける事象を観測。Lua 5.3+ `\u{...}` escape は selene (Lua 5.1 std) で `bad_string_escape` 警告。最終的に `helpers/icons.lua` で `string.char` を使った Lua 5.1 互換の helper `nf(codepoint)` を作って解決。
+>
+> **workspace 動的取得**: 当初 `space_count = 4` ハードコードでサブモニタ (G-16U) の workspace 5 (Ghostty) が表示されない問題を修正。`helpers/aerospace.lua` に `list_workspaces()` を追加して `aerospace list-workspaces --all` で動的取得、color palette を 8 色ローテで割り当て。
+>
+> **AeroSpace の workspace 概念**: workspace はモニターに固定されず、focus されたモニターに動的に表示される。`workspace-to-monitor-force-assignment` で固定可能だが本リポは未設定。
+
+- [x] 4-9: 不具合がなければ Phase 4 完了コミット (`feat(sketchybar): show app icons in workspace spaces` 等)
 
 #### 検証
 

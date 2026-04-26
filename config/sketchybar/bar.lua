@@ -4,8 +4,8 @@ local settings = require("settings")
 
 sbar.bar({
   height = settings.bar_height,
-  color = colors.bar.bg,
-  border_color = colors.bar.border,
+  color = colors.transparent,
+  border_color = colors.transparent,
   border_width = 0,
   shadow = false,
   sticky = true,
