@@ -6,8 +6,12 @@
     settings = {
       exec = {
         inherit-env-vars = true;
-        env-vars.PATH = "${pkgs.sketchybar}/bin:${pkgs.coreutils}/bin:\${PATH}";
+        env-vars.PATH = "${pkgs.aerospace}/bin:${pkgs.sketchybar}/bin:${pkgs.coreutils}/bin:\${PATH}";
       };
+
+      after-startup-command = [
+        ''exec-and-forget /bin/bash -c "$HOME/.config/aerospace/init-layout.sh"''
+      ];
 
       exec-on-workspace-change = [
         "/bin/bash"
@@ -50,11 +54,16 @@
           alt-2 = "workspace 2";
           alt-3 = "workspace 3";
           alt-4 = "workspace 4";
+          alt-5 = "workspace 5";
 
           alt-shift-1 = "move-node-to-workspace 1";
           alt-shift-2 = "move-node-to-workspace 2";
           alt-shift-3 = "move-node-to-workspace 3";
           alt-shift-4 = "move-node-to-workspace 4";
+          alt-shift-5 = "move-node-to-workspace 5";
+
+          alt-shift-tab = "move-workspace-to-monitor --wrap-around next";
+          alt-shift-r = ''exec-and-forget /bin/bash -c "$HOME/.config/aerospace/init-layout.sh"'';
 
           alt-tab = "workspace-back-and-forth";
           alt-slash = "layout tiles horizontal vertical";
@@ -99,15 +108,35 @@
           run = [ "move-node-to-workspace 1" ];
         }
         {
-          "if".app-id = "company.thebrowser.Browser";
-          run = [ "move-node-to-workspace 1" ];
-        }
-        {
           "if".app-id = "com.apple.Safari";
           run = [ "move-node-to-workspace 1" ];
         }
         {
+          "if".app-id = "com.mitchellh.ghostty";
+          run = [ "move-node-to-workspace 2" ];
+        }
+        {
           "if".app-id = "com.tinyspeck.slackmacgap";
+          run = [ "move-node-to-workspace 3" ];
+        }
+        {
+          "if".app-id = "com.hnc.Discord";
+          run = [ "move-node-to-workspace 3" ];
+        }
+        {
+          "if".app-id = "com.apple.systempreferences";
+          run = [ "move-node-to-workspace 4" ];
+        }
+        {
+          "if".app-id = "org.pqrs.Karabiner-Elements";
+          run = [ "move-node-to-workspace 4" ];
+        }
+        {
+          "if".app-id = "com.apple.ActivityMonitor";
+          run = [ "move-node-to-workspace 4" ];
+        }
+        {
+          "if".app-id = "com.apple.finder";
           run = [ "move-node-to-workspace 4" ];
         }
       ];

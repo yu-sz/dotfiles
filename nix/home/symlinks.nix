@@ -24,6 +24,7 @@ in
   }
   // lib.optionalAttrs pkgs.stdenv.isDarwin {
     "karabiner".source = mkLink "config/karabiner";
+    "aerospace".source = mkLink "config/aerospace";
   };
 
   home.file = {
