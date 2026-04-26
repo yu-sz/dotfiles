@@ -9,8 +9,6 @@
         env-vars.PATH = "${pkgs.sketchybar}/bin:${pkgs.coreutils}/bin:\${PATH}";
       };
 
-      after-startup-command = [ "exec-and-forget sketchybar" ];
-
       exec-on-workspace-change = [
         "/bin/bash"
         "-c"

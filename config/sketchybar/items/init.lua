@@ -1,0 +1,6 @@
+require("items.spaces")
+require("items.separator")
+require("items.front_app")
+require("items.clock")
+require("items.battery")
+require("items.volume")
