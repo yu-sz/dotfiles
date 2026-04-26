@@ -64,6 +64,8 @@
 
           alt-shift-tab = "move-workspace-to-monitor --wrap-around next";
           alt-shift-r = ''exec-and-forget /bin/bash -c "$HOME/.config/aerospace/init-layout.sh"'';
+          alt-e = "balance-sizes";
+          alt-shift-e = ''exec-and-forget /bin/bash -c "$HOME/.config/aerospace/ratio.sh 2 1"'';
 
           alt-tab = "workspace-back-and-forth";
           alt-slash = "layout tiles horizontal vertical";
@@ -125,7 +127,7 @@
         }
         {
           "if".app-id = "com.apple.systempreferences";
-          run = [ "move-node-to-workspace 4" ];
+          run = [ "layout floating" ];
         }
         {
           "if".app-id = "org.pqrs.Karabiner-Elements";
@@ -137,7 +139,7 @@
         }
         {
           "if".app-id = "com.apple.finder";
-          run = [ "move-node-to-workspace 4" ];
+          run = [ "layout floating" ];
         }
       ];
     };
