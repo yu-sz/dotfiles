@@ -1,5 +1,7 @@
 { pkgs, username, ... }:
 {
+  imports = [ ./darwin-aerospace.nix ];
+
   nix = {
     settings = {
       experimental-features = [
@@ -63,5 +65,23 @@
     plemoljp-hs
     moralerspace
     moralerspace-hw
+    sketchybar-app-font
   ];
+
+  services.jankyborders = {
+    enable = true;
+    style = "round";
+    width = 4.0;
+    hidpi = true;
+    active_color = "0xff7aa2f7";
+    inactive_color = "0xff414868";
+  };
+
+  system.defaults = {
+    NSGlobalDomain = {
+      NSAutomaticWindowAnimationsEnabled = false;
+      _HIHideMenuBar = true;
+    };
+    dock.expose-animation-duration = 0.0;
+  };
 }
