@@ -30,6 +30,7 @@
       upgrade = false;
     };
     casks = [
+      "alt-tab"
       "cursor"
       "cursor-cli"
       "dbeaver-community"
