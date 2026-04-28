@@ -138,6 +138,10 @@
           run = [ "move-node-to-workspace 4" ];
         }
         {
+          "if".app-id = "com.docker.docker";
+          run = [ "move-node-to-workspace 4" ];
+        }
+        {
           "if".app-id = "com.apple.finder";
           run = [ "layout floating" ];
         }
