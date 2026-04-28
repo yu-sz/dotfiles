@@ -1,6 +1,7 @@
 require("items.spaces")
 require("items.date")
 require("items.battery")
+require("items.input")
 require("items.volume")
 require("items.network")
 require("items.memory")
