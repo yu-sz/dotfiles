@@ -11,14 +11,14 @@ local input = sbar.add("item", "input", {
     string = nf(0xF11C),
     color = colors.magenta,
     font = settings.font.icons,
-    padding_left = 10,
-    padding_right = 6,
+    padding_left = 8,
+    padding_right = 4,
   },
   label = {
     string = "--",
     font = settings.font.numbers,
     color = colors.fg,
-    padding_right = 10,
+    padding_right = 6,
   },
   updates = true,
 })

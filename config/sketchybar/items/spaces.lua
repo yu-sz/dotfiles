@@ -33,15 +33,15 @@ for idx, ws_id in ipairs(workspace_ids) do
       color = accent,
       highlight_color = colors.bg,
       font = settings.font.numbers,
-      padding_left = 12,
-      padding_right = 6,
+      padding_left = 8,
+      padding_right = 4,
     },
     label = {
       string = "",
       font = settings.font.app,
       color = accent,
       highlight_color = colors.bg,
-      padding_right = 12,
+      padding_right = 8,
     },
     background = {
       color = colors.bg_dark,
@@ -64,7 +64,7 @@ local function refresh_apps(ws_id)
     table.insert(parts, icon_map.icon(app_name))
   end
   if spaces[ws_id] then
-    spaces[ws_id]:set({ label = { string = table.concat(parts, " ") } })
+    spaces[ws_id]:set({ label = { string = table.concat(parts, "") } })
   end
 end
 

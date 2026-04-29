@@ -7,16 +7,16 @@ local volume = sbar.add("item", "volume", {
   position = "right",
   icon = {
     string = nf(0xF028),
-    color = colors.cyan,
+    color = colors.orange,
     font = settings.font.icons,
-    padding_left = 10,
-    padding_right = 6,
+    padding_left = 8,
+    padding_right = 4,
   },
   label = {
     string = "--",
     font = settings.font.numbers,
     color = colors.fg,
-    padding_right = 10,
+    padding_right = 6,
   },
   updates = true,
 })

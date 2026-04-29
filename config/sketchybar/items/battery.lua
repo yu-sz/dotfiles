@@ -8,13 +8,13 @@ local battery = sbar.add("item", "battery", {
   icon = {
     color = colors.fg,
     font = settings.font.icons,
-    padding_left = 10,
-    padding_right = 6,
+    padding_left = 8,
+    padding_right = 4,
   },
   label = {
     font = settings.font.numbers,
     color = colors.fg,
-    padding_right = 10,
+    padding_right = 6,
   },
   update_freq = 60,
   updates = true,
@@ -22,18 +22,13 @@ local battery = sbar.add("item", "battery", {
 
 local function pick_icon(percent, charging)
   if charging then
-    return nf(0xF0E7)
-  elseif percent <= 20 then
-    return nf(0xF244)
-  elseif percent <= 40 then
-    return nf(0xF243)
-  elseif percent <= 60 then
-    return nf(0xF242)
-  elseif percent <= 80 then
-    return nf(0xF241)
-  else
-    return nf(0xF240)
+    return nf(0xF0084)
   end
+  if percent >= 100 then
+    return nf(0xF0079)
+  end
+  local level = math.max(1, math.floor(percent / 10))
+  return nf(0xF0079 + level)
 end
 
 local function pick_color(percent, charging)
