@@ -3,6 +3,13 @@ local colors = require("colors")
 local settings = require("settings")
 local nf = require("helpers.icons").nf
 
+local LOG_REFERENCE_BPS = 25 * 1024 * 1024
+local LOG_REF_DENOM = math.log(LOG_REFERENCE_BPS + 1)
+
+local function normalize_log(bps)
+  return math.min(1.0, math.log(bps + 1) / LOG_REF_DENOM)
+end
+
 sbar.add("item", "network.padding", {
   position = "right",
   width = 4,
@@ -11,19 +18,53 @@ sbar.add("item", "network.padding", {
   label = { drawing = false, padding_left = 0, padding_right = 0 },
 })
 
+local down_graph = sbar.add("graph", "network.down.graph", 48, {
+  position = "right",
+  graph = {
+    color = colors.cyan,
+    fill_color = colors.with_alpha(colors.cyan, 0.6),
+    line_width = 0.7,
+  },
+  background = {
+    drawing = true,
+    color = colors.transparent,
+    border_color = colors.transparent,
+    border_width = 0,
+    height = 20,
+  },
+  padding_left = -54,
+})
+
 local down = sbar.add("item", "network.down", {
   position = "right",
   icon = { drawing = false },
   label = {
     string = "↓0B",
     font = settings.font.numbers,
-    color = colors.cyan,
+    color = colors.blue,
     padding_left = 0,
     padding_right = 6,
-    width = 40,
-    align = "right",
+    width = 48,
+    align = "left",
   },
   background = { drawing = false },
+})
+
+local up_graph = sbar.add("graph", "network.up.graph", 48, {
+  position = "right",
+  graph = {
+    color = colors.red,
+    fill_color = colors.with_alpha(colors.red, 0.6),
+    line_width = 0.7,
+  },
+  background = {
+    drawing = true,
+    color = colors.transparent,
+    border_color = colors.transparent,
+    border_width = 0,
+    height = 20,
+  },
+  padding_left = -52,
 })
 
 local up = sbar.add("item", "network.up", {
@@ -32,11 +73,11 @@ local up = sbar.add("item", "network.up", {
   label = {
     string = "↑0B",
     font = settings.font.numbers,
-    color = colors.orange,
+    color = colors.blue,
     padding_left = 0,
     padding_right = 4,
-    width = 40,
-    align = "right",
+    width = 48,
+    align = "left",
   },
   background = { drawing = false },
 })
@@ -54,20 +95,6 @@ local network = sbar.add("item", "network", {
   background = { drawing = false },
   update_freq = 2,
   updates = true,
-})
-
-sbar.add("bracket", "network.bracket", {
-  network.name,
-  up.name,
-  down.name,
-}, {
-  background = {
-    color = colors.bg_dark,
-    border_color = colors.cyan,
-    border_width = 2,
-    corner_radius = 10,
-    height = 32,
-  },
 })
 
 local last_in, last_out = 0, 0
@@ -98,6 +125,8 @@ local function update_network()
       last_in, last_out = in_b, out_b
       up:set({ label = { string = "↑" .. format_bps(dout) } })
       down:set({ label = { string = "↓" .. format_bps(din) } })
+      up_graph:push({ normalize_log(dout) })
+      down_graph:push({ normalize_log(din) })
     end
   )
 end

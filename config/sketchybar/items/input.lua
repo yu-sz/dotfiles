@@ -17,9 +17,10 @@ local input = sbar.add("item", "input", {
   label = {
     string = "--",
     font = settings.font.numbers,
-    color = colors.fg,
+    color = colors.magenta,
     padding_right = 6,
   },
+  background = { drawing = false },
   updates = true,
 })
 

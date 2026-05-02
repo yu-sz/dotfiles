@@ -15,17 +15,17 @@ local memory_graph = sbar.add("graph", "memory.graph", 40, {
   position = "right",
   graph = {
     color = colors.green,
-    fill_color = colors.with_alpha(colors.green, 0.7),
-    line_width = 1.0,
+    fill_color = colors.with_alpha(colors.green, 0.6),
+    line_width = 0.7,
   },
   background = {
     drawing = true,
     color = colors.transparent,
     border_color = colors.transparent,
     border_width = 0,
-    height = 22,
+    height = 20,
   },
-  padding_left = -10,
+  padding_left = -46,
 })
 
 local memory = sbar.add("item", "memory", {
@@ -40,22 +40,14 @@ local memory = sbar.add("item", "memory", {
   label = {
     string = "--%",
     font = settings.font.numbers,
-    color = colors.fg,
+    color = colors.blue,
+    width = 40,
+    align = "left",
     padding_right = 6,
   },
   background = { drawing = false },
   update_freq = 2,
   updates = true,
-})
-
-sbar.add("bracket", "memory.bracket", { memory.name, memory_graph.name }, {
-  background = {
-    color = colors.bg_dark,
-    border_color = colors.green,
-    border_width = 2,
-    corner_radius = 10,
-    height = 32,
-  },
 })
 
 local function update_memory()

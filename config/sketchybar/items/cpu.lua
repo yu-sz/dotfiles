@@ -14,25 +14,25 @@ sbar.add("item", "cpu.padding", {
 local cpu_graph = sbar.add("graph", "cpu.graph", 40, {
   position = "right",
   graph = {
-    color = colors.red,
-    fill_color = colors.with_alpha(colors.red, 0.7),
-    line_width = 1.0,
+    color = colors.purple,
+    fill_color = colors.with_alpha(colors.purple, 0.6),
+    line_width = 0.7,
   },
   background = {
     drawing = true,
     color = colors.transparent,
     border_color = colors.transparent,
     border_width = 0,
-    height = 22,
+    height = 20,
   },
-  padding_left = -10,
+  padding_left = -46,
 })
 
 local cpu = sbar.add("item", "cpu", {
   position = "right",
   icon = {
     string = nf(0xF4BC),
-    color = colors.red,
+    color = colors.purple,
     font = settings.font.icons,
     padding_left = 8,
     padding_right = 4,
@@ -40,22 +40,14 @@ local cpu = sbar.add("item", "cpu", {
   label = {
     string = "--%",
     font = settings.font.numbers,
-    color = colors.fg,
+    color = colors.blue,
+    width = 40,
+    align = "left",
     padding_right = 6,
   },
   background = { drawing = false },
   update_freq = 2,
   updates = true,
-})
-
-sbar.add("bracket", "cpu.bracket", { cpu.name, cpu_graph.name }, {
-  background = {
-    color = colors.bg_dark,
-    border_color = colors.red,
-    border_width = 2,
-    corner_radius = 10,
-    height = 32,
-  },
 })
 
 local function update_cpu()

@@ -46,7 +46,7 @@ for idx, ws_id in ipairs(workspace_ids) do
     background = {
       color = colors.bg_dark,
       border_color = accent,
-      border_width = 2,
+      border_width = 1,
       corner_radius = 10,
       height = 34,
     },

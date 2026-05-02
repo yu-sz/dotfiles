@@ -16,6 +16,7 @@ local battery = sbar.add("item", "battery", {
     color = colors.fg,
     padding_right = 6,
   },
+  background = { drawing = false },
   update_freq = 60,
   updates = true,
 })
@@ -51,7 +52,7 @@ local function update_battery()
     local color = pick_color(percent, charging)
     battery:set({
       icon = { string = pick_icon(percent, charging), color = color },
-      label = { string = percent .. "%" },
+      label = { string = percent .. "%", color = color },
     })
   end)
 end
