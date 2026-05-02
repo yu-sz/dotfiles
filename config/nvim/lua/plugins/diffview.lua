@@ -32,6 +32,10 @@ return {
       function()
         local open_pull_request_diffview = function()
           local handle = io.popen("gh pr view --json baseRefName --jq .baseRefName")
+          if not handle then
+            print("PR情報の取得に失敗しました")
+            return
+          end
           local base_branch = handle:read("*a"):gsub("%s+", "")
           handle:close()
 
