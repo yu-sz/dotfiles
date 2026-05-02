@@ -66,7 +66,7 @@ on-mode-changed = []
 [exec]
     inherit-env-vars = true
 [exec.env-vars]
-    PATH = '${HOME}/.nix-profile/bin:/run/current-system/sw/bin:${PATH}'
+    PATH = '/etc/profiles/per-user/${USER}/bin:${HOME}/.nix-profile/bin:/run/current-system/sw/bin:${PATH}'
 
 # Gaps between windows (inner-*) and between monitor edges (outer-*).
 # Possible values:
