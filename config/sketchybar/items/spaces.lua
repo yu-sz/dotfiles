@@ -15,18 +15,28 @@ local color_palette = {
   colors.magenta,
 }
 
-local function accent_for(idx)
+local function workspace_index(ws_id)
+  local n = tonumber(ws_id)
+  if n then
+    return n
+  end
+  return string.byte(ws_id:sub(1, 1):upper()) - string.byte("A") + 10
+end
+
+local function accent_for(ws_id)
+  local idx = workspace_index(ws_id)
   return color_palette[((idx - 1) % #color_palette) + 1]
 end
 
-local workspace_ids = aerospace.list_workspaces()
-local accents = {}
 local spaces = {}
+local current_focused = aerospace.focused_workspace()
 
-for idx, ws_id in ipairs(workspace_ids) do
-  local accent = accent_for(idx)
-  accents[ws_id] = accent
-  local space = sbar.add("item", "space." .. ws_id, {
+local function ensure_space_item(ws_id)
+  if spaces[ws_id] then
+    return
+  end
+  local accent = accent_for(ws_id)
+  spaces[ws_id] = sbar.add("item", "space." .. ws_id, {
     position = "left",
     icon = {
       string = ws_id,
@@ -54,43 +64,56 @@ for idx, ws_id in ipairs(workspace_ids) do
     padding_right = 4,
     click_script = "aerospace workspace " .. ws_id,
   })
-  spaces[ws_id] = space
 end
 
-local function refresh_apps(ws_id)
-  local apps = aerospace.list_apps(ws_id)
+local function update_space(ws_id, apps)
+  local item = spaces[ws_id]
+  if not item then
+    return
+  end
+  apps = apps or {}
   local parts = {}
-  for _, app_name in ipairs(apps) do
-    table.insert(parts, icon_map.icon(app_name))
+  for _, app in ipairs(apps) do
+    table.insert(parts, icon_map.icon(app))
   end
-  if spaces[ws_id] then
-    spaces[ws_id]:set({ label = { string = table.concat(parts, "") } })
+  local has_apps = #apps > 0
+  local is_focused = (ws_id == current_focused)
+  local accent = accent_for(ws_id)
+  item:set({
+    label = { string = table.concat(parts, ""), highlight = is_focused },
+    icon = { highlight = is_focused },
+    background = {
+      color = is_focused and accent or colors.bg_dark,
+      border_color = accent,
+    },
+    drawing = has_apps or is_focused,
+  })
+end
+
+local function reconcile()
+  local workspaces = aerospace.list_workspaces()
+  local apps_map = aerospace.apps_by_workspace()
+
+  local current_set = {}
+  for _, ws_id in ipairs(workspaces) do
+    current_set[ws_id] = true
+    ensure_space_item(ws_id)
+  end
+  if current_focused and not current_set[current_focused] then
+    current_set[current_focused] = true
+    ensure_space_item(current_focused)
+  end
+
+  for ws_id, item in pairs(spaces) do
+    if current_set[ws_id] then
+      update_space(ws_id, apps_map[ws_id])
+    else
+      item:set({ drawing = false })
+    end
   end
 end
 
-local function update_focus(focused)
-  for _, ws_id in ipairs(workspace_ids) do
-    local is_focused = (ws_id == focused)
-    local accent = accents[ws_id] or colors.fg
-    spaces[ws_id]:set({
-      icon = { highlight = is_focused },
-      label = { highlight = is_focused },
-      background = {
-        color = is_focused and accent or colors.bg_dark,
-        border_color = accent,
-      },
-    })
-  end
-end
-
-local function refresh_all()
-  for _, ws_id in ipairs(workspace_ids) do
-    refresh_apps(ws_id)
-  end
-end
-
-refresh_all()
-update_focus(tostring(aerospace.focused_workspace()))
+reconcile()
 
 sbar.add("event", "aerospace_workspace_change")
 
@@ -99,8 +122,7 @@ local handler = sbar.add("item", "spaces.handler", {
   updates = true,
 })
 handler:subscribe("aerospace_workspace_change", function(env)
-  local focused = env.FOCUSED or "1"
-  update_focus(focused)
-  refresh_all()
+  current_focused = env.FOCUSED or current_focused
+  reconcile()
 end)
-handler:subscribe("front_app_switched", refresh_all)
+handler:subscribe("front_app_switched", reconcile)
