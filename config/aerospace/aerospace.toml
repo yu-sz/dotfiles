@@ -260,10 +260,6 @@ if.app-id = 'com.hnc.Discord'
 run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
-if.app-id = 'com.apple.systempreferences'
-run = ['layout floating']
-
-[[on-window-detected]]
 if.app-id = 'org.pqrs.Karabiner-Elements'
 run = ['move-node-to-workspace 4']
 
@@ -274,6 +270,10 @@ run = ['move-node-to-workspace 4']
 [[on-window-detected]]
 if.app-id = 'com.docker.docker'
 run = ['move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
