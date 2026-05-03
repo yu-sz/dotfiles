@@ -11,6 +11,7 @@ let
 in
 {
   xdg.configFile = {
+    "btop".source = mkLink "config/btop";
     "nvim".source = mkLink "config/nvim";
     "tmux".source = mkLink "config/tmux";
     "gitmux".source = mkLink "config/gitmux";
