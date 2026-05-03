@@ -1,4 +1,4 @@
-format = "[░▒▓](#a3aed2)[  ](bg:#a3aed2 fg:#090c0c)[](bg:#3B6ADB fg:#a3aed2)$directory[](fg:#3B6ADB bg:#394260)$git_branch$git_status$git_state[](fg:#394260 bg:#212736)$nodejs$bun$lua[](fg:#212736)$fill$cmd_duration$time\n$character\n"
+format = "[░▒▓](#a3aed2)[  ](bg:#a3aed2 fg:#090c0c)[](bg:#3B6ADB fg:#a3aed2)$directory[](fg:#3B6ADB bg:#394260)$git_branch$git_status$git_state[](fg:#394260 bg:#212736)$nodejs$bun$lua$rust$golang$haskell$terraform[](fg:#212736)$fill$cmd_duration$time\n$character\n"
 
 [fill]
 symbol = " "
@@ -65,6 +65,26 @@ symbol = "🥟 "
 [cmd_duration]
 format = "[ ✨ $duration ](fg:#a0a9cb bg:#212736)"
 min_time = 2_000
+
+[terraform]
+format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)"
+style = "bg:#212736"
+symbol = "󱁢 "
+
+[golang]
+format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)"
+style = "bg:#212736"
+symbol = "󰟓 "
+
+[haskell]
+format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)"
+style = "bg:#212736"
+symbol = " "
+
+[rust]
+format = "[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)"
+style = "bg:#212736"
+symbol = "󱘗 "
 
 [time]
 disabled = false
