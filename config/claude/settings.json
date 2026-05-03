@@ -88,6 +88,16 @@
   },
   "skipAutoPermissionPrompt": true,
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify clear-state"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -102,14 +112,6 @@
             "timeout": 5
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify clear-state"
-          }
-        ]
       }
     ],
     "PostToolUse": [
@@ -121,6 +123,14 @@
             "command": "mkdir -p ~/.claude/logs && echo \"[$(date '+%H:%M:%S')] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/logs/command_history_$(date '+%Y-%m-%d').log"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify clear-state"
+          }
+        ]
       }
     ],
     "Stop": [
@@ -128,26 +138,26 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/notify.sh 'Task Completed!'"
+            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify idle"
           },
           {
             "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify idle"
+            "command": "(~/.claude/hooks/notify.sh 'Task Completed!' &)"
           }
         ]
       }
     ],
     "Notification": [
       {
-        "matcher": "",
+        "matcher": "permission_prompt",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/notify.sh 'Awaiting Confirmation...'"
+            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify waiting"
           },
           {
             "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify waiting"
+            "command": "(~/.claude/hooks/notify.sh 'Awaiting Confirmation...' &)"
           }
         ]
       }
