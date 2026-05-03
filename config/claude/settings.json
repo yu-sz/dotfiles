@@ -200,6 +200,7 @@
   },
   "showClearContextOnPlanAccept": true,
   "showThinkingSummaries": true,
+  "effortLevel": "xhigh",
   "feedbackSurveyState": {
     "lastShownTime": 1754030471611
   }
