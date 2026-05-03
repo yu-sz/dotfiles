@@ -269,15 +269,19 @@ run = ['move-node-to-workspace 3']
 
 [[on-window-detected]]
 if.app-id = 'org.pqrs.Karabiner-Elements'
-run = ['move-node-to-workspace 4']
+run = ['move-node-to-workspace 4', 'layout accordion vertical']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.ActivityMonitor'
-run = ['move-node-to-workspace 4']
+run = ['move-node-to-workspace 4', 'layout accordion vertical']
+
+[[on-window-detected]]
+if.app-id = 'org.jkiss.dbeaver.core.product'
+run = ['move-node-to-workspace 4', 'layout accordion vertical']
 
 [[on-window-detected]]
 if.app-id = 'com.electron.dockerdesktop'
-run = ['move-node-to-workspace 4']
+run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
