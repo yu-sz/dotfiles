@@ -1,5 +1,6 @@
 local sbar = require("sketchybar")
 local colors = require("colors")
+local settings = require("settings")
 local nf = require("helpers.icons").nf
 
 sbar.add("item", "apple", {
@@ -7,7 +8,7 @@ sbar.add("item", "apple", {
   icon = {
     string = nf(0xF179),
     color = colors.bg_dark,
-    font = "Moralerspace Xenon HW:Bold:18.0",
+    font = settings.font.apple_icon,
     padding_left = 10,
     padding_right = 10,
     y_offset = 2,

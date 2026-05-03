@@ -4,7 +4,7 @@ local settings = require("settings")
 local nf = require("helpers.icons").nf
 
 local mode_style = {
-  main = { color = colors.blue, icon = nf(0xF120), label = "main" },
+  main = { color = colors.blue, icon = nf(0xF24D), label = "main" },
   resize = { color = colors.orange, icon = nf(0xF065), label = "resize" },
   service = { color = colors.magenta, icon = nf(0xF013), label = "service" },
 }
@@ -32,7 +32,7 @@ local mode = sbar.add("item", "aerospace.mode", {
     string = mode_style.main.label,
     font = settings.font.numbers,
     color = mode_style.main.color,
-    padding_right = 8,
+    padding_right = 4,
   },
   background = {
     color = colors.transparent,
@@ -42,7 +42,7 @@ local mode = sbar.add("item", "aerospace.mode", {
     height = 26,
   },
   padding_left = 2,
-  padding_right = 4,
+  padding_right = 2,
   update_freq = 1,
   updates = true,
 })

@@ -241,6 +241,7 @@ notify)
     rm -f "$state_dir"/*
     ;;
   esac
+  command -v sketchybar >/dev/null 2>&1 && sketchybar --trigger tmux_change 2>/dev/null
   ;;
 
 list-sessions)
