@@ -1,3 +1,4 @@
+require("items.mode")
 require("items.spaces")
 require("items.date")
 require("items.battery")

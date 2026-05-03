@@ -4,29 +4,7 @@ local settings = require("settings")
 local aerospace = require("helpers.aerospace")
 local icon_map = require("helpers.icon_map")
 
-local color_palette = {
-  colors.red,
-  colors.orange,
-  colors.yellow,
-  colors.green,
-  colors.cyan,
-  colors.blue,
-  colors.purple,
-  colors.magenta,
-}
-
-local function workspace_index(ws_id)
-  local n = tonumber(ws_id)
-  if n then
-    return n
-  end
-  return string.byte(ws_id:sub(1, 1):upper()) - string.byte("A") + 10
-end
-
-local function accent_for(ws_id)
-  local idx = workspace_index(ws_id)
-  return color_palette[((idx - 1) % #color_palette) + 1]
-end
+local focus_color = colors.blue
 
 local spaces = {}
 local current_focused = aerospace.focused_workspace()
@@ -35,33 +13,32 @@ local function ensure_space_item(ws_id)
   if spaces[ws_id] then
     return
   end
-  local accent = accent_for(ws_id)
   spaces[ws_id] = sbar.add("item", "space." .. ws_id, {
     position = "left",
     icon = {
       string = ws_id,
-      color = accent,
-      highlight_color = colors.bg,
+      color = colors.blue,
+      highlight_color = colors.bg_dark,
       font = settings.font.numbers,
-      padding_left = 8,
+      padding_left = 6,
       padding_right = 4,
     },
     label = {
       string = "",
       font = settings.font.app,
-      color = accent,
-      highlight_color = colors.bg,
-      padding_right = 8,
+      color = colors.blue,
+      highlight_color = colors.bg_dark,
+      padding_right = 6,
     },
     background = {
-      color = colors.bg_dark,
-      border_color = accent,
-      border_width = 1,
-      corner_radius = 10,
-      height = 34,
+      color = colors.transparent,
+      border_color = colors.transparent,
+      border_width = 0,
+      corner_radius = 8,
+      height = 26,
     },
-    padding_left = 4,
-    padding_right = 4,
+    padding_left = 2,
+    padding_right = 2,
     click_script = "aerospace workspace " .. ws_id,
   })
 end
@@ -78,13 +55,11 @@ local function update_space(ws_id, apps)
   end
   local has_apps = #apps > 0
   local is_focused = (ws_id == current_focused)
-  local accent = accent_for(ws_id)
   item:set({
     label = { string = table.concat(parts, ""), highlight = is_focused },
     icon = { highlight = is_focused },
     background = {
-      color = is_focused and accent or colors.bg_dark,
-      border_color = accent,
+      color = is_focused and focus_color or colors.transparent,
     },
     drawing = has_apps or is_focused,
   })
@@ -112,6 +87,22 @@ local function reconcile()
     end
   end
 end
+
+local space_ids = { "aerospace.mode" }
+for _, ws_id in ipairs(aerospace.list_workspaces()) do
+  ensure_space_item(ws_id)
+  table.insert(space_ids, "space." .. ws_id)
+end
+
+sbar.add("bracket", "spaces.bracket", space_ids, {
+  background = {
+    color = colors.bg_dark,
+    border_color = colors.blue,
+    border_width = 1,
+    corner_radius = 10,
+    height = 32,
+  },
+})
 
 reconcile()
 
