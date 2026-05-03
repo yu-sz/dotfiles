@@ -3,25 +3,6 @@ local colors = require("colors")
 local settings = require("settings")
 local nf = require("helpers.icons").nf
 
-local volume = sbar.add("item", "volume", {
-  position = "right",
-  icon = {
-    string = nf(0xF028),
-    color = colors.blue,
-    font = settings.font.icons,
-    padding_left = 8,
-    padding_right = 4,
-  },
-  label = {
-    string = "--",
-    font = settings.font.numbers,
-    color = colors.blue,
-    padding_right = 6,
-  },
-  background = { drawing = false },
-  updates = true,
-})
-
 local function pick_icon(percent)
   if percent == 0 then
     return nf(0xF026)
@@ -34,10 +15,31 @@ local function pick_icon(percent)
   end
 end
 
-volume:subscribe("volume_change", function(env)
-  local percent = tonumber(env.INFO) or 0
-  volume:set({
-    icon = { string = pick_icon(percent) },
-    label = { string = percent .. "%" },
+return function(position)
+  local volume = sbar.add("item", "volume", {
+    position = position,
+    icon = {
+      string = nf(0xF028),
+      color = colors.blue,
+      font = settings.font.icons,
+      padding_left = 8,
+      padding_right = 4,
+    },
+    label = {
+      string = "--",
+      font = settings.font.numbers,
+      color = colors.blue,
+      padding_right = 6,
+    },
+    background = { drawing = false },
+    updates = true,
   })
-end)
+
+  volume:subscribe("volume_change", function(env)
+    local percent = tonumber(env.INFO) or 0
+    volume:set({
+      icon = { string = pick_icon(percent) },
+      label = { string = percent .. "%" },
+    })
+  end)
+end

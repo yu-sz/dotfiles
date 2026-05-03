@@ -3,24 +3,6 @@ local colors = require("colors")
 local settings = require("settings")
 local nf = require("helpers.icons").nf
 
-local battery = sbar.add("item", "battery", {
-  position = "right",
-  icon = {
-    color = colors.fg,
-    font = settings.font.icons,
-    padding_left = 8,
-    padding_right = 4,
-  },
-  label = {
-    font = settings.font.numbers,
-    color = colors.fg,
-    padding_right = 6,
-  },
-  background = { drawing = false },
-  update_freq = 60,
-  updates = true,
-})
-
 local function pick_icon(percent, charging)
   if charging then
     return nf(0xF0084)
@@ -44,17 +26,37 @@ local function pick_color(percent, charging)
   end
 end
 
-local function update_battery()
-  sbar.exec("pmset -g batt", function(out)
-    out = out or ""
-    local percent = tonumber(out:match("(%d+)%%")) or 0
-    local charging = out:find("AC Power", 1, true) ~= nil
-    local color = pick_color(percent, charging)
-    battery:set({
-      icon = { string = pick_icon(percent, charging), color = color },
-      label = { string = percent .. "%", color = color },
-    })
-  end)
-end
+return function(position)
+  local battery = sbar.add("item", "battery", {
+    position = position,
+    icon = {
+      color = colors.fg,
+      font = settings.font.icons,
+      padding_left = 8,
+      padding_right = 4,
+    },
+    label = {
+      font = settings.font.numbers,
+      color = colors.fg,
+      padding_right = 6,
+    },
+    background = { drawing = false },
+    update_freq = 60,
+    updates = true,
+  })
 
-battery:subscribe({ "routine", "power_source_change", "system_woke" }, update_battery)
+  local function update_battery()
+    sbar.exec("pmset -g batt", function(out)
+      out = out or ""
+      local percent = tonumber(out:match("(%d+)%%")) or 0
+      local charging = out:find("AC Power", 1, true) ~= nil
+      local color = pick_color(percent, charging)
+      battery:set({
+        icon = { string = pick_icon(percent, charging), color = color },
+        label = { string = percent .. "%", color = color },
+      })
+    end)
+  end
+
+  battery:subscribe({ "routine", "power_source_change", "system_woke" }, update_battery)
+end
