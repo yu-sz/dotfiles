@@ -18,7 +18,7 @@ return function(position)
     position = position,
     icon = {
       string = nf(0xF11C),
-      color = colors.magenta,
+      color = colors.blue,
       font = settings.font.icons,
       padding_left = 8,
       padding_right = 4,
@@ -26,7 +26,7 @@ return function(position)
     label = {
       string = "--",
       font = settings.font.numbers,
-      color = colors.magenta,
+      color = colors.blue,
       padding_right = 6,
     },
     background = { drawing = false },

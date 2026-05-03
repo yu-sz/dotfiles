@@ -51,7 +51,7 @@ return function(position)
     label = {
       string = os.date("%b %d %a"),
       font = "Moralerspace Xenon HW:Regular:12.0",
-      color = colors.blue,
+      color = colors.fg,
       y_offset = -7,
       padding_left = -40,
       padding_right = 6,
