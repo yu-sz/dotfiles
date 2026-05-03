@@ -21,6 +21,7 @@ in
     "mise".source = mkLink "config/mise";
     "zsh".source = mkLink "config/zsh";
     "wezterm".source = mkLink "config/wezterm";
+    "starship.toml".source = mkLink "config/starship/starship.toml";
   }
   // lib.optionalAttrs pkgs.stdenv.isDarwin {
     "karabiner".source = mkLink "config/karabiner";
