@@ -1,3 +1,0 @@
-# セットアップ環境ごとの利用環境が異なりすぎるため、一旦config.tomlはignore
-# 良い管理方法を見いだせたらdotfilesで管理するようにする
-config.toml
