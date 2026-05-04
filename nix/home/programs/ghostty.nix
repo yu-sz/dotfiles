@@ -24,14 +24,19 @@ in
       window-padding-y = 2;
       window-padding-balance = true;
       window-step-resize = false;
-      window-save-state = "always";
+      window-save-state = "default";
       window-inherit-working-directory = true;
       clipboard-read = "allow";
       clipboard-write = "allow";
       clipboard-trim-trailing-spaces = true;
       shell-integration = "detect";
-      command = "${zshPath} -lic 'ghostty +boo; tmux attach || tmux new-session -s default'";
-      keybind = [ "shift+enter=text:\\n" ];
+      quick-terminal-position = "top";
+      quick-terminal-size = "60%,80%";
+      command = "${zshPath} -lic 'if [[ -n $GHOSTTY_QUICK_TERMINAL ]]; then exec ${zshPath} -li; fi; ghostty +boo; tmux attach || tmux new-session -s default'";
+      keybind = [
+        "shift+enter=text:\\n"
+        "global:f13=toggle_quick_terminal"
+      ];
     }
     // lib.optionalAttrs pkgs.stdenv.isDarwin {
       macos-icon = "xray";
