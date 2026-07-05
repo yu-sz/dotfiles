@@ -98,10 +98,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify waiting"
-          },
-          {
-            "type": "command",
             "command": "(~/.claude/hooks/notify.sh 'Awaiting Confirmation...' &)"
           },
           {
@@ -123,10 +119,6 @@
       },
       {
         "hooks": [
-          {
-            "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify clear-state"
-          },
           {
             "type": "command",
             "command": "~/.claude/hooks/report-herdr-state.sh working"
@@ -151,15 +143,6 @@
       }
     ],
     "SessionEnd": [
-      {
-        "matcher": "prompt_input_exit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify end"
-          }
-        ]
-      },
       {
         "hooks": [
           {
@@ -186,10 +169,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify idle"
-          },
-          {
-            "type": "command",
             "command": "(~/.claude/hooks/notify.sh 'Task Completed!' &)"
           },
           {
@@ -202,10 +181,6 @@
     "UserPromptSubmit": [
       {
         "hooks": [
-          {
-            "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify clear-state"
-          },
           {
             "type": "command",
             "command": "~/.claude/hooks/report-herdr-state.sh working"

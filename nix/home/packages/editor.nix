@@ -5,7 +5,6 @@
     herdr
     luarocks
     neovim
-    tmux
     tree-sitter
     vim
     vscode

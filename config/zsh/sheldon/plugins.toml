@@ -31,7 +31,7 @@ local = "~/.config/zsh"
 use = ["eager/*.zsh"]
 apply = ["source"]
 
-# tmux popup から PATH 経由で呼ぶため eager（defer だと popup 環境に反映されない）
+# workspace CLI を PATH へ即時反映するため eager（defer だと pane 起動直後に使えない）
 [plugins.workspace]
 local = "~/.config/zsh/plugins/workspace"
 use = ["plugin.zsh"]

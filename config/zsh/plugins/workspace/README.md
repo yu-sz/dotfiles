@@ -14,19 +14,19 @@ workspace の一覧・切替・リネーム・削除は herdr native picker（`p
 
 ## サブコマンド
 
-| コマンド                | 用途                                                                                      |
-| ----------------------- | ----------------------------------------------------------------------------------------- |
-| `workspace new [repo]`  | workspace 起動（デフォルト）。同 label があれば focus、なければ ghq リポジトリから create |
-| `workspace wt [branch]` | worktree 作成 + workspace 起動（`herdr worktree create` 委譲）                            |
-| `workspace wt-rm`       | worktree と紐付く workspace を削除（`herdr worktree remove` 委譲）                        |
-| `workspace notify ...`  | 旧 tmux 構成の Claude hooks 互換 no-op スタブ（hooks 撤去時に削除予定）                   |
+| コマンド                | 用途                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| `workspace new [repo]`  | workspace 起動（デフォルト）。同 label があれば focus、なければ ghq リポジトリから create  |
+| `workspace wt [branch]` | worktree 作成 + workspace 起動（`herdr worktree create` 委譲）                             |
+| `workspace wt-rm`       | worktree と紐付く workspace を削除（`herdr worktree remove` 委譲）                         |
+| `workspace notify ...`  | 旧 hooks を持つ稼働中 claude セッション互換の no-op スタブ（旧セッション終了後に削除予定） |
 
 ## 呼び出し元
 
-| 呼び出し元        | コマンド                                  |
-| ----------------- | ----------------------------------------- |
-| シェル            | `ws`（zabrze abbreviation → `workspace`） |
-| Claude Code hooks | `workspace notify ...`（互換スタブ）      |
+| 呼び出し元                          | コマンド                                  |
+| ----------------------------------- | ----------------------------------------- |
+| シェル                              | `ws`（zabrze abbreviation → `workspace`） |
+| 旧 hooks の稼働中 claude セッション | `workspace notify ...`（互換スタブ）      |
 
 ## レイアウト管理（旧 smug）の方針
 
