@@ -9,16 +9,6 @@ local mode_style = {
   service = { color = colors.magenta, icon = nf(0xF013), label = "service" },
 }
 
-local function fetch_current_mode()
-  local f = io.popen("aerospace list-modes --current")
-  if not f then
-    return "main"
-  end
-  local out = (f:read("*l") or ""):gsub("%s+", "")
-  f:close()
-  return out ~= "" and out or "main"
-end
-
 return function(position)
   local mode = sbar.add("item", "aerospace.mode", {
     position = position,
@@ -44,8 +34,6 @@ return function(position)
     },
     padding_left = 2,
     padding_right = 2,
-    update_freq = 1,
-    updates = true,
   })
 
   local last_mode
@@ -63,12 +51,15 @@ return function(position)
   end
 
   local function refresh()
-    update_mode(fetch_current_mode())
+    sbar.exec("aerospace list-modes --current", function(out)
+      local name = (out or ""):gsub("%s+", "")
+      update_mode(name ~= "" and name or "main")
+    end)
   end
 
   sbar.add("event", "aerospace_mode_change")
 
-  mode:subscribe({ "routine", "forced", "aerospace_mode_change" }, refresh)
+  mode:subscribe("aerospace_mode_change", refresh)
 
   refresh()
 end

@@ -20,21 +20,6 @@ local STATE_COLOR = {
   none = colors.fg_dark,
 }
 
-local function list_sessions()
-  local f = io.popen(TMUX .. " ls -F '#{session_name}' 2>/dev/null")
-  if not f then
-    return {}
-  end
-  local out = {}
-  for line in f:lines() do
-    if line ~= "" then
-      table.insert(out, line)
-    end
-  end
-  f:close()
-  return out
-end
-
 local function read_state(name)
   local f = io.open(STATE_DIR .. "/claude_" .. name, "r")
   if not f then
@@ -117,8 +102,9 @@ return function(position)
     },
   })
 
-  local function reconcile()
-    local current = list_sessions()
+  local in_flight, dirty = false, false
+
+  local function render(current)
     local count = math.min(#current, SLOT_COUNT)
 
     if count == 0 then
@@ -150,6 +136,28 @@ return function(position)
         separators[i]:set({ drawing = false })
       end
     end
+  end
+
+  local function reconcile()
+    if in_flight then
+      dirty = true
+      return
+    end
+    in_flight = true
+    sbar.exec(TMUX .. " ls -F '#{session_name}' 2>/dev/null", function(out)
+      local current = {}
+      for line in (out or ""):gmatch("[^\r\n]+") do
+        if line ~= "" then
+          table.insert(current, line)
+        end
+      end
+      render(current)
+      in_flight = false
+      if dirty then
+        dirty = false
+        reconcile()
+      end
+    end)
   end
 
   reconcile()

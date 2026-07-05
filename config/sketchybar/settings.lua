@@ -1,5 +1,6 @@
 return {
   paddings = 4,
+  metrics_update_freq = 3,
 
   font = {
     text = "Moralerspace Xenon HW:Regular:14.0",

@@ -1,3 +1,5 @@
+local sbar = require("sketchybar")
+
 local M = {}
 
 function M.list_workspaces()
@@ -25,28 +27,25 @@ function M.focused_workspace()
   return out ~= "" and out or "1"
 end
 
-function M.apps_by_workspace()
+function M.apps_by_workspace(callback)
   local cmd =
     [[aerospace list-windows --all --format "%{workspace}%{app-name}" --json | jq -r '.[] | "\(.workspace)\t\(.["app-name"])"']]
-  local result = {}
-  local seen = {}
-  local f = io.popen(cmd)
-  if not f then
-    return result
-  end
-  for line in f:lines() do
-    local ws, app = line:match("^([^\t]+)\t(.+)$")
-    if ws and app then
-      seen[ws] = seen[ws] or {}
-      if not seen[ws][app] then
-        seen[ws][app] = true
-        result[ws] = result[ws] or {}
-        table.insert(result[ws], app)
+  sbar.exec(cmd, function(out)
+    local result = {}
+    local seen = {}
+    for line in (out or ""):gmatch("[^\r\n]+") do
+      local ws, app = line:match("^([^\t]+)\t(.+)$")
+      if ws and app then
+        seen[ws] = seen[ws] or {}
+        if not seen[ws][app] then
+          seen[ws][app] = true
+          result[ws] = result[ws] or {}
+          table.insert(result[ws], app)
+        end
       end
     end
-  end
-  f:close()
-  return result
+    callback(result)
+  end)
 end
 
 return M

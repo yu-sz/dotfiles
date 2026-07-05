@@ -104,7 +104,7 @@ return function(position)
     },
     label = { drawing = false },
     background = { drawing = false },
-    update_freq = 2,
+    update_freq = settings.metrics_update_freq,
     updates = true,
   })
 
@@ -121,8 +121,8 @@ return function(position)
           last_in, last_out = in_b, out_b
           return
         end
-        local din = math.max(0, (in_b - last_in)) / 2
-        local dout = math.max(0, (out_b - last_out)) / 2
+        local din = math.max(0, (in_b - last_in)) / settings.metrics_update_freq
+        local dout = math.max(0, (out_b - last_out)) / settings.metrics_update_freq
         last_in, last_out = in_b, out_b
         up:set({ label = { string = "↑" .. format_bps(dout) } })
         down:set({ label = { string = "↓" .. format_bps(din) } })

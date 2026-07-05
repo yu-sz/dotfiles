@@ -47,7 +47,7 @@ return function(position)
       padding_right = 6,
     },
     background = { drawing = false },
-    update_freq = 2,
+    update_freq = settings.metrics_update_freq,
     updates = true,
   })
 

@@ -8,6 +8,7 @@ return function(position)
   local focus_color = colors.blue
 
   local spaces = {}
+  local rendered = {}
   local current_focused = aerospace.focused_workspace()
 
   local function ensure_space_item(ws_id)
@@ -54,45 +55,58 @@ return function(position)
     for _, app in ipairs(apps) do
       table.insert(parts, icon_map.icon(app))
     end
-    local has_apps = #apps > 0
+    local label = table.concat(parts, "")
     local is_focused = (ws_id == current_focused)
+    local drawing = #apps > 0 or is_focused
+
+    local prev = rendered[ws_id]
+    if prev and prev.label == label and prev.focused == is_focused and prev.drawing == drawing then
+      return
+    end
+    rendered[ws_id] = { label = label, focused = is_focused, drawing = drawing }
+
     item:set({
-      label = { string = table.concat(parts, ""), highlight = is_focused },
+      label = { string = label, highlight = is_focused },
       icon = { highlight = is_focused },
       background = {
         color = is_focused and focus_color or colors.transparent,
       },
-      drawing = has_apps or is_focused,
+      drawing = drawing,
     })
   end
 
-  local function reconcile()
-    local workspaces = aerospace.list_workspaces()
-    local apps_map = aerospace.apps_by_workspace()
+  local in_flight, dirty = false, false
 
-    local current_set = {}
-    for _, ws_id in ipairs(workspaces) do
-      current_set[ws_id] = true
-      ensure_space_item(ws_id)
-    end
-    if current_focused and not current_set[current_focused] then
-      current_set[current_focused] = true
-      ensure_space_item(current_focused)
-    end
-
-    for ws_id, item in pairs(spaces) do
-      if current_set[ws_id] then
+  local function do_reconcile()
+    in_flight = true
+    aerospace.apps_by_workspace(function(apps_map)
+      for ws_id in pairs(spaces) do
         update_space(ws_id, apps_map[ws_id])
-      else
-        item:set({ drawing = false })
       end
+      in_flight = false
+      if dirty then
+        dirty = false
+        do_reconcile()
+      end
+    end)
+  end
+
+  local function reconcile()
+    if in_flight then
+      dirty = true
+      return
     end
+    do_reconcile()
   end
 
   local space_ids = { "aerospace.mode" }
   for _, ws_id in ipairs(aerospace.list_workspaces()) do
     ensure_space_item(ws_id)
     table.insert(space_ids, "space." .. ws_id)
+  end
+  if current_focused and not spaces[current_focused] then
+    ensure_space_item(current_focused)
+    table.insert(space_ids, "space." .. current_focused)
   end
 
   sbar.add("bracket", "spaces.bracket", space_ids, {
