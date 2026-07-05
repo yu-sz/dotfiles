@@ -65,12 +65,12 @@
 
 ### 受け入れ基準（Definition of Done）
 
-- [ ] tmux を起動せず日常運用（リポ切替・worktree・複数エージェント）が回る
-- [ ] menu bar が working→blocked をポーリングなしで即時反映する
-- [ ] 主要リポで workspace 作成 / 切替 / worktree 作成が動作する
-- [ ] `herdr server` 再起動後に workspace が復元される
-- [ ] nvim を herdr pane で動かして描画・キー操作が破綻しない
-- [ ] 旧構成（`config/tmux`・gitmux・TPM・ws-state hook）が撤去され `nrs` が通る
+- [ ] tmux を起動せず日常運用（リポ切替・worktree・複数エージェント）が回る（tmux 本体は除去済みのため構造上は充足。実運用での継続確認のみ）
+- [x] menu bar が working→blocked をポーリングなしで即時反映する（Phase 2 で機構検証、hook 自動発火も 4-8 で実機確認）
+- [x] 主要リポで workspace 作成 / 切替 / worktree 作成が動作する（Phase 3-4 で確認）
+- [x] `herdr server` 再起動後に workspace が復元される（事前検証で実測済み）
+- [x] nvim を herdr pane で動かして描画・キー操作が破綻しない（1-8。undercurl のみ upstream 修正待ちで平坦下線）
+- [x] 旧構成（`config/tmux`・gitmux・TPM・ws-state hook）が撤去され `nrs` が通る（Phase 4 + nrs 実行で確認）
 
 ### スコープ外 / 非目標
 
@@ -344,7 +344,7 @@ herdr workspace list \
 - [x] 4-5: Claude Code hooks の ws-state 書き出しのうち sketchybar 用途分を除去（他用途がなければ状態 hook 自体を削除）（settings.json から `workspace notify` 5 hook を除去。残る状態報告は report-herdr-state.sh のみ）
 - [x] 4-6: smug パッケージを Nix から除去（`nix/home/packages/shell.nix`）
 - [x] 4-7: `CLAUDE.md` / 関連 README のマルチプレクサ記述を Herdr に更新（CLAUDE.md・ルート README にマルチプレクサ記述なしを確認。workspace README は Phase 3 で更新済み、sheldon plugins.toml の tmux popup 前提コメントを更新）
-- [ ] 4-8: `git add` 後 `! nrs`、シェル再起動で旧参照が消えたことを確認（**ユーザー操作待ち**。git add 済み）
+- [x] 4-8: `git add` 後 `! nrs`、シェル再起動で旧参照が消えたことを確認（nrs 成功: tmux/gitmux/smug/tmux-terminfo が REMOVED、`command -v` で消滅確認、`~/.config/{tmux,gitmux}` リンク除去、herdr/sketchybar は正常稼働。加えて report-herdr-state hook の自動発火（UserPromptSubmit→working）を実機で確認、fallback 経路は完全稼働）
 
 > **予実差異（4-5: notify スタブは温存）**: settings.json の hooks 撤去後も、旧 hooks スナップショットを持つ**稼働中の** claude セッションが `workspace notify ...` を呼び続けるため、CLI の no-op スタブは残置した。全旧セッション終了後の削除を後続タスク化。
 >
