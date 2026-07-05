@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+# workspace 単位に `label<TAB>agent_status` を1行ずつ出力する。
+# `herdr workspace list` は JSON を stdout へ直接返す (実測確認済み)。
+# sketchybar の launchd agent は PATH が最小構成のため per-user profile を明示する。
+path=(/etc/profiles/per-user/${USER}/bin $path)
+
+herdr workspace list 2>/dev/null |
+  jq -r '.result.workspaces[] | "\(.label)\t\(.agent_status)"' 2>/dev/null

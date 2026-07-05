@@ -5,3 +5,6 @@
 !config.toml
 !plugins/
 !plugins/**
+# plugins/config/<id>/ は herdr が plugin link 時に生成する per-plugin config dir
+# (`herdr plugin config-dir` の出力先) のため runtime 状態として除外する。
+plugins/config/

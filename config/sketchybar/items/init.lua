@@ -7,8 +7,8 @@ section_gap.add("section.gap.left1", "left")
 require("items.mode")("left")
 require("items.spaces")("left")
 section_gap.add("section.gap.left2", "left")
--- 左: tmux セッション
-require("items.tmux")("left")
+-- 左: herdr workspace
+require("items.herdr")("left")
 
 -- 右: 日時
 require("items.date")("right")

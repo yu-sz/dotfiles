@@ -1,0 +1,23 @@
+# herdr のイベントを sketchybar のカスタムイベント herdr_update へ橋渡しする。
+# [[events]] の on は単一イベント名のみ受け付けるためイベント毎に宣言する。
+id = "sketchybar-sync"
+name = "sketchybar sync"
+version = "0.1.0"
+min_herdr_version = "0.7.0"
+platforms = ["macos"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["sketchybar", "--trigger", "herdr_update"]
+
+[[events]]
+on = "workspace.created"
+command = ["sketchybar", "--trigger", "herdr_update"]
+
+[[events]]
+on = "workspace.closed"
+command = ["sketchybar", "--trigger", "herdr_update"]
+
+[[events]]
+on = "workspace.renamed"
+command = ["sketchybar", "--trigger", "herdr_update"]
