@@ -71,12 +71,6 @@ wt-rm)
   herdr worktree remove --workspace "$ws_id"
   ;;
 
-notify)
-  # 旧 tmux 構成の Claude hooks 互換スタブ。herdr への状態報告は
-  # ~/.claude/hooks/report-herdr-state.sh が行う。Phase 4 で hooks ごと削除する。
-  exit 0
-  ;;
-
 *)
   exec "$0" new
   ;;

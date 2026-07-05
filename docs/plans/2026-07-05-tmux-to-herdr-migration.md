@@ -409,10 +409,12 @@ herdr workspace list \
 - 対応: **放置**。次 stable（v0.7.2 見込み）が出たら flake の herdr タグを bump して解消。
 - 不採用: 一時的な `TERM=xterm-ghostty` 上書きは v0.7.1 の VT バグでは曲線化しないため撤回済み。
 
-### [ ] workspace notify スタブ削除（Phase 4 実装中に発生）
+### [x] workspace notify スタブ削除（Phase 4 実装中に発生）
 
 - 旧 hooks スナップショットを持つ claude セッションが全て終了した後、
   `config/zsh/plugins/workspace/bin/workspace` の `notify` スタブと README の記載を削除する。
+- **完了**: Claude Code が settings.json の hook 変更をセッション途中で反映する（4-8 で実測）ため
+  旧 hooks を呼び続けるセッションは残存しないと判断し、待たずに削除した（ユーザー決定）。
 
 ### [ ] herdr stable 追従の自動化（別 workflow・案C）
 
