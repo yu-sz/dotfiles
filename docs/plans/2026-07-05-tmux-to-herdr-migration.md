@@ -1,0 +1,343 @@
+# tmux → Herdr 移行と sketchybar イベント駆動同期 実装計画
+
+## 概要
+
+- Herdr を唯一のマルチプレクサとして導入する（sketchybar 同期の中核機構は実機とソースで検証済み）
+- sketchybar 同期を `tmux ls` + ws-state ファイル + 5秒ポーリングから、Herdr plugin の `[[events]]` によるイベント駆動へ置き換える
+- ターミナル内 UI と通知トーストは Herdr に委譲する
+- `workspace` CLI は Herdr の workspace/worktree に委譲して ghq ラッパへ縮小、smug / gitmux / TPM / Claude 状態 hook を廃止する
+- Herdr は nixpkgs 未収録のため flake input として追加する
+
+**出典**:
+
+- [ADR: tmux から Herdr への移行と sketchybar 同期のイベント駆動化](../adr/2026-07-05-tmux-to-herdr-migration.md)
+
+---
+
+## 要件定義（完成形の仕様）
+
+完成形が満たすべき要件。各項目は受け入れ基準（検証可能）として扱う。
+
+### 機能要件
+
+#### FR-1 マルチプレクサ基盤
+
+- Herdr を単一のマルチプレクサとして常用する（tmux は起動しない）
+- prefix=`ctrl+g`、pane 移動=`prefix+h/j/k/l`、分割=`prefix+v`/`prefix+-`、copy=`prefix+[` の vi copy-mode（hjkl/v/y）
+- テーマは Tokyo Night（`tokyo-night`）
+- detach/reattach でき、マシン再起動後も workspace が復元される（TPM resurrect/continuum 相当を内蔵で代替）
+- lazygit / btop を overlay pane で起動（`prefix+alt+g` / `prefix+alt+b`）
+
+#### FR-2 エージェント状態可視化（sketchybar）
+
+- menu bar に workspace 単位でエージェント状態（`blocked`/`working`/`done`/`idle`/`unknown`）を色表示する
+- 状態反映は **イベント駆動**（5秒ポーリング・状態ファイル・tmux hook を全廃）
+- 状態源は Herdr のネイティブ検知。Claude 以外のエージェントにも効く。検知が不十分なら `herdr pane report-agent` で補完できる
+- herdr 未起動時は非表示（他の menu bar 項目を壊さない）
+
+#### FR-3 ワークスペース / worktree 管理
+
+- ghq リポジトリを選んで workspace を起動でき、label は repo 名に自動命名される
+- workspace の一覧 / 切替 / 削除 / リネームができる
+- git worktree をブランチ単位で作成 / 削除できる
+- （未決）fzf UX の維持か Herdr native picker（`prefix+w`）採用かは Phase 3 で判断
+
+#### FR-4 通知
+
+- エージェントの完了 / 要対応をトーストで通知する（`[ui.toast] delivery = "herdr"`）
+
+#### FR-5 Neovim 連携
+
+- Sidekick の送信（`<leader>at/af/av`）/ NES / prompt が従来どおり機能する
+- [sidekick.nvim#333](https://github.com/folke/sidekick.nvim/pull/333) マージ後は agent を herdr pane で起動し、herdr の状態可視化対象になる
+- nvim の直接キー（`<c-.>` 等）と herdr の既定キーが衝突しない
+
+#### FR-6 日本語入力
+
+- CJK IME 下で prefix 入力・IME 候補ウィンドウ追従が破綻しない（`[experimental]` の IME 設定）
+
+### 非機能要件
+
+- **部品削減**: gitmux / TPM / smug / Claude 状態 hook を撤去する
+- **単一系統**: tmux との並行運用をしない
+- **Nix 管理**: flake overlay 経由の `pkgs.herdr`、config は XDG symlink（`config/herdr`）
+- **再現性**: herdr は v0.7.1 を pin（pre-1.0 のため）
+
+### 受け入れ基準（Definition of Done）
+
+- [ ] tmux を起動せず日常運用（リポ切替・worktree・複数エージェント）が回る
+- [ ] menu bar が working→blocked をポーリングなしで即時反映する
+- [ ] 主要リポで workspace 作成 / 切替 / worktree 作成が動作する
+- [ ] `herdr server` 再起動後に workspace が復元される
+- [ ] nvim を herdr pane で動かして描画・キー操作が破綻しない
+- [ ] 旧構成（`config/tmux`・gitmux・TPM・ws-state hook）が撤去され `nrs` が通る
+
+### スコープ外 / 非目標
+
+- tmux `display-popup` の floating popup 完全再現（overlay pane で代替）
+- Sidekick の herdr 対応そのもの（上流 #333 のマージに依存）
+- smug `.smug.yml` の完全互換（レイアウトは Herdr layout で再設計）
+
+---
+
+## 決定事項
+
+| 項目             | 決定                                                                                                                  | 備考                                                                                                                                                                                                                      |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 導入方式         | **flake input `github:ogulcancelik/herdr/v0.7.1`**                                                                    | nixpkgs 未収録。version を tag で pin                                                                                                                                                                                     |
+| sketchybar 同期  | **plugin `[[events]]` → `sketchybar --trigger`**                                                                      | workspace 系は実機で発火確認（exit 0・約 6ms）。`pane.agent_status_changed` も v0.7.1 の `PLUGIN_HOOK_EVENT_KINDS` に含まれ dispatch される（ソース確認）。ペイロードに `agent_status` 同梱で再取得不要、常駐 daemon 不要 |
+| snapshot 取得    | **`herdr workspace list`（CLI が JSON 直接返却、nc 不要）**                                                           | `.result.workspaces[].agent_status`。helper 一行の出力まで実測確認                                                                                                                                                        |
+| status 値        | **`idle` / `working` / `blocked` / `done` / `unknown` の 5 値**                                                       | `herdr agent wait --status idle\|working\|blocked\|done\|unknown`。`done`（完了）も配色対象に含める                                                                                                                       |
+| prefix           | **`ctrl+g`**                                                                                                          | 現 tmux の C-g を踏襲（Herdr default は ctrl+b）                                                                                                                                                                          |
+| theme            | **`tokyo-night`**                                                                                                     | Herdr 内蔵。`reload-config` で妥当性確認済み                                                                                                                                                                              |
+| 通知トースト     | **`[ui.toast] delivery = "herdr"`**                                                                                   | ターミナル内トーストを Herdr に委譲                                                                                                                                                                                       |
+| pane 移動        | **`prefix+h/j/k/l`**                                                                                                  | vim 風。navigate-mode の素キー `j`/`k` も併用可                                                                                                                                                                           |
+| popup 代替       | **`[[keys.command]]` type=pane（lazygit=`prefix+alt+g`／btop=`prefix+alt+b`）**                                       | floating popup は無く overlay pane で近似。`prefix+g`=goto / `prefix+shift+g`=new_worktree と衝突回避（実測）                                                                                                             |
+| workspace CLI    | **ghq→`herdr workspace` の薄いラッパへ縮小**                                                                          | worktree は Herdr へ委譲。`--cwd` 指定で label が repo 名に自動命名される（実測）ため命名ロジック不要                                                                                                                     |
+| smug             | **廃止**                                                                                                              | Herdr layout で代替。自作前に先行 plugin（herdr-spreader 等）を評価                                                                                                                                                       |
+| gitmux / TPM     | **廃止**                                                                                                              | Herdr 内蔵 UI・永続化で不要                                                                                                                                                                                               |
+| Claude 状態 hook | **sketchybar 用途では廃止**                                                                                           | 状態源を Herdr ネイティブ検知へ一本化。検知が弱い場合は `herdr pane report-agent` で明示報告できる                                                                                                                        |
+| Neovim 連携      | **Sidekick の herdr mux backend に委譲（[sidekick.nvim#333](https://github.com/folke/sidekick.nvim/pull/333) 待ち）** | マージまで `mux.enabled=false`（agent は nvim split・herdr 状態外）。DIY `pane send-text` は作らない                                                                                                                      |
+
+---
+
+## 検証済み事項（実測）
+
+`brew install herdr`（v0.7.1）で導入し、headless server + CLI で以下を実測確認済み。実行後はサーバ停止・生成物削除で痕跡なし。
+
+| 事項                   | 実測結果                                                                                                                                                                                                                                                  |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| config.toml 妥当性     | 下記 config で `herdr server reload-config` が `diagnostics:[] / applied`（警告・エラーゼロ）                                                                                                                                                             |
+| キーバインド衝突       | lazygit/btop を `prefix+alt+g/b` にした構成で診断ゼロ（`prefix+g`=goto 等との衝突を回避）                                                                                                                                                                 |
+| plugin イベント発火    | `[[events]]` on `workspace.created`/`closed` で command が発火、`exit_code:0 / succeeded`、起動〜終了 **約 6ms**。`pane.agent_status_changed` も v0.7.1 の dispatch 対象（`PLUGIN_HOOK_EVENT_KINDS` をソース確認、高頻度の `pane.output_matched` は除外） |
+| イベントペイロード     | `HERDR_PLUGIN_EVENT_JSON` に workspace オブジェクト丸ごと（`workspace_id`/`label`/`agent_status`）を同梱                                                                                                                                                  |
+| snapshot 出力          | `herdr workspace list \| jq -r '.result.workspaces[] \| "\(.label)\t\(.agent_status)"'` → `dotfiles<TAB>unknown`                                                                                                                                          |
+| workspace 自動命名     | `herdr workspace create --cwd <repo>`（label 省略）で `label` が repo 名（`dotfiles`）に自動設定                                                                                                                                                          |
+| worktree CLI           | `herdr worktree list/create/remove --cwd --branch` が実 repo で動作（`repo_name`/`branch`/`path` を返す）                                                                                                                                                 |
+| 状態の明示報告 API     | `herdr pane report-agent <pane_id> --source <id> --agent <label> --state idle\|working\|blocked\|unknown`（`--source`/`--agent` も必須。検知フォールバックに使える）                                                                                      |
+| socket / named session | 既定 `~/.config/herdr/herdr.sock`、named は `~/.config/herdr/sessions/<name>/herdr.sock`                                                                                                                                                                  |
+| セッション永続性       | `herdr server stop`→再起動後も workspace が復元（TPM resurrect/continuum を代替）                                                                                                                                                                         |
+| Nix 導入経路           | herdr flake の `overlays.default` を `sharedOverlays` へ足し `pkgs.herdr` で参照（`inputs` 配線不要）                                                                                                                                                     |
+
+**導入時に確認する残件（非ゲート。実エージェント／対話 TTY が必要で headless では検証不能）**:
+
+- 実 claude の working→blocked で Herdr が `pane.agent_status_changed` を emit するか（検知精度）。dispatch 機構は v0.7.1 ソースで確認済み（`PLUGIN_HOOK_EVENT_KINDS` に同イベント在中）のため残件は検知のみ。弱ければ Claude hook から `herdr pane report-agent` を叩けば同イベントが emit され同経路で sketchybar を更新できる（polling 不要）
+- nvim を herdr pane で動かした際の LSP 診断 undercurl 描画・clipboard 自動コピー
+- prefix / vi copy-mode（`prefix+[`）等のキーボード主観使用感
+
+---
+
+## 設計: Nix 導入（overlay 経由）
+
+herdr flake は `overlays.default`（nixpkgs overlay）を公開しており（`nix flake show` で確認）、既存の `sharedOverlays` に足せば `pkgs.herdr` で参照できる。現状 home モジュールへ `inputs` は渡していないが、overlay 経由なら **inputs 配線は不要**。なお package は Rust をソースビルドするため、brew での事前検証と異なり初回 `nrs` は aarch64-darwin のビルド時間を要する。
+
+```nix
+# flake.nix の inputs に追加
+inputs.herdr = {
+  url = "github:ogulcancelik/herdr/v0.7.1";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
+```nix
+# flake.nix の sharedOverlays に1行追加
+sharedOverlays = [
+  inputs.nix-claude-code.overlays.default
+  (import ./nix/overlays)
+  inputs.herdr.overlays.default # ← 追加
+];
+```
+
+```nix
+# nix/home/darwin.nix の home.packages に追加（overlay 経由で pkgs.herdr が使える）
+pkgs.herdr
+```
+
+---
+
+## 設計: config.toml
+
+`herdr server reload-config` で `diagnostics:[]`（警告ゼロ）を実機確認済み。
+
+```toml
+# config/herdr/config.toml → ~/.config/herdr/config.toml (symlink)
+
+[theme]
+name = "tokyo-night"
+
+[keys]
+prefix = "ctrl+g"
+new_tab = "prefix+c"
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# lazygit/btop は prefix+alt+* に置く。
+# prefix+g=goto / prefix+shift+g=new_worktree と衝突するため prefix+g/prefix+b は不可。
+[[keys.command]]
+key = "prefix+alt+g"
+type = "pane"
+command = "lazygit"
+description = "run lazygit"
+
+[[keys.command]]
+key = "prefix+alt+b"
+type = "pane"
+command = "btop"
+description = "run btop"
+
+[ui.toast]
+delivery = "herdr"
+
+[ui]
+mouse_capture = true
+
+# 日本語 IME 対策（実測: config スキーマに存在、macOS 向け）。
+# Claude Code / codex の TUI で IME 候補ウィンドウ追従と prefix 入力の
+# 取りこぼしを緩和する。experimental のため使用感で取捨する。
+[experimental]
+reveal_hidden_cursor_for_cjk_ime = true
+cjk_ime_agents = ["claude", "codex"]
+switch_ascii_input_source_in_prefix = true
+```
+
+> `split_vertical = "prefix+v"` / `split_horizontal = "prefix+minus"` など必要な bind は適宜追加する。
+
+---
+
+## 設計: sketchybar 同期ブリッジ
+
+Herdr plugin がイベント毎に `sketchybar --trigger herdr_update` を発火する。sketchybar 側は現 `tmux.lua` を `herdr.lua` に置換し、`herdr_update` を購読して再描画する（ポーリング撤廃）。
+
+```toml
+# config/herdr/plugins/sketchybar-sync/herdr-plugin.toml
+# 実測: [[events]] の on は単一イベント名。イベント毎に宣言する（配列は使わない）。
+id = "sketchybar-sync"
+name = "sketchybar sync"
+version = "0.1.0"
+min_herdr_version = "0.7.0"
+platforms = ["macos"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["sketchybar", "--trigger", "herdr_update"]
+
+[[events]]
+on = "workspace.created"
+command = ["sketchybar", "--trigger", "herdr_update"]
+
+[[events]]
+on = "workspace.closed"
+command = ["sketchybar", "--trigger", "herdr_update"]
+
+[[events]]
+on = "workspace.renamed"
+command = ["sketchybar", "--trigger", "herdr_update"]
+```
+
+```zsh
+#!/usr/bin/env zsh
+# config/sketchybar/helpers/herdr-ws-snapshot
+# workspace 単位に `label<TAB>status` を出力する。
+# `herdr workspace list` の JSON を jq で整形する（nc / raw socket 不要）。
+# 導入時に既定 stdout が JSON か（`worktree list` は明示 --json を持つ）、
+# envelope が `.result.workspaces[]` かを実出力で確認してから固定する。
+herdr workspace list \
+  | jq -r '.result.workspaces[] | "\(.label)\t\(.agent_status)"'
+```
+
+`config/sketchybar/items/herdr.lua` は現 `tmux.lua` からの差し替え。主な変更点:
+
+- セッション列挙 `TMUX .. " ls -F ..."` → helper `herdr-ws-snapshot` の実行
+- `read_state()`（ws-state ファイル読み）を削除し、helper が返す status を直接 `STATE_COLOR` へマップ
+- `STATE_COLOR = { blocked=red, working=yellow, done=green, idle=blue, unknown=fg_dark }`（`agent_status` は 5 値。`done` を落とすと完了エージェントが unknown 色になるため必ず含める。色は現行 tmux.lua 踏襲で調整可）
+- `handler:subscribe({ "routine", "forced", "tmux_change" })` + `update_freq=5` → `herdr_update` 購読のみ。`pane.agent_status_changed` は working↔idle で頻発しうるため再描画は軽く debounce する（保険の低頻度 poll は任意）
+- SLOT_COUNT / bracket / slot 制御ロジックはそのまま流用
+
+---
+
+## 実装手順
+
+> 事前検証は完了済み（[検証済み事項](#検証済み事項実測)）。以下は導入本番の手順。
+
+### Phase 1: Herdr 導入とベース設定
+
+- [ ] 1-1: `flake.nix` の inputs に `herdr`（v0.7.1 pin）を追加
+- [ ] 1-2: `flake.nix` の `sharedOverlays` に `inputs.herdr.overlays.default` を追加
+- [ ] 1-3: `nix/home/darwin.nix` の `home.packages` に `pkgs.herdr` を追加
+- [ ] 1-4: `config/herdr/config.toml` を上記設計どおり作成
+- [ ] 1-5: `nix/home/symlinks.nix` の `xdg.configFile` に `"herdr".source = mkLink "config/herdr";` を追加
+- [ ] 1-6: `git add` 後 `! nrs` をユーザーに依頼して反映（brew 版 herdr は `cleanup="uninstall"` で自動除去される。初回はソースビルドで時間を要しうる）
+- [ ] 1-7: `herdr` 起動、prefix/theme/keys/toast の動作を確認
+- [ ] 1-8: nvim を herdr pane で起動し LSP 診断 undercurl 描画 / clipboard 自動コピー / `<c-.>` 等の疎通を確認（導入時残件）
+- [ ] 1-9: prefix + vi copy-mode（`prefix+[`）等キーボードの使用感を評価、必要なら keymap を調整
+
+### Phase 2: sketchybar イベント駆動同期
+
+- [ ] 2-1: `config/herdr/plugins/sketchybar-sync/herdr-plugin.toml` を作成（上記設計、per-event `[[events]]`）
+- [ ] 2-2: `herdr workspace list` の実出力で既定フォーマット（JSON か）と jq パスを確定し、`config/sketchybar/helpers/herdr-ws-snapshot` を作成・実行権限付与
+- [ ] 2-3: `herdr plugin link` でプラグインを登録し、状態変化で `herdr_update` が発火することを確認
+- [ ] 2-4: `config/sketchybar/items/herdr.lua` を作成（`tmux.lua` を差し替え、helper 駆動・ポーリング撤廃）
+- [ ] 2-5: `config/sketchybar/items/init.lua` の `require("items.tmux")("left")` を `require("items.herdr")("left")` に差し替え
+- [ ] 2-6: 実 claude を working→blocked と遷移させ menu bar が push で即時更新されることを確認。検知が弱ければ Claude の Stop/Notification hook から `herdr pane report-agent <pane_id> --source claude --agent <label> --state <state>` を叩き、同イベント経由で sketchybar を更新する
+
+### Phase 3: workspace CLI 縮小と worktree 委譲
+
+- [ ] 3-1: `workspace` CLI を Herdr `workspace`/`worktree` 委譲構成へ書き換え（ghq→`herdr workspace create --cwd`、label は自動命名に任せる）。**未決**: fzf UX（list/switch/delete/rename）を再実装するか Herdr native picker（`prefix+w`）へ寄せるかは Phase 3 で判断
+- [ ] 3-2: smug 依存（`.smug.yml` 検知）を除去し、Herdr layout / 先行 plugin（herdr-spreader 等）での代替方針を評価して README に記載
+- [ ] 3-3: worktree 系サブコマンド（`wt`/`wt-rm`）を `herdr worktree create/remove` へ委譲
+- [ ] 3-4: 主要リポで list/switch/new/worktree の各操作が Herdr 上で動作することを確認
+- [ ] 3-5: Neovim 連携は Sidekick の herdr mux backend（[sidekick.nvim#333](https://github.com/folke/sidekick.nvim/pull/333)）待ち。マージまで `config/nvim/lua/plugins/sidekick.lua` は `mux.enabled=false` 維持、マージ後 `mux.enabled=true, backend="herdr"` に切替（DIY `pane send-text` は作らない）
+
+### Phase 4: 旧構成の撤去
+
+- [ ] 4-1: `config/tmux/` を削除、`nix/home/programs`（tmux プログラム設定があれば）を除去
+- [ ] 4-2: `config/gitmux/` を削除
+- [ ] 4-3: TPM（resurrect/continuum）参照を削除
+- [ ] 4-4: `config/sketchybar/items/tmux.lua` を削除
+- [ ] 4-5: Claude Code hooks の ws-state 書き出しのうち sketchybar 用途分を除去（他用途がなければ状態 hook 自体を削除）
+- [ ] 4-6: smug パッケージを Nix から除去
+- [ ] 4-7: `CLAUDE.md` / 関連 README のマルチプレクサ記述を Herdr に更新
+- [ ] 4-8: `git add` 後 `! nrs`、シェル再起動で旧参照が消えたことを確認
+
+---
+
+## 変更対象ファイル一覧
+
+| ファイル                                                 | Phase 1                     | Phase 2                   | Phase 3          | Phase 4       |
+| -------------------------------------------------------- | --------------------------- | ------------------------- | ---------------- | ------------- |
+| `flake.nix`                                              | herdr input + overlay 追加  | -                         | -                | -             |
+| `nix/home/darwin.nix`                                    | home.packages に pkgs.herdr | -                         | -                | -             |
+| `config/herdr/config.toml`                               | 新規                        | -                         | -                | -             |
+| `nix/home/symlinks.nix`                                  | config/herdr リンク追加     | -                         | -                | -             |
+| `config/herdr/plugins/sketchybar-sync/herdr-plugin.toml` | -                           | 新規                      | -                | -             |
+| `config/sketchybar/helpers/herdr-ws-snapshot`            | -                           | 新規                      | -                | -             |
+| `config/sketchybar/items/herdr.lua`                      | -                           | 新規（tmux.lua 差し替え） | -                | -             |
+| `config/sketchybar/items/init.lua`                       | -                           | tmux→herdr item 参照      | -                | -             |
+| `config/zsh/plugins/workspace/bin/workspace`             | -                           | -                         | Herdr 委譲へ書換 | -             |
+| `config/nvim/lua/plugins/sidekick.lua`                   | -                           | -                         | #333 後に切替    | -             |
+| `config/tmux/`                                           | -                           | -                         | -                | 削除          |
+| `config/gitmux/`                                         | -                           | -                         | -                | 削除          |
+| `config/sketchybar/items/tmux.lua`                       | -                           | -                         | -                | 削除          |
+| `config/claude/`（状態 hook 設定）                       | -                           | -                         | -                | ws-state 撤去 |
+| `CLAUDE.md`                                              | -                           | -                         | -                | 記述更新      |
+
+---
+
+## 実現可能性レビュー
+
+| 懸念                                       | 検証結果            | 根拠                                                                                                                                                                                                                                                |
+| ------------------------------------------ | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Herdr は nixpkgs にあるか                  | **ない**            | flake `github:ogulcancelik/herdr` を input 追加（[install docs](https://herdr.dev/docs/install/)）                                                                                                                                                  |
+| plugin `[[events]]` で外部コマンドを叩くか | **実測+ソース確認** | `workspace.created`/`closed` で command 発火を実測（exit 0・約 6ms）。`pane.agent_status_changed` も v0.7.1 の `PLUGIN_HOOK_EVENT_KINDS` に含まれ dispatch（ソース確認）                                                                            |
+| イベント payload に status が載るか        | **実測: 載る**      | `HERDR_PLUGIN_EVENT_JSON` に `workspace.agent_status` 同梱。再取得不要                                                                                                                                                                              |
+| `herdr workspace list` の JSON schema      | **実測: 確認**      | `.result.workspaces[]` に `workspace_id`/`label`/`agent_status`。helper 一行の出力まで確認                                                                                                                                                          |
+| config.toml が受理されるか                 | **実測: 受理**      | 提案 config で `reload-config` が `diagnostics:[] / applied`                                                                                                                                                                                        |
+| workspace 自動命名                         | **実測: される**    | `workspace create --cwd <repo>` で `label` が repo 名に                                                                                                                                                                                             |
+| worktree 委譲                              | **実測: 可能**      | `herdr worktree list/create/remove` が実 repo で動作                                                                                                                                                                                                |
+| prefix / keybinding の remap 可否          | **実測: 可能**      | `config.toml [keys]` で remap、衝突は診断で検出                                                                                                                                                                                                     |
+| copy-mode-vi 相当                          | 対応                | `prefix+[` で vi copy-mode（hjkl/v/y、tmux にほぼ一致）。`ctrl+v` の画像ペースト干渉は v0.7.1 で local は修正済み（[#647](https://github.com/ogulcancelik/herdr/issues/647) CLOSED）。`--remote` のみ既定 `keys.remote_image_paste="ctrl+v"` が残る |
+| floating popup（display-popup 相当）       | 近似のみ            | Herdr は floating popup 非対応。`[[keys.command]]` の overlay pane で代替                                                                                                                                                                           |
+| 実エージェントの状態検知精度               | 未検証              | dispatch はソース確認済みで、残件は Herdr が実 claude の遷移を emit する検知精度のみ（導入時確認）。弱ければ Claude hook→`herdr pane report-agent`（同イベントを emit）で補完                                                                       |
+| nvim の undercurl 描画                     | 未検証              | 対話 TTY が必要（導入時確認）                                                                                                                                                                                                                       |

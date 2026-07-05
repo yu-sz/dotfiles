@@ -1,7 +1,7 @@
 # workspace CLI の技術選定と設計方針
 
 Date: 2026-04-08
-Status: Accepted
+Status: Partially Superseded
 
 ## Context
 
@@ -78,3 +78,19 @@ tmux のセッション管理に以下の課題がある:
 - smug は外部依存だが、Nix パッケージがあるため管理コストは低い
 - AI 状態ファイルは `$TMPDIR` に置くため再起動で消える。永続化が必要になった場合は保存先の変更が必要
 - 通知トリガーの設定が Claude Code settings.json と tmux.conf に散在するが、各ファイルには `workspace-notify` を呼ぶ1行のみで、ロジックは集約されている
+
+## Addendum (2026-07-05): Herdr 移行に伴う一部無効化
+
+Status: **Partially Superseded** — smug 採用と AI 状態取得方式が [ADR: tmux から Herdr への移行と sketchybar 同期のイベント駆動化](./2026-07-05-tmux-to-herdr-migration.md) に置き換えられた
+
+### 経緯
+
+Herdr を唯一のマルチプレクサとして導入し、状態可視化とセッション管理を Herdr ネイティブへ委譲することを決定した。これに伴い本 ADR の一部が無効化される。
+
+### 変更した決定
+
+| 項目                   | 元の決定                          | 変更後                                                                       |
+| ---------------------- | --------------------------------- | ---------------------------------------------------------------------------- |
+| レイアウトテンプレート | smug を採用                       | 廃止し Herdr layout / plugin で代替                                          |
+| AI 状態取得方式        | Claude hooks で状態ファイルに書出 | Herdr ネイティブ検知（sketchybar 用途）。hooks 経路は廃止                    |
+| 実装（zsh + fzf CLI）  | zsh + fzf で実装                  | Herdr へ委譲し薄いラッパへ縮小（fzf UX の去就は移行 Plan の Phase 3 で未決） |
