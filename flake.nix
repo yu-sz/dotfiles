@@ -18,6 +18,10 @@
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
     nix-claude-code.url = "github:ryoppippi/nix-claude-code";
+    herdr = {
+      url = "github:ogulcancelik/herdr/v0.7.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
@@ -113,6 +117,7 @@
           sharedOverlays = [
             inputs.nix-claude-code.overlays.default
             (import ./nix/overlays)
+            inputs.herdr.overlays.default
           ];
 
           allowedUnfree = [

@@ -1,0 +1,7 @@
+# ~/.config/herdr は本ディレクトリへの symlink。herdr が session.json / *.sock /
+# *.log 等の runtime 状態をここへ書き込むため、宣言的 config 以外は追跡しない。
+*
+!.gitignore
+!config.toml
+!plugins/
+!plugins/**

@@ -26,7 +26,7 @@
 - prefix=`ctrl+g`、pane 移動=`prefix+h/j/k/l`、分割=`prefix+v`/`prefix+-`、copy=`prefix+[` の vi copy-mode（hjkl/v/y）
 - テーマは Tokyo Night（`tokyo-night`）
 - detach/reattach でき、マシン再起動後も workspace が復元される（TPM resurrect/continuum 相当を内蔵で代替）
-- lazygit / btop を overlay pane で起動（`prefix+alt+g` / `prefix+alt+b`）
+- lazygit / btop を overlay pane で起動（`prefix+shift+l` / `prefix+shift+b`。alt は AeroSpace が占有するため不可）
 
 #### FR-2 エージェント状態可視化（sketchybar）
 
@@ -92,7 +92,7 @@
 | theme            | **`tokyo-night`**                                                                                                     | Herdr 内蔵。`reload-config` で妥当性確認済み                                                                                                                                                                              |
 | 通知トースト     | **`[ui.toast] delivery = "herdr"`**                                                                                   | ターミナル内トーストを Herdr に委譲                                                                                                                                                                                       |
 | pane 移動        | **`prefix+h/j/k/l`**                                                                                                  | vim 風。navigate-mode の素キー `j`/`k` も併用可                                                                                                                                                                           |
-| popup 代替       | **`[[keys.command]]` type=pane（lazygit=`prefix+alt+g`／btop=`prefix+alt+b`）**                                       | floating popup は無く overlay pane で近似。`prefix+g`=goto / `prefix+shift+g`=new_worktree と衝突回避（実測）                                                                                                             |
+| popup 代替       | **`[[keys.command]]` type=pane（lazygit=`prefix+shift+l`／btop=`prefix+shift+b`）**                                   | floating popup は無く overlay pane で近似。alt+\* は AeroSpace が OS レベルで占有（実機発覚）、g=goto/b=toggle_sidebar/shift+g=new_worktree も使用中のため shift+l/shift+b へ                                             |
 | workspace CLI    | **ghq→`herdr workspace` の薄いラッパへ縮小**                                                                          | worktree は Herdr へ委譲。`--cwd` 指定で label が repo 名に自動命名される（実測）ため命名ロジック不要                                                                                                                     |
 | smug             | **廃止**                                                                                                              | Herdr layout で代替。自作前に先行 plugin（herdr-spreader 等）を評価                                                                                                                                                       |
 | gitmux / TPM     | **廃止**                                                                                                              | Herdr 内蔵 UI・永続化で不要                                                                                                                                                                                               |
@@ -149,8 +149,8 @@ sharedOverlays = [
 ```
 
 ```nix
-# nix/home/darwin.nix の home.packages に追加（overlay 経由で pkgs.herdr が使える）
-pkgs.herdr
+# nix/home/packages/editor.nix の home.packages に追加（tmux と同じ共有パッケージ。overlay 経由で herdr が使える）
+herdr
 ```
 
 ---
@@ -173,16 +173,17 @@ focus_pane_down = "prefix+j"
 focus_pane_up = "prefix+k"
 focus_pane_right = "prefix+l"
 
-# lazygit/btop は prefix+alt+* に置く。
-# prefix+g=goto / prefix+shift+g=new_worktree と衝突するため prefix+g/prefix+b は不可。
+# lazygit=prefix+shift+l / btop=prefix+shift+b。
+# alt+* は AeroSpace（tiling WM）が OS レベルで全部奪うため使用不可（実機で発覚）。
+# 平打ち g=goto / b=toggle_sidebar / shift+g=new_worktree も使用中のため shift+l/shift+b を採用。
 [[keys.command]]
-key = "prefix+alt+g"
+key = "prefix+shift+l"
 type = "pane"
 command = "lazygit"
 description = "run lazygit"
 
 [[keys.command]]
-key = "prefix+alt+b"
+key = "prefix+shift+b"
 type = "pane"
 command = "btop"
 description = "run btop"
@@ -263,12 +264,34 @@ herdr workspace list \
 
 ### Phase 1: Herdr 導入とベース設定
 
-- [ ] 1-1: `flake.nix` の inputs に `herdr`（v0.7.1 pin）を追加
-- [ ] 1-2: `flake.nix` の `sharedOverlays` に `inputs.herdr.overlays.default` を追加
-- [ ] 1-3: `nix/home/darwin.nix` の `home.packages` に `pkgs.herdr` を追加
-- [ ] 1-4: `config/herdr/config.toml` を上記設計どおり作成
-- [ ] 1-5: `nix/home/symlinks.nix` の `xdg.configFile` に `"herdr".source = mkLink "config/herdr";` を追加
-- [ ] 1-6: `git add` 後 `! nrs` をユーザーに依頼して反映（brew 版 herdr は `cleanup="uninstall"` で自動除去される。初回はソースビルドで時間を要しうる）
+- [x] 1-1: `flake.nix` の inputs に `herdr`（v0.7.1 pin）を追加
+- [x] 1-2: `flake.nix` の `sharedOverlays` に `inputs.herdr.overlays.default` を追加
+- [x] 1-3: `nix/home/packages/editor.nix` の `home.packages` に `herdr` を追加（共有パッケージ）
+- [x] 1-4: `config/herdr/config.toml` を上記設計どおり作成
+- [x] 1-5: `nix/home/symlinks.nix` の `xdg.configFile` に `"herdr".source = mkLink "config/herdr";` を追加
+
+> **予実差異（1-3 配置変更）**: 計画は `pkgs.herdr` を `nix/home/darwin.nix`（macOS 限定）に置く想定だったが、置換対象の `tmux`/`gitmux`/`smug` がいずれも共有パッケージ（`nix/home/packages/{editor,shell}.nix`）にあり配置が不整合。
+> herdr 本体も flake が `aarch64-linux`/`x86_64-linux` を提供する（実測）ため、`nix/home/packages/editor.nix`（tmux と同じ）へ配置し macOS + Linux 共有とした。sketchybar/IME 等の macOS 固有部分は従来どおり macOS 限定に留まる。config/herdr の symlink は既に共有ブロックにあり整合。
+>
+> **予実差異（1-4）**: 設計ノートに従い FR-1 要件の分割キー（`split_vertical = "prefix+v"` / `split_horizontal = "prefix+minus"`）を config.toml に併せて追加した。
+>
+> **予実差異（1-6 で発覚 → `.gitignore` 追加）**: herdr は runtime 状態を **config ディレクトリ**（`~/.config/herdr/session.json`・`*.sock`）に書き込む。`~/.config/herdr` はリポジトリ `config/herdr` への直リンクのため、herdr 実行のたびに working tree が汚れる。計画に未記載の論点。
+> 対処として `config/herdr/.gitignore`（whitelist: `config.toml`・`plugins/**` のみ追跡、他は無視）を追加。`agent-detection`/plugin 状態は `~/.local/state/herdr/` でリポ外のため対象外。
+>
+> **予実差異（1-7 で発覚 → overlay キー変更）**: `prefix+alt+g/b`（lazygit/btop）が実機で無反応。原因は **AeroSpace（tiling WM）が `alt+*` を OS レベルで占有**（`config/aerospace/aerospace.toml` に `alt-a`〜`alt-r`/`alt-h/j/k/l`/`alt-1..9` 等）。headless の `reload-config` では診断ゼロだったが WM 実機で発覚。
+> `alt` を捨て `prefix+shift+l`=lazygit / `prefix+shift+b`=btop へ変更（平打ち `g`=goto・`b`=toggle_sidebar・`shift+g`=new_worktree は既定使用中のため回避）。それ以外の prefix/theme/splits/pane 移動/永続化は実機で動作良好。
+>
+> **予実差異（sidekick × tmux 発見 → tmux 撤去前倒し）**: `mux.enabled=false` は sidekick 本体で新規セッションを terminal に強制する（`cli/session/init.lua:82`）が、tmux バックエンドは**無条件登録**され既存 tmux セッションを常時列挙する（`M.setup` ハードコード、`enabled`/`backend` と無関係）。
+> そのため裏で生きている tmux サーバ "default"（Ghostty の `tmux new-session -s default` 由来）を拾い `[tmux:default]` として掴んでしまい pane が壊れる。config の `backend` 変更では直らず、third-party 改変は非推奨。→ **根治は tmux 撤去そのもの**（Phase 4）。
+> **herdr をまともにテストするには tmux から抜ける必要があるため、Phase 4 の「Ghostty 起動コマンド herdr 化 + tmux サーバ停止」を前倒しする方針に決定**。
+>
+> **Phase 4 向けメモ（端末統合・計画未記載）**: GUI 端末が2つとも multiplexer 相当になっており herdr と `ctrl+g`・split/pane 役割が衝突する。要方針決定（1-7 検証時に発覚、ユーザー判断は保留）。
+>
+> - `nix/home/programs/ghostty.nix:35`: `tmux attach || tmux new-session` → **`herdr` へ変更済み（Phase 4 から前倒し実施）**。クイック端末=素 zsh と `ghostty +boo` は温存。反映は `! nrs` 後。
+> - `config/wezterm/keymaps.lua:5,118`: WezTerm の `leader = ctrl+g` + split/pane/tab keymap が herdr の prefix を全面横取り（`ctrl+g` が herdr に届かない）。要方針: (A) WezTerm を素の端末化し ctrl+g を全面移譲 / (B) WezTerm leader を別キーへ / (C) herdr prefix を変更。※ `config/wezterm/` は権限制限で AI 編集不可、ユーザー実装。
+> - 検証自体は `ctrl+g` を横取りしない端末（macOS Terminal.app / Ghostty クイック端末）で実施可能。ただし Terminal.app は truecolor/undercurl 非対応のため 1-8 の描画確認は WezTerm/Ghostty で行う。
+
+- [x] 1-6: `git add` 後 `! nrs` で反映（herdr-0.7.1 ビルド成功・`hm_herdr` symlink 追加・brew 版は `No such keg` で除去確認。実機 config で `reload-config` が `diagnostics:[]/applied`）
 - [ ] 1-7: `herdr` 起動、prefix/theme/keys/toast の動作を確認
 - [ ] 1-8: nvim を herdr pane で起動し LSP 診断 undercurl 描画 / clipboard 自動コピー / `<c-.>` 等の疎通を確認（導入時残件）
 - [ ] 1-9: prefix + vi copy-mode（`prefix+[`）等キーボードの使用感を評価、必要なら keymap を調整
@@ -305,23 +328,23 @@ herdr workspace list \
 
 ## 変更対象ファイル一覧
 
-| ファイル                                                 | Phase 1                     | Phase 2                   | Phase 3          | Phase 4       |
-| -------------------------------------------------------- | --------------------------- | ------------------------- | ---------------- | ------------- |
-| `flake.nix`                                              | herdr input + overlay 追加  | -                         | -                | -             |
-| `nix/home/darwin.nix`                                    | home.packages に pkgs.herdr | -                         | -                | -             |
-| `config/herdr/config.toml`                               | 新規                        | -                         | -                | -             |
-| `nix/home/symlinks.nix`                                  | config/herdr リンク追加     | -                         | -                | -             |
-| `config/herdr/plugins/sketchybar-sync/herdr-plugin.toml` | -                           | 新規                      | -                | -             |
-| `config/sketchybar/helpers/herdr-ws-snapshot`            | -                           | 新規                      | -                | -             |
-| `config/sketchybar/items/herdr.lua`                      | -                           | 新規（tmux.lua 差し替え） | -                | -             |
-| `config/sketchybar/items/init.lua`                       | -                           | tmux→herdr item 参照      | -                | -             |
-| `config/zsh/plugins/workspace/bin/workspace`             | -                           | -                         | Herdr 委譲へ書換 | -             |
-| `config/nvim/lua/plugins/sidekick.lua`                   | -                           | -                         | #333 後に切替    | -             |
-| `config/tmux/`                                           | -                           | -                         | -                | 削除          |
-| `config/gitmux/`                                         | -                           | -                         | -                | 削除          |
-| `config/sketchybar/items/tmux.lua`                       | -                           | -                         | -                | 削除          |
-| `config/claude/`（状態 hook 設定）                       | -                           | -                         | -                | ws-state 撤去 |
-| `CLAUDE.md`                                              | -                           | -                         | -                | 記述更新      |
+| ファイル                                                 | Phase 1                        | Phase 2                   | Phase 3          | Phase 4       |
+| -------------------------------------------------------- | ------------------------------ | ------------------------- | ---------------- | ------------- |
+| `flake.nix`                                              | herdr input + overlay 追加     | -                         | -                | -             |
+| `nix/home/packages/editor.nix`                           | home.packages に herdr（共有） | -                         | -                | -             |
+| `config/herdr/config.toml`                               | 新規                           | -                         | -                | -             |
+| `nix/home/symlinks.nix`                                  | config/herdr リンク追加        | -                         | -                | -             |
+| `config/herdr/plugins/sketchybar-sync/herdr-plugin.toml` | -                              | 新規                      | -                | -             |
+| `config/sketchybar/helpers/herdr-ws-snapshot`            | -                              | 新規                      | -                | -             |
+| `config/sketchybar/items/herdr.lua`                      | -                              | 新規（tmux.lua 差し替え） | -                | -             |
+| `config/sketchybar/items/init.lua`                       | -                              | tmux→herdr item 参照      | -                | -             |
+| `config/zsh/plugins/workspace/bin/workspace`             | -                              | -                         | Herdr 委譲へ書換 | -             |
+| `config/nvim/lua/plugins/sidekick.lua`                   | -                              | -                         | #333 後に切替    | -             |
+| `config/tmux/`                                           | -                              | -                         | -                | 削除          |
+| `config/gitmux/`                                         | -                              | -                         | -                | 削除          |
+| `config/sketchybar/items/tmux.lua`                       | -                              | -                         | -                | 削除          |
+| `config/claude/`（状態 hook 設定）                       | -                              | -                         | -                | ws-state 撤去 |
+| `CLAUDE.md`                                              | -                              | -                         | -                | 記述更新      |
 
 ---
 
