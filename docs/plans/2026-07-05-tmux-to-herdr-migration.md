@@ -292,7 +292,7 @@ herdr workspace list \
 > **Phase 4 向けメモ（端末統合・計画未記載）**: GUI 端末が2つとも multiplexer 相当になっており herdr と `ctrl+g`・split/pane 役割が衝突する。要方針決定（1-7 検証時に発覚、ユーザー判断は保留）。
 >
 > - `nix/home/programs/ghostty.nix:35`: `tmux attach || tmux new-session` → **`herdr` へ変更済み（Phase 4 から前倒し実施）**。クイック端末=素 zsh と `ghostty +boo` は温存。反映は `! nrs` 後。
-> - `config/wezterm/keymaps.lua:5,118`: WezTerm の `leader = ctrl+g` + split/pane/tab keymap が herdr の prefix を全面横取り（`ctrl+g` が herdr に届かない）。要方針: (A) WezTerm を素の端末化し ctrl+g を全面移譲 / (B) WezTerm leader を別キーへ / (C) herdr prefix を変更。※ `config/wezterm/` は権限制限で AI 編集不可、ユーザー実装。
+> - `config/wezterm/keymaps.lua:5,118`: WezTerm の `leader = ctrl+g` + split/pane/tab keymap が herdr の prefix を全面横取り（`ctrl+g` が herdr に届かない）。→ **解決（ユーザー決定）**: WezTerm では組み込みマルチプレクサを使い続けるため herdr の実行対象外。衝突は考慮不要で keymap 変更もしない（herdr は Ghostty 側で常用）。
 > - 検証自体は `ctrl+g` を横取りしない端末（macOS Terminal.app / Ghostty クイック端末）で実施可能。ただし Terminal.app は truecolor/undercurl 非対応のため 1-8 の描画確認は WezTerm/Ghostty で行う。
 
 - [x] 1-6: `git add` 後 `! nrs` で反映（herdr-0.7.1 ビルド成功・`hm_herdr` symlink 追加・brew 版は `No such keg` で除去確認。実機 config で `reload-config` が `diagnostics:[]/applied`）
@@ -350,7 +350,7 @@ herdr workspace list \
 >
 > **予実差異（4-7: 更新対象は実質なし）**: CLAUDE.md / ルート README に tmux・マルチプレクサへの言及はなく、更新は sheldon コメント1箇所と workspace README（Phase 3 済み）のみだった。
 >
-> **残件（Phase 1 メモ再掲・ユーザー実装領域）**: WezTerm の `leader = ctrl+g` + split/pane/tab keymap が herdr prefix を横取りする件は未解消（`config/wezterm/` は AI 編集不可）。方針 (A) 素の端末化 / (B) leader 変更 / (C) herdr prefix 変更 の判断待ち。
+> **解決（WezTerm の ctrl+g 衝突は考慮不要・ユーザー決定）**: WezTerm では組み込みマルチプレクサを使い続けるため herdr の実行対象外。keymap 変更は行わず、herdr は Ghostty 側で常用する（Phase 1 メモの要方針 (A)/(B)/(C) はいずれも不採用でクローズ）。
 
 ---
 
