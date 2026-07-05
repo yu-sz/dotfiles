@@ -321,11 +321,19 @@ herdr workspace list \
 
 ### Phase 3: workspace CLI 縮小と worktree 委譲
 
-- [ ] 3-1: `workspace` CLI を Herdr `workspace`/`worktree` 委譲構成へ書き換え（ghq→`herdr workspace create --cwd`、label は自動命名に任せる）。**未決**: fzf UX（list/switch/delete/rename）を再実装するか Herdr native picker（`prefix+w`）へ寄せるかは Phase 3 で判断
-- [ ] 3-2: smug 依存（`.smug.yml` 検知）を除去し、Herdr layout / 先行 plugin（herdr-spreader 等）での代替方針を評価して README に記載
-- [ ] 3-3: worktree 系サブコマンド（`wt`/`wt-rm`）を `herdr worktree create/remove` へ委譲
-- [ ] 3-4: 主要リポで list/switch/new/worktree の各操作が Herdr 上で動作することを確認
-- [ ] 3-5: Neovim 連携は Sidekick の herdr mux backend（[sidekick.nvim#333](https://github.com/folke/sidekick.nvim/pull/333)）待ち。マージまで `config/nvim/lua/plugins/sidekick.lua` は `mux.enabled=false` 維持、マージ後 `mux.enabled=true, backend="herdr"` に切替（DIY `pane send-text` は作らない）
+- [x] 3-1: `workspace` CLI を Herdr `workspace`/`worktree` 委譲構成へ書き換え（ghq→`herdr workspace create --cwd`、label は自動命名に任せる）。**未決→解決**: Herdr native picker（`prefix+w`）へ寄せる方針をユーザー決定。CLI は `new`/`wt`/`wt-rm`/`notify`(互換スタブ) の4サブコマンドへ縮小（約300行→約80行）
+- [x] 3-2: smug 依存（`.smug.yml` 検知）を除去し、Herdr layout / 先行 plugin（herdr-spreader 等）での代替方針を評価して README に記載（復元は herdr 内蔵永続化で充足。`.smug.yml` は editor/shell の2 window 定義1件のみだったため削除）
+- [x] 3-3: worktree 系サブコマンド（`wt`/`wt-rm`）を `herdr worktree create/remove` へ委譲（実測: create は git worktree 作成 + workspace 起動を一括、remove は git worktree 削除 + workspace close を一括）
+- [x] 3-4: 主要リポで list/switch/new/worktree の各操作が Herdr 上で動作することを確認（new の dedupe→focus / missing repo エラー / wt / wt-rm を dotfiles + 実 git repo で確認。list/switch は native picker `prefix+w` のためユーザー目視で最終確認）
+- [ ] 3-5: Neovim 連携は Sidekick の herdr mux backend（[sidekick.nvim#333](https://github.com/folke/sidekick.nvim/pull/333)）待ち。マージまで `config/nvim/lua/plugins/sidekick.lua` は `mux.enabled=false` 維持、マージ後 `mux.enabled=true, backend="herdr"` に切替（DIY `pane send-text` は作らない）（現状 `mux.enabled=false` 維持を確認済み。上流マージ待ちのため未完のまま）
+
+> **予実差異（3-1: 旧実装の潜在バグを修正）**: repo 名が ghq list に無い場合に `dir="$(ghq root)/"` へ化け、ghq root 自体が workspace 化して exit 0 になるバグが旧 tmux 版から存在（実テストで発覚）。grep 空振りの明示チェックを追加し `Repository not found` + exit 1 に修正。
+>
+> **予実差異（3-1: notify は no-op スタブとして温存）**: 稼働中の claude セッションは旧 hooks スナップショット（`workspace notify ...`）を保持しており、サブコマンド削除だと毎ツール呼び出しで hook が失敗する。Phase 4 の settings.json hooks 撤去とあわせて削除する。
+>
+> **予実差異（3-3: worktree create の副作用）**: `herdr worktree create` は worktree 用 workspace に加えて**ソース repo の workspace も自動で開く**（herdr 仕様）。wt-rm 後の focus はソース workspace へ戻る。委譲方針のため挙動として許容し wrapper では制御しない。worktree の配置は herdr 既定（`~/.herdr/worktrees/<repo>/<branch>`、旧 `../<repo>-<branch>` から変更）。
+>
+> **予実差異（3-2: `.smug.yml` 削除の前倒し）**: リポジトリ直下の `.smug.yml` 削除は 4-6（smug パッケージ除去）と同時想定だったが、CLI 書き換えで読む者がいなくなるため Phase 3 で削除した。
 
 ### Phase 4: 旧構成の撤去
 
