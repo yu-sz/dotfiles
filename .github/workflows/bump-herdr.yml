@@ -1,0 +1,62 @@
+name: Bump herdr
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v6
+
+      # releases/latest は draft / pre-release を含まないため stable のみ拾う
+      - name: Check latest stable release
+        id: latest
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          latest=$(gh api repos/ogulcancelik/herdr/releases/latest --jq .tag_name)
+          current=$(grep -oE 'github:ogulcancelik/herdr/v[0-9]+\.[0-9]+\.[0-9]+' flake.nix | cut -d/ -f3)
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "current=$current latest=$latest"
+
+      - name: Bump herdr tag in flake.nix
+        if: steps.latest.outputs.latest != steps.latest.outputs.current
+        run: |
+          sed -i "s|github:ogulcancelik/herdr/${{ steps.latest.outputs.current }}|github:ogulcancelik/herdr/${{ steps.latest.outputs.latest }}|" flake.nix
+
+      - uses: cachix/install-nix-action@v31
+        if: steps.latest.outputs.latest != steps.latest.outputs.current
+        with:
+          github_access_token: ${{ steps.app-token.outputs.token }}
+
+      - name: Update flake.lock for herdr
+        if: steps.latest.outputs.latest != steps.latest.outputs.current
+        run: nix flake update herdr
+
+      - uses: peter-evans/create-pull-request@v7
+        if: steps.latest.outputs.latest != steps.latest.outputs.current
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: bump-herdr
+          commit-message: "chore(nix): bump herdr to ${{ steps.latest.outputs.latest }}"
+          title: "chore(nix): bump herdr to ${{ steps.latest.outputs.latest }}"
+          labels: dependencies
+          body: |
+            Automated bump of the herdr flake input to the latest stable release.
+
+            ${{ steps.latest.outputs.current }} -> ${{ steps.latest.outputs.latest }}
+
+            Release notes: https://github.com/ogulcancelik/herdr/releases/tag/${{ steps.latest.outputs.latest }}

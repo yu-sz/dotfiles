@@ -416,7 +416,7 @@ herdr workspace list \
 - **完了**: Claude Code が settings.json の hook 変更をセッション途中で反映する（4-8 で実測）ため
   旧 hooks を呼び続けるセッションは残存しないと判断し、待たずに削除した（ユーザー決定）。
 
-### [ ] herdr stable 追従の自動化（別 workflow・案C）
+### [x] herdr stable 追従の自動化（別 workflow・案C）
 
 - 目的: stable タグ pin を保ったまま、新 stable を自動で拾って bump PR を立てる
   （undercurl 修正もこの導線で自動的に入る）。
@@ -428,3 +428,5 @@ herdr workspace list \
   → `create-pull-request` で bump PR。app-token（`AUTOMATION_CLIENT_ID` /
   `AUTOMATION_APP_PRIVATE_KEY`）を既存 workflow 同様に利用。
 - 優先度: 低（後回し）。
+- **完了**: `.github/workflows/bump-herdr.yml` を計画どおり実装（週次日曜 cron + dispatch、
+  `releases/latest` で stable のみ検出、同タグならスキップ。検出・抽出ロジックはローカルで実測済み）。
