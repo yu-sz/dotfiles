@@ -4,6 +4,8 @@ lib.mkIf pkgs.stdenv.isLinux {
 
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
+    wezterm
+
     # Fonts
     hackgen-font
     hackgen-nf-font

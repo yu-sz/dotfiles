@@ -42,6 +42,7 @@
       "google-japanese-ime"
       "karabiner-elements"
       "raycast"
+      "wezterm"
     ];
   };
 
