@@ -15,7 +15,6 @@
     sheldon
     smug
     termdown
-    wezterm
     zabrze
     zsh
   ];
