@@ -337,14 +337,20 @@ herdr workspace list \
 
 ### Phase 4: 旧構成の撤去
 
-- [ ] 4-1: `config/tmux/` を削除、`nix/home/programs`（tmux プログラム設定があれば）を除去
-- [ ] 4-2: `config/gitmux/` を削除
-- [ ] 4-3: TPM（resurrect/continuum）参照を削除
-- [ ] 4-4: `config/sketchybar/items/tmux.lua` を削除
-- [ ] 4-5: Claude Code hooks の ws-state 書き出しのうち sketchybar 用途分を除去（他用途がなければ状態 hook 自体を削除）
-- [ ] 4-6: smug パッケージを Nix から除去
-- [ ] 4-7: `CLAUDE.md` / 関連 README のマルチプレクサ記述を Herdr に更新
-- [ ] 4-8: `git add` 後 `! nrs`、シェル再起動で旧参照が消えたことを確認
+- [x] 4-1: `config/tmux/` を削除、`nix/home/programs`（tmux プログラム設定があれば）を除去（programs に tmux 設定はなし。`nix/home/packages/editor.nix` から tmux、`nix/home/symlinks.nix` から tmux/gitmux リンクを除去）
+- [x] 4-2: `config/gitmux/` を削除（`nix/home/packages/shell.nix` から gitmux も除去）
+- [x] 4-3: TPM（resurrect/continuum）参照を削除（参照は `config/tmux/tmux.conf` 内のみで 4-1 と同時に消滅。nix に tmuxPlugins 参照なし）
+- [x] 4-4: `config/sketchybar/items/tmux.lua` を削除
+- [x] 4-5: Claude Code hooks の ws-state 書き出しのうち sketchybar 用途分を除去（他用途がなければ状態 hook 自体を削除）（settings.json から `workspace notify` 5 hook を除去。残る状態報告は report-herdr-state.sh のみ）
+- [x] 4-6: smug パッケージを Nix から除去（`nix/home/packages/shell.nix`）
+- [x] 4-7: `CLAUDE.md` / 関連 README のマルチプレクサ記述を Herdr に更新（CLAUDE.md・ルート README にマルチプレクサ記述なしを確認。workspace README は Phase 3 で更新済み、sheldon plugins.toml の tmux popup 前提コメントを更新）
+- [ ] 4-8: `git add` 後 `! nrs`、シェル再起動で旧参照が消えたことを確認（**ユーザー操作待ち**。git add 済み）
+
+> **予実差異（4-5: notify スタブは温存）**: settings.json の hooks 撤去後も、旧 hooks スナップショットを持つ**稼働中の** claude セッションが `workspace notify ...` を呼び続けるため、CLI の no-op スタブは残置した。全旧セッション終了後の削除を後続タスク化。
+>
+> **予実差異（4-7: 更新対象は実質なし）**: CLAUDE.md / ルート README に tmux・マルチプレクサへの言及はなく、更新は sheldon コメント1箇所と workspace README（Phase 3 済み）のみだった。
+>
+> **残件（Phase 1 メモ再掲・ユーザー実装領域）**: WezTerm の `leader = ctrl+g` + split/pane/tab keymap が herdr prefix を横取りする件は未解消（`config/wezterm/` は AI 編集不可）。方針 (A) 素の端末化 / (B) leader 変更 / (C) herdr prefix 変更 の判断待ち。
 
 ---
 
@@ -400,6 +406,11 @@ herdr workspace list \
   以降に収録。**stable は v0.7.1 が最新で未収録**（label `pending-release`）。非クリティカル。
 - 対応: **放置**。次 stable（v0.7.2 見込み）が出たら flake の herdr タグを bump して解消。
 - 不採用: 一時的な `TERM=xterm-ghostty` 上書きは v0.7.1 の VT バグでは曲線化しないため撤回済み。
+
+### [ ] workspace notify スタブ削除（Phase 4 実装中に発生）
+
+- 旧 hooks スナップショットを持つ claude セッションが全て終了した後、
+  `config/zsh/plugins/workspace/bin/workspace` の `notify` スタブと README の記載を削除する。
 
 ### [ ] herdr stable 追従の自動化（別 workflow・案C）
 
