@@ -278,6 +278,10 @@ herdr workspace list \
 > **予実差異（1-6 で発覚 → `.gitignore` 追加）**: herdr は runtime 状態を **config ディレクトリ**（`~/.config/herdr/session.json`・`*.sock`）に書き込む。`~/.config/herdr` はリポジトリ `config/herdr` への直リンクのため、herdr 実行のたびに working tree が汚れる。計画に未記載の論点。
 > 対処として `config/herdr/.gitignore`（whitelist: `config.toml`・`plugins/**` のみ追跡、他は無視）を追加。`agent-detection`/plugin 状態は `~/.local/state/herdr/` でリポ外のため対象外。
 >
+> **予実差異（herdr が Claude 統合を自動インストール → gitignore 対応）**: herdr 起動時、`[session] resume_agents_on_restore=true`（既定）で Claude 公式統合を自動インストール。
+> `~/.claude/hooks/herdr-agent-state.sh`（`pane.report_agent_session` を報告＝FR-2 の状態源候補）と `~/.claude/settings.json` の `SessionStart` フックを書き込む。両パスはリポジトリ symlink のため repo が書き換わった（settings.json はキー並べ替え＋末尾改行落ちも発生）。
+> スクリプトは herdr 管理・バージョン連動・再生成可のため `config/claude/hooks/.gitignore`（`herdr-*.sh`）で追跡除外。settings.json のフック登録のみ追跡。統合自体は Phase 2 で使うため維持。
+>
 > **予実差異（1-7 で発覚 → overlay キー変更）**: `prefix+alt+g/b`（lazygit/btop）が実機で無反応。原因は **AeroSpace（tiling WM）が `alt+*` を OS レベルで占有**（`config/aerospace/aerospace.toml` に `alt-a`〜`alt-r`/`alt-h/j/k/l`/`alt-1..9` 等）。headless の `reload-config` では診断ゼロだったが WM 実機で発覚。
 > `alt` を捨て `prefix+shift+l`=lazygit / `prefix+shift+b`=btop へ変更（平打ち `g`=goto・`b`=toggle_sidebar・`shift+g`=new_worktree は既定使用中のため回避）。それ以外の prefix/theme/splits/pane 移動/永続化は実機で動作良好。
 >
@@ -292,18 +296,28 @@ herdr workspace list \
 > - 検証自体は `ctrl+g` を横取りしない端末（macOS Terminal.app / Ghostty クイック端末）で実施可能。ただし Terminal.app は truecolor/undercurl 非対応のため 1-8 の描画確認は WezTerm/Ghostty で行う。
 
 - [x] 1-6: `git add` 後 `! nrs` で反映（herdr-0.7.1 ビルド成功・`hm_herdr` symlink 追加・brew 版は `No such keg` で除去確認。実機 config で `reload-config` が `diagnostics:[]/applied`）
-- [ ] 1-7: `herdr` 起動、prefix/theme/keys/toast の動作を確認
-- [ ] 1-8: nvim を herdr pane で起動し LSP 診断 undercurl 描画 / clipboard 自動コピー / `<c-.>` 等の疎通を確認（導入時残件）
-- [ ] 1-9: prefix + vi copy-mode（`prefix+[`）等キーボードの使用感を評価、必要なら keymap を調整
+- [x] 1-7: prefix(`ctrl+g`)/theme(tokyo-night)/分割/pane 移動/overlay(`shift+l`/`shift+b`) を実機で動作確認。toast は Phase 2（実 agent）で確認
+- [x] 1-8: nvim を herdr pane で起動 — 基本描画 / clipboard / `<c-.>`(Sidekick toggle) 疎通OK。**undercurl のみ herdr VT 既知バグ（#894/#895・PR #900）で当面 平坦下線**（stable 未収録。後続タスク参照）
+- [x] 1-9: 「普通に動作」報告に含む（重大な破綻なし）。copy-mode(`prefix+[`) の個別使用感は未詳細のため必要なら後日調整
 
 ### Phase 2: sketchybar イベント駆動同期
 
-- [ ] 2-1: `config/herdr/plugins/sketchybar-sync/herdr-plugin.toml` を作成（上記設計、per-event `[[events]]`）
-- [ ] 2-2: `herdr workspace list` の実出力で既定フォーマット（JSON か）と jq パスを確定し、`config/sketchybar/helpers/herdr-ws-snapshot` を作成・実行権限付与
-- [ ] 2-3: `herdr plugin link` でプラグインを登録し、状態変化で `herdr_update` が発火することを確認
-- [ ] 2-4: `config/sketchybar/items/herdr.lua` を作成（`tmux.lua` を差し替え、helper 駆動・ポーリング撤廃）
-- [ ] 2-5: `config/sketchybar/items/init.lua` の `require("items.tmux")("left")` を `require("items.herdr")("left")` に差し替え
-- [ ] 2-6: 実 claude を working→blocked と遷移させ menu bar が push で即時更新されることを確認。検知が弱ければ Claude の Stop/Notification hook から `herdr pane report-agent <pane_id> --source claude --agent <label> --state <state>` を叩き、同イベント経由で sketchybar を更新する
+- [x] 2-1: `config/herdr/plugins/sketchybar-sync/herdr-plugin.toml` を作成（上記設計、per-event `[[events]]`）
+- [x] 2-2: `herdr workspace list` の実出力で既定フォーマット（JSON か）と jq パスを確定し、`config/sketchybar/helpers/herdr-ws-snapshot` を作成・実行権限付与（既定 stdout が JSON・`.result.workspaces[]` を実出力で再確認。sketchybar launchd の最小 PATH 対策で per-user profile bin を script 内で prepend）
+- [x] 2-3: `herdr plugin link` でプラグインを登録し、状態変化で `herdr_update` が発火することを確認（workspace created/closed で `exit_code:0 / succeeded` 約10ms。server PATH で plain `sketchybar` が解決）
+- [x] 2-4: `config/sketchybar/items/herdr.lua` を作成（`tmux.lua` を差し替え、helper 駆動・ポーリング撤廃。`update_freq` なし・`forced`+`herdr_update` 購読のみ、in_flight/dirty 合流で debounce）
+- [x] 2-5: `config/sketchybar/items/init.lua` の `require("items.tmux")("left")` を `require("items.herdr")("left")` に差し替え（reload 後、初回 reconcile・`herdr_update` トリガ経由の再描画とも実機確認）
+- [x] 2-6: 実 claude を working→blocked と遷移させ menu bar が push で即時更新されることを確認。検知が弱ければ Claude の Stop/Notification hook から `herdr pane report-agent <pane_id> --source claude --agent <label> --state <state>` を叩き、同イベント経由で sketchybar を更新する（全チェーン実機確認・hook fallback 実装。詳細は下記予実差異）
+
+> **予実差異（2-6: ネイティブ検知は現構成では効かない → hook fallback を標準経路に昇格）**: claude は Sidekick の **nvim split 内**で動くため（3-5 の既知制約）、herdr の前面プロセス検知は nvim しか見えず `herdr agent list` も空。公式統合（SessionStart→`pane.report_agent_session`）も稼働中セッションには未反映だった。
+> 対処として `config/claude/hooks/report-herdr-state.sh` を新設（`HERDR_ENV`/`HERDR_PANE_ID` ガード付き、herdr 管理の `herdr-*.sh` とは別ファイルなので追跡対象）し、settings.json に UserPromptSubmit/PostToolUse→`working`・Notification(permission_prompt)→`blocked`・Stop→`idle`・SessionEnd→`unknown` を配線。
+> claude が herdr pane 直下でなく nvim 内でも `HERDR_PANE_ID` 継承で正しい pane に帰属する。report-agent → event → trigger → helper → 再描画の全チェーンで working=yellow / blocked=red の即時反映を実機確認。
+>
+> **予実差異（2-6: 同一状態の再報告はイベントを emit しない）**: `report-agent` を同状態で連打しても `pane.agent_status_changed` は増えない（実測 before=5/after=5）。PostToolUse の毎ツール発火でもイベント乱発・sketchybar 負荷なし。
+>
+> **予実差異（2-6: hooks の反映タイミング）**: Claude Code は hooks をセッション開始時に読むため、**稼働中の claude セッションには fallback が効かない**。新規セッションから自動反映が有効になる（実運用での working→blocked 自動遷移の目視確認は次セッションで行う）。
+>
+> **予実差異（2-1/2-3: plugin command はベアネームで解決）**: 計画どおり `command = ["sketchybar", ...]` のままで動作（herdr server が login shell 由来の PATH を保持）。最小 PATH 問題は sketchybar launchd 側のみで、helper 内の per-user profile prepend で対処した。
 
 ### Phase 3: workspace CLI 縮小と worktree 委譲
 
@@ -364,3 +378,30 @@ herdr workspace list \
 | floating popup（display-popup 相当）       | 近似のみ            | Herdr は floating popup 非対応。`[[keys.command]]` の overlay pane で代替                                                                                                                                                                           |
 | 実エージェントの状態検知精度               | 未検証              | dispatch はソース確認済みで、残件は Herdr が実 claude の遷移を emit する検知精度のみ（導入時確認）。弱ければ Claude hook→`herdr pane report-agent`（同イベントを emit）で補完                                                                       |
 | nvim の undercurl 描画                     | 未検証              | 対話 TTY が必要（導入時確認）                                                                                                                                                                                                                       |
+
+---
+
+## 後続タスク（Phase 1 実装中に発生）
+
+### undercurl（herdr upstream 待ち・放置でOK）
+
+- 事象: herdr pane 内 nvim で LSP 診断の波線が「文字色の平坦な下線」に化ける。
+- 原因: herdr の VT が undercurl escape `\e[4:3m` を平坦描画する既知バグ。
+  Issue **#894 / #895**（報告環境も `Herdr 0.7.1 stable` で一致）。
+- 状態: **PR #900 で修正済み**（commit `b7015f17`、2026-06-30）。`preview-2026-06-30-...`
+  以降に収録。**stable は v0.7.1 が最新で未収録**（label `pending-release`）。非クリティカル。
+- 対応: **放置**。次 stable（v0.7.2 見込み）が出たら flake の herdr タグを bump して解消。
+- 不採用: 一時的な `TERM=xterm-ghostty` 上書きは v0.7.1 の VT バグでは曲線化しないため撤回済み。
+
+### [ ] herdr stable 追従の自動化（別 workflow・案C）
+
+- 目的: stable タグ pin を保ったまま、新 stable を自動で拾って bump PR を立てる
+  （undercurl 修正もこの導線で自動的に入る）。
+- 背景: 現 `update-flake.yml`（`DeterminateSystems/update-flake-lock`）は flake.lock 専用で、
+  タグ固定の herdr は自動で上がらない。既存ジョブへの混在は不整合になりやすいため別 workflow にする。
+- 実装: `.github/workflows/bump-herdr.yml` を新規。週次 cron + `workflow_dispatch`。
+  `gh api repos/ogulcancelik/herdr/releases/latest`（pre-release 除外＝stable のみ）で最新タグ取得
+  → flake.nix の `github:ogulcancelik/herdr/vX.Y.Z` が古ければ置換 → `nix flake update herdr`
+  → `create-pull-request` で bump PR。app-token（`AUTOMATION_CLIENT_ID` /
+  `AUTOMATION_APP_PRIVATE_KEY`）を既存 workflow 同様に利用。
+- 優先度: 低（後回し）。
