@@ -2,13 +2,8 @@
 
 local -a commands
 commands=(
-  'list:Session list (interactive)'
-  'switch:Switch session'
-  'new:Create new session'
-  'delete:Delete session'
-  'rename:Rename session'
-  'wt:Create new worktree and session'
-  'wt-rm:Remove worktree and session'
-  'notify:Notification management'
+  'new:Open workspace from ghq repository'
+  'wt:Create worktree and open workspace'
+  'wt-rm:Remove worktree and its workspace'
 )
 _describe -t commands 'workspace commands' commands
