@@ -334,6 +334,8 @@ herdr workspace list \
 > **予実差異（3-3: worktree create の副作用）**: `herdr worktree create` は worktree 用 workspace に加えて**ソース repo の workspace も自動で開く**（herdr 仕様）。wt-rm 後の focus はソース workspace へ戻る。委譲方針のため挙動として許容し wrapper では制御しない。worktree の配置は herdr 既定（`~/.herdr/worktrees/<repo>/<branch>`、旧 `../<repo>-<branch>` から変更）。
 >
 > **予実差異（3-2: `.smug.yml` 削除の前倒し）**: リポジトリ直下の `.smug.yml` 削除は 4-6（smug パッケージ除去）と同時想定だったが、CLI 書き換えで読む者がいなくなるため Phase 3 で削除した。
+>
+> **追補（Phase 4 完了後のユーザー要望）**: 旧 tmux `prefix+T`（workspace list popup）相当が日常運用に必要と判明。`[[keys.command]]` の overlay pane で `prefix+shift+t` → `workspace new`（ghq repo の fzf 選択）を起動する bind を config.toml に追加（`/bin/sh -lc` 実行のため `$HOME` 絶対パス指定、reload-config で diagnostics ゼロ確認）。既存 workspace の一覧・切替は引き続き `prefix+w`。
 
 ### Phase 4: 旧構成の撤去
 

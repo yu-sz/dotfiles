@@ -27,6 +27,15 @@ type = "pane"
 command = "btop"
 description = "run btop"
 
+# 旧 tmux prefix+T（workspace list popup）相当。ghq repo を fzf で選び
+# workspace を起動/フォーカスする。command は /bin/sh -lc 実行のため、
+# sheldon が interactive shell で足す PATH に依存しない $HOME 絶対パスで書く。
+[[keys.command]]
+key = "prefix+shift+t"
+type = "pane"
+command = "$HOME/.config/zsh/plugins/workspace/bin/workspace new"
+description = "open repo picker"
+
 [ui.toast]
 delivery = "herdr"
 
