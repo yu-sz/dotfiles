@@ -1,0 +1,4 @@
+# herdr が自動インストール・更新する管理ファイル（ヘッダに "managed by herdr" と明記、
+# 編集禁止・herdr バージョンに連動・各マシンで再生成される）。追跡すると herdr 更新の
+# たびに churn するため無視する。settings.json 側のフック登録のみ追跡する。
+herdr-*.sh

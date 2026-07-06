@@ -1,5 +1,6 @@
--- 独自実装: tmux セッション一覧と Claude の状態を表示。
--- 自作 workspace zsh プラグイン (config/zsh/plugins/workspace) に依存。
+-- 独自実装: herdr workspace 一覧と agent 状態を表示。
+-- herdr plugin (config/herdr/plugins/sketchybar-sync) が発火する herdr_update
+-- イベント駆動で再描画する (ポーリングなし)。
 -- SLOT_COUNT 個の slot を起動時に確保し、drawing で表示制御する。
 
 local sbar = require("sketchybar")
@@ -7,37 +8,22 @@ local colors = require("colors")
 local settings = require("settings")
 local nf = require("helpers.icons").nf
 
-local STATE_DIR = (os.getenv("TMPDIR") or "/tmp/"):gsub("/$", "") .. "/ws-state"
-local TMUX = "/etc/profiles/per-user/" .. (os.getenv("USER") or "") .. "/bin/tmux"
+local SNAPSHOT = (os.getenv("HOME") or "") .. "/.config/sketchybar/helpers/herdr-ws-snapshot"
 local NAME_LIMIT = 12
-local POLL_INTERVAL = 5
 local SLOT_COUNT = 10
 
+-- herdr の agent_status は 5 値。done を落とすと完了エージェントが
+-- unknown 色になるため必ず含める。
 local STATE_COLOR = {
-  -- waiting への遷移は Claude Code 側の hook fire 遅延あり (anthropics/claude-code#19627, 未修正)
-  waiting = colors.yellow,
+  blocked = colors.red,
+  working = colors.yellow,
+  done = colors.green,
   idle = colors.blue,
-  none = colors.fg_dark,
+  unknown = colors.fg_dark,
 }
 
-local function read_state(name)
-  local f = io.open(STATE_DIR .. "/claude_" .. name, "r")
-  if not f then
-    return "none"
-  end
-  local content = f:read("*l") or ""
-  f:close()
-  if content:match("^waiting") then
-    return "waiting"
-  end
-  if content:match("^idle") then
-    return "idle"
-  end
-  return "none"
-end
-
 return function(position)
-  local header = sbar.add("item", "tmux.header", {
+  local header = sbar.add("item", "herdr.header", {
     position = position,
     icon = {
       string = nf(0xF120),
@@ -55,10 +41,10 @@ return function(position)
 
   local slots = {}
   local separators = {}
-  local member_ids = { "tmux.header" }
+  local member_ids = { "herdr.header" }
 
   for i = 1, SLOT_COUNT do
-    separators[i] = sbar.add("item", "tmux.sep." .. i, {
+    separators[i] = sbar.add("item", "herdr.sep." .. i, {
       position = position,
       icon = { drawing = false, padding_left = 0, padding_right = 0 },
       label = {
@@ -73,7 +59,7 @@ return function(position)
       padding_right = 0,
       drawing = false,
     })
-    slots[i] = sbar.add("item", "tmux.slot." .. i, {
+    slots[i] = sbar.add("item", "herdr.slot." .. i, {
       position = position,
       icon = { drawing = false, padding_left = 0, padding_right = 0 },
       label = {
@@ -88,11 +74,11 @@ return function(position)
       padding_right = 0,
       drawing = false,
     })
-    table.insert(member_ids, "tmux.sep." .. i)
-    table.insert(member_ids, "tmux.slot." .. i)
+    table.insert(member_ids, "herdr.sep." .. i)
+    table.insert(member_ids, "herdr.slot." .. i)
   end
 
-  local bracket = sbar.add("bracket", "tmux.bracket", member_ids, {
+  local bracket = sbar.add("bracket", "herdr.bracket", member_ids, {
     background = {
       color = colors.bg_dark,
       border_color = colors.transparent,
@@ -102,6 +88,8 @@ return function(position)
     },
   })
 
+  -- pane.agent_status_changed は working↔idle で頻発しうるため、
+  -- 実行中の再入は dirty フラグで合流させ 1 回の再取得へ debounce する。
   local in_flight, dirty = false, false
 
   local function render(current)
@@ -122,11 +110,11 @@ return function(position)
 
     for i = 1, SLOT_COUNT do
       if i <= count then
-        local name = current[i]
+        local ws = current[i]
         slots[i]:set({
           label = {
-            string = name:sub(1, NAME_LIMIT),
-            color = STATE_COLOR[read_state(name)] or STATE_COLOR.none,
+            string = ws.label:sub(1, NAME_LIMIT),
+            color = STATE_COLOR[ws.status] or STATE_COLOR.unknown,
           },
           drawing = true,
         })
@@ -144,11 +132,12 @@ return function(position)
       return
     end
     in_flight = true
-    sbar.exec(TMUX .. " ls -F '#{session_name}' 2>/dev/null", function(out)
+    sbar.exec(SNAPSHOT, function(out)
       local current = {}
       for line in (out or ""):gmatch("[^\r\n]+") do
-        if line ~= "" then
-          table.insert(current, line)
+        local label, status = line:match("^([^\t]+)\t(%S+)$")
+        if label then
+          table.insert(current, { label = label, status = status })
         end
       end
       render(current)
@@ -162,12 +151,11 @@ return function(position)
 
   reconcile()
 
-  sbar.add("event", "tmux_change")
+  sbar.add("event", "herdr_update")
 
-  local handler = sbar.add("item", "tmux.handler", {
+  local handler = sbar.add("item", "herdr.handler", {
     drawing = false,
-    update_freq = POLL_INTERVAL,
     updates = true,
   })
-  handler:subscribe({ "routine", "forced", "tmux_change" }, reconcile)
+  handler:subscribe({ "forced", "herdr_update" }, reconcile)
 end

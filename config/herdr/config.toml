@@ -1,0 +1,51 @@
+onboarding = false
+[theme]
+name = "tokyo-night"
+
+[keys]
+prefix = "ctrl+g"
+new_tab = "prefix+c"
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+split_vertical = "prefix+v"
+split_horizontal = "prefix+minus"
+
+# lazygit=prefix+shift+l / btop=prefix+shift+b。
+# alt+* は AeroSpace（tiling WM）が OS レベルで全部奪うため使用不可。
+# 平打ち g=goto / b=toggle_sidebar / shift+g=new_worktree も使用中のため shift+l/shift+b を採用。
+[[keys.command]]
+key = "prefix+shift+l"
+type = "pane"
+command = "lazygit"
+description = "run lazygit"
+
+[[keys.command]]
+key = "prefix+shift+b"
+type = "pane"
+command = "btop"
+description = "run btop"
+
+# 旧 tmux prefix+T（workspace list popup）相当。ghq repo を fzf で選び
+# workspace を起動/フォーカスする。command は /bin/sh -lc 実行のため、
+# sheldon が interactive shell で足す PATH に依存しない $HOME 絶対パスで書く。
+[[keys.command]]
+key = "prefix+shift+t"
+type = "pane"
+command = "$HOME/.config/zsh/plugins/workspace/bin/workspace new"
+description = "open repo picker"
+
+[ui.toast]
+delivery = "herdr"
+
+[ui]
+mouse_capture = true
+
+# 日本語 IME 対策（実測: config スキーマに存在、macOS 向け）。
+# Claude Code / codex の TUI で IME 候補ウィンドウ追従と prefix 入力の
+# 取りこぼしを緩和する。experimental のため使用感で取捨する。
+[experimental]
+reveal_hidden_cursor_for_cjk_ime = true
+cjk_ime_agents = ["claude", "codex"]
+switch_ascii_input_source_in_prefix = true

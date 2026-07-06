@@ -32,7 +32,7 @@ in
       shell-integration = "detect";
       quick-terminal-position = "top";
       quick-terminal-size = "60%,80%";
-      command = "${zshPath} -lic 'if [[ -n $GHOSTTY_QUICK_TERMINAL ]]; then exec ${zshPath} -li; fi; ghostty +boo; tmux attach || tmux new-session -s default'";
+      command = "${zshPath} -lic 'if [[ -n $GHOSTTY_QUICK_TERMINAL ]]; then exec ${zshPath} -li; fi; ghostty +boo; herdr'";
       keybind = [
         "shift+enter=text:\\n"
         "global:f13=toggle_quick_terminal"

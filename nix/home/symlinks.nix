@@ -13,8 +13,7 @@ in
   xdg.configFile = {
     "btop".source = mkLink "config/btop";
     "nvim".source = mkLink "config/nvim";
-    "tmux".source = mkLink "config/tmux";
-    "gitmux".source = mkLink "config/gitmux";
+    "herdr".source = mkLink "config/herdr";
     "gomi".source = mkLink "config/gomi";
     "lazydocker".source = mkLink "config/lazydocker";
     "zabrze".source = mkLink "config/zabrze";

@@ -1,12 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "env": {
-    "DISABLE_AUTOUPDATER": "1",
-    "ENABLE_TOOL_SEARCH": "true",
-    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
-    "CLAUDE_CODE_EFFORT_LEVEL": "xhigh"
+  "fileSuggestion": {
+    "type": "command",
+    "command": "~/.claude/file-suggestion.sh"
   },
   "cleanupPeriodDays": 30,
+  "env": {
+    "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
+    "CLAUDE_CODE_EFFORT_LEVEL": "xhigh",
+    "DISABLE_AUTOUPDATER": "1",
+    "ENABLE_TOOL_SEARCH": "true"
+  },
   "attribution": {
     "commit": "",
     "pr": ""
@@ -86,14 +90,38 @@
     ],
     "defaultMode": "plan"
   },
-  "skipAutoPermissionPrompt": true,
+  "enableAllProjectMcpServers": true,
   "hooks": {
-    "UserPromptSubmit": [
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "(~/.claude/hooks/notify.sh 'Awaiting Confirmation...' &)"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/report-herdr-state.sh blocked"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "mkdir -p ~/.claude/logs && echo \"[$(date '+%H:%M:%S')] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/logs/command_history_$(date '+%Y-%m-%d').log"
+          }
+        ]
+      },
       {
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify clear-state"
+            "command": "~/.claude/hooks/report-herdr-state.sh working"
           }
         ]
       }
@@ -114,21 +142,24 @@
         ]
       }
     ],
-    "PostToolUse": [
+    "SessionEnd": [
       {
-        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "mkdir -p ~/.claude/logs && echo \"[$(date '+%H:%M:%S')] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/logs/command_history_$(date '+%Y-%m-%d').log"
+            "command": "~/.claude/hooks/report-herdr-state.sh unknown"
           }
         ]
-      },
+      }
+    ],
+    "SessionStart": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify clear-state"
+            "command": "bash '/Users/yu-sz/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
           }
         ]
       }
@@ -138,80 +169,61 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify idle"
-          },
-          {
-            "type": "command",
             "command": "(~/.claude/hooks/notify.sh 'Task Completed!' &)"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "matcher": "permission_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify waiting"
           },
           {
             "type": "command",
-            "command": "(~/.claude/hooks/notify.sh 'Awaiting Confirmation...' &)"
+            "command": "~/.claude/hooks/report-herdr-state.sh idle"
           }
         ]
       }
     ],
-    "SessionEnd": [
+    "UserPromptSubmit": [
       {
-        "matcher": "prompt_input_exit",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.config/zsh/plugins/workspace/bin/workspace notify end"
+            "command": "~/.claude/hooks/report-herdr-state.sh working"
           }
         ]
       }
     ]
   },
-  "enableAllProjectMcpServers": true,
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
   "enabledPlugins": {
+    "bash-lsp@dotfiles-lsp": true,
     "example-skills@anthropic-agent-skills": true,
+    "gopls-lsp@dotfiles-lsp": true,
     "lua-lsp@claude-plugins-official": false,
-    "vtsls-lsp@dotfiles-lsp": true,
     "lua-lsp@dotfiles-lsp": true,
     "nixd-lsp@dotfiles-lsp": true,
-    "bash-lsp@dotfiles-lsp": true,
+    "rust-analyzer-lsp@dotfiles-lsp": true,
     "terraform-lsp@dotfiles-lsp": true,
-    "gopls-lsp@dotfiles-lsp": true,
-    "rust-analyzer-lsp@dotfiles-lsp": true
+    "vtsls-lsp@dotfiles-lsp": true
   },
   "extraKnownMarketplaces": {
-    "dotfiles-lsp": {
-      "source": {
-        "source": "directory",
-        "path": "."
-      }
-    },
     "anthropic-agent-skills": {
       "source": {
         "source": "github",
         "repo": "anthropics/skills"
       }
+    },
+    "dotfiles-lsp": {
+      "source": {
+        "source": "directory",
+        "path": "."
+      }
     }
   },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh"
-  },
-  "fileSuggestion": {
-    "type": "command",
-    "command": "~/.claude/file-suggestion.sh"
-  },
+  "effortLevel": "xhigh",
   "showClearContextOnPlanAccept": true,
   "showThinkingSummaries": true,
-  "effortLevel": "xhigh",
+  "skipAutoPermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754030471611
-  }
+  },
+  "model": "claude-fable-5[1m]"
 }

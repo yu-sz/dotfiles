@@ -5,7 +5,6 @@
     cmatrix
     cowsay
     fd
-    gitmux
     gomi
     hyperfine
     jq
@@ -13,7 +12,6 @@
     oha
     ripgrep
     sheldon
-    smug
     termdown
     zabrze
     zsh
