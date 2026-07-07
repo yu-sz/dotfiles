@@ -1,7 +1,7 @@
 # CLI ツールの home-manager `programs.*` モジュール移行
 
 Date: 2026-03-31
-Status: Accepted
+Status: Superseded — [ADR: 設定ファイルの XDG ベース config/ 集約](./2026-07-07-xdg-config-consolidation.md) に置き換え
 
 ## Context
 
@@ -58,7 +58,7 @@ key-value 的な設定を持つツールを `programs.*` に移行する。
 
 `nix/home/programs/` を新規作成し、ツールごとに1ファイルで管理する。
 
-```
+```text
 nix/home/
 ├── default.nix    ← imports に ./programs 追加、home.packages から対象ツール削除
 ├── programs/      ← 新規
