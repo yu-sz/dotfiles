@@ -34,7 +34,7 @@ When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
 
 | Category              | macOS                                          | Linux                     |
 | --------------------- | ---------------------------------------------- | ------------------------- |
-| CLI tools (shared)    | `nix/home/default.nix`                         | ←                         |
+| CLI tools (shared)    | `nix/home/packages/`                           | ←                         |
 | OS-specific tools     | `nix/home/darwin.nix`                          | `nix/home/linux.nix`      |
 | GUI apps              | `nix/hosts/darwin-shared.nix` (homebrew.casks) | `nix/home/linux.nix`      |
 | Fonts                 | `nix/hosts/darwin-shared.nix` (fonts.packages) | `nix/home/linux.nix`      |
