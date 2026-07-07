@@ -1,0 +1,37 @@
+[delta]
+	line-numbers = true
+	minus-style = "syntax #8D3043"
+	navigate = true
+	plus-style = "syntax #043103"
+	side-by-side = true
+	syntax-theme = "Monokai Extended"
+
+[diff]
+	colorMoved = "default"
+
+[fetch]
+	prune = true
+
+[ghq]
+	root = "~/Projects"
+
+[init]
+	defaultBranch = "main"
+
+[interactive]
+	diffFilter = "delta --color-only"
+
+[merge]
+	conflictstyle = "diff3"
+
+[pager]
+	blame = "delta"
+	diff = "delta"
+	log = "delta"
+	show = "delta"
+
+[user]
+	useConfigOnly = true
+
+[include]
+	path = "~/.config/git/config.local"

@@ -365,13 +365,15 @@ home.packages = with pkgs; [
 
 ### Phase 2: git 系(git / delta / gh)
 
-- [ ] 2-1: `config/git/config`・`config/git/ignore` を作成し、現行 `~/.config/git/*` と diff 確認
-- [ ] 2-2: `config/gh/config.yml` を作成し、現行 `~/.config/gh/config.yml` と diff 確認
-- [ ] 2-3: `symlinks.nix` に `git/config`・`git/ignore`・`gh/config.yml` を追加
-- [ ] 2-4: `packages/dev.nix` に git / delta / gh を追加
-- [ ] 2-5: `programs/{git,delta,gh}.nix` を `git rm` し、imports を更新
-- [ ] 2-6: `git add` → `just check`
-- [ ] 2-7: `! nrs` 適用後、`git config --get ghq.root`・`git config --get user.name`(config.local 経由)・`git diff` の delta 表示・`gh config get git_protocol` を確認
+- [x] 2-1: `config/git/config`・`config/git/ignore` を作成し、現行 `~/.config/git/*` と diff 確認(差分は delta の store パス→PATH 置換のみ。ignore は完全一致)
+- [x] 2-2: `config/gh/config.yml` を作成し、現行 `~/.config/gh/config.yml` と diff 確認(完全一致。`editor: ''` を含めて踏襲)
+- [x] 2-3: `symlinks.nix` に `git/config`・`git/ignore`・`gh/config.yml` を追加
+- [x] 2-4: `packages/dev.nix` に git / delta / gh を追加
+- [x] 2-5: `programs/{git,delta,gh}.nix` を `git rm` し、imports を更新
+- [x] 2-6: `git add` → `just check`(all checks passed)
+- [x] 2-7: `! nrs` 適用後、`git config --get ghq.root`・`git config --get user.name`(config.local 経由)・`git diff` の delta 表示・`gh config get git_protocol` を確認(全項目 OK。gh 認証・hosts.yml も無傷)
+
+> **予実差異**: delta の git 統合は計画の `[core] pager` ではなく、HM 生成物と同じ `[pager]`(blame/diff/log/show)+ `[interactive] diffFilter` で再現した(実生成形に合わせ挙動差を排除)。また gh の生成物には計画になかった `editor: ''` があり、そのまま踏襲した。
 
 ### Phase 3: lazygit / ghostty
 

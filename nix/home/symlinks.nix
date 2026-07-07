@@ -23,6 +23,9 @@ in
     "wezterm".source = mkLink "config/wezterm";
     "starship.toml".source = mkLink "config/starship/starship.toml";
     "bat".source = mkLink "config/bat";
+    "git/config".source = mkLink "config/git/config";
+    "git/ignore".source = mkLink "config/git/ignore";
+    "gh/config.yml".source = mkLink "config/gh/config.yml";
   }
   // lib.optionalAttrs pkgs.stdenv.isDarwin {
     "karabiner".source = mkLink "config/karabiner";

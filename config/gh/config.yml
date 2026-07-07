@@ -1,0 +1,8 @@
+aliases:
+  co: pr checkout
+editor: ""
+git_protocol: https
+prefer_editor_prompt: disabled
+prompt: enabled
+spinner: enabled
+version: "1"
