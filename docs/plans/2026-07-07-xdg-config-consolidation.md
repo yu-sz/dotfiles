@@ -379,14 +379,17 @@ home.packages = with pkgs; [
 
 ### Phase 3: lazygit / ghostty
 
-- [ ] 3-1: `config/lazygit/config.yml` を作成し、現行生成物と diff 確認
-- [ ] 3-2: `config/ghostty/config` を作成し、現行生成物と diff 確認(差分が command 行の zsh パスのみであること)
-- [ ] 3-3: `symlinks.nix` に `lazygit/config.yml`・`ghostty` を追加
-- [ ] 3-4: `packages/dev.nix` に lazygit、`darwin.nix` に ghostty-bin、`linux.nix` に ghostty を追加
-- [ ] 3-5: `programs/{lazygit,ghostty}.nix` を `git rm` し、imports を更新
-- [ ] 3-6: `git add` → `just check`
-- [ ] 3-7: `! nrs` 適用後、`lazygit --print-config-dir` が `~/.config/lazygit` を指すこと・delta ページャ・日本語 UI を確認
-- [ ] 3-8: ghostty を再起動し、通常起動(herdr 立ち上がり)・quick terminal(F13)・フォント/テーマ適用を確認
+- [x] 3-1: `config/lazygit/config.yml` を作成し、現行生成物と diff 確認(完全一致)
+- [x] 3-2: `config/ghostty/config` を作成し、現行生成物と diff 確認(差分は command 行の zsh パス置換のみ)
+- [x] 3-3: `symlinks.nix` に `lazygit/config.yml`・`ghostty` を追加
+- [x] 3-4: `packages/dev.nix` に lazygit、`darwin.nix` に ghostty-bin、`linux.nix` に ghostty を追加
+- [x] 3-5: `programs/{lazygit,ghostty}.nix` を `git rm` し、imports を更新
+- [x] 3-6: `git add` → `just check`(all checks passed + darwin dry-run build OK)
+- [x] 3-7: `! nrs` 適用後、`lazygit --print-config-dir` が `~/.config/lazygit` を指すこと・delta ページャ・日本語 UI を確認(OK。`ghostty +show-config` でも raw config のパースを確認)
+- [x] 3-8: ghostty を再起動し、通常起動(herdr 立ち上がり)・quick terminal(F13)・フォント/テーマ適用を確認(ユーザー実機確認済み)
+
+> **予実差異**: 実ファイルは設計セクションの整形例ではなく HM 生成物の忠実コピーとした(キーのアルファベット順・float の桁 `0.850000` 等)。挙動差ゼロを diff で保証するため。
+> 懸念していた Library/Application Support 側への lazygit 設定生成は存在しなかった。
 
 ### Phase 4: yazi 分割
 
