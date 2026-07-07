@@ -354,12 +354,14 @@ home.packages = with pkgs; [
 
 ### Phase 1: enable のみ組(bat / eza / fzf / zoxide / starship)
 
-- [ ] 1-1: `config/bat/config` を作成し、`diff ~/.config/bat/config config/bat/config` で一致確認
-- [ ] 1-2: `symlinks.nix` に `"bat"` を追加
-- [ ] 1-3: `packages/shell.nix` に bat / eza / fzf / starship / zoxide を追加
-- [ ] 1-4: `programs/{bat,eza,fzf,starship,zoxide}.nix` を `git rm` し、`programs/default.nix` の imports を更新
-- [ ] 1-5: `git add` → `just check`
-- [ ] 1-6: `! nrs` 適用後、`command -v bat eza fzf zoxide starship`・`bat` のスタイル・`ei` エイリアス・`z` ジャンプ・プロンプト表示を確認
+- [x] 1-1: `config/bat/config` を作成し、`diff ~/.config/bat/config config/bat/config` で一致確認(差分は programs.ghostty 由来の map-syntax 行のみ。予実差異参照)
+- [x] 1-2: `symlinks.nix` に `"bat"` を追加
+- [x] 1-3: `packages/shell.nix` に bat / eza / fzf / starship / zoxide を追加
+- [x] 1-4: `programs/{bat,eza,fzf,starship,zoxide}.nix` を `git rm` し、`programs/default.nix` の imports を更新
+- [x] 1-5: `git add` → `just check`(all checks passed。programs.bat.enable=false も nix eval で確認済み)
+- [x] 1-6: `! nrs` 適用後、`command -v bat eza fzf zoxide starship`・`bat` のスタイル・`ei` エイリアス・`z` ジャンプ・プロンプト表示を確認(全項目 OK。~/.config/bat は repo に解決)
+
+> **予実差異**: 現行生成物の `bat/config` には `programs.ghostty` の `installBatSyntax`(デフォルト有効)由来の `--map-syntax` 行と `syntaxes/` ディレクトリが含まれており、`--style` のみの新ファイルとは完全一致しない。`programs.bat` 無効化により installBatSyntax は不活性となり、bat の Ghostty 設定ハイライトは本 Phase 適用時点で消失(Phase 3 の想定が前倒し)。実害は bat で ghostty config を開いた際の色付けのみのため許容。
 
 ### Phase 2: git 系(git / delta / gh)
 
