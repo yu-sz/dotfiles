@@ -404,8 +404,10 @@ home.packages = with pkgs; [
 
 ### Phase 5: ドキュメント更新
 
-- [ ] 5-1: `.claude/skills/nix-guide/SKILL.md` の Conventions(「HM モジュールがある場合は programs を優先」)を線引き基準に沿って書き換え、Module Structure の記述を更新
-- [ ] 5-2: 本 Plans のチェックリストと予実差異を最終確認
+- [x] 5-1: `.claude/skills/nix-guide/SKILL.md` の Conventions(「HM モジュールがある場合は programs を優先」)を線引き基準に沿って書き換え、Module Structure の記述を更新(あわせて廃止済みの `package = null` パターン/Gotcha を削除)
+- [x] 5-2: 本 Plans のチェックリストと予実差異を最終確認(全 Phase 完了)
+
+> **予実差異**: `CLAUDE.md` の Nix Package Management 表で CLI tools の配置が `nix/home/default.nix` のまま古かったため、`nix/home/packages/` に修正した(計画外だが本移行に付随する記述齟齬の解消)。
 
 ---
 
@@ -427,3 +429,4 @@ home.packages = with pkgs; [
 | `nix/home/programs/default.nix`               | imports 削減   | imports 削減   | imports 削減           | -             | -       |
 | `nix/home/programs/*.nix`                     | 5 ファイル削除 | 3 ファイル削除 | 2 ファイル削除         | yazi.nix 縮小 | -       |
 | `.claude/skills/nix-guide/SKILL.md`           | -              | -              | -                      | -             | 更新    |
+| `CLAUDE.md`                                   | -              | -              | -                      | -             | 更新    |
