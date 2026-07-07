@@ -7,10 +7,14 @@
 
   home.packages = with pkgs; [
     awscli2
+    delta
+    gh
     ghq
+    git
     google-cloud-sdk
     hadolint
     lazydocker
+    lazygit
     mkcert
     pgcli
     postgresql

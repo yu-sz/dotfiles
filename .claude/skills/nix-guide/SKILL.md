@@ -16,12 +16,13 @@ paths:
 flake.nix                    # エントリポイント（flake-parts）
 nix/
 ├── home/
-│   ├── default.nix          # home.packages（CLI ツール）、imports
+│   ├── default.nix          # imports、xdg.enable
 │   ├── shell.nix            # direnv、enableZshIntegration = false
 │   ├── symlinks.nix         # mkOutOfStoreSymlink でドットファイルリンク
 │   ├── darwin.nix           # macOS 専用パッケージ（mkIf isDarwin）
-│   └── programs/
-│       └── default.nix      # import リスト（新規追加時ここに追記）
+│   ├── linux.nix            # Linux 専用パッケージ・フォント
+│   ├── packages/            # home.packages（shell / dev / editor / lsp-tools）
+│   └── programs/            # Nix が機構を提供するもののみ（nh / sketchybar / yazi）
 ├── hosts/
 │   └── darwin-shared.nix    # nix-darwin システム設定、Homebrew casks、fonts
 └── overlays/
@@ -55,15 +56,15 @@ nix/
 
 ## Conventions
 
-| 項目                          | 規約                                                                               |
-| ----------------------------- | ---------------------------------------------------------------------------------- |
-| 関数シグネチャ                | 引数を使う場合 `{ pkgs, ... }:`、使わない場合 `_:`（2 引数 overlay も `_: prev:`） |
-| programs モジュール           | `nix/home/programs/<name>.nix` に 1 ファイル 1 プログラム                          |
-| `home.packages` vs `programs` | HM モジュールがある場合は `programs.<name>` を優先（宣言的設定が可能）             |
-| Zsh integration               | `home.shell.enableZshIntegration = false`（Sheldon が管理）                        |
-| フォーマッタ / リンタ         | `nixfmt-tree`, `statix`, `deadnix`（pre-commit で自動適用）                        |
-| flake-parts                   | `perSystem` = dev tooling、`flake` = マシン構成                                    |
-| unfree パッケージ             | `flake.nix` の `allowUnfreePredicate` にパッケージ名を追加                         |
+| 項目                          | 規約                                                                                                                                                             |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 関数シグネチャ                | 引数を使う場合 `{ pkgs, ... }:`、使わない場合 `_:`（2 引数 overlay も `_: prev:`）                                                                               |
+| programs モジュール           | `nix/home/programs/<name>.nix` に 1 ファイル 1 プログラム                                                                                                        |
+| `home.packages` vs `programs` | 設定は `config/` + `symlinks.nix`、パッケージは `home.packages`。`programs.<name>` は設定生成以外の機構（launchd、プラグイン取得、flake 連携）を提供する場合のみ |
+| Zsh integration               | `home.shell.enableZshIntegration = false`（Sheldon が管理）                                                                                                      |
+| フォーマッタ / リンタ         | `nixfmt-tree`, `statix`, `deadnix`（pre-commit で自動適用）                                                                                                      |
+| flake-parts                   | `perSystem` = dev tooling、`flake` = マシン構成                                                                                                                  |
+| unfree パッケージ             | `flake.nix` の `allowUnfreePredicate` にパッケージ名を追加                                                                                                       |
 
 ## Key Patterns
 
@@ -131,13 +132,6 @@ assertion の条件は **「現状の workaround が必要な状態」と等価*
 | URL を併記                   | Issue / Fix PR / 根本原因の 3 点を残し、半年後でも文脈を辿れる                  |
 | 1 ファイル 1 workaround      | 削除タイミングが個別なため                                                      |
 
-### programs モジュール
-
-```nix
-# cask 管理のアプリ（nixpkgs でビルドしない場合）
-_: { programs.app-name = { enable = true; package = null; settings = { ... }; }; }
-```
-
 ### ハッシュ更新（overlay のバージョンアップ）
 
 1. `version` を更新、`hash`（と `cargoHash`）を `""` に設定
@@ -152,7 +146,6 @@ _: { programs.app-name = { enable = true; package = null; settings = { ... }; };
 | `git add` 必須         | Flake は Git 管理ファイルのみ参照。新規ファイル作成後は必ず `git add` してから `nrs`          |
 | `sessionVariables`     | `.zshenv` の `unsetopt GLOBAL_RCS` により HM の変数設定は機能しない。明示的パスを使用         |
 | `enableZshIntegration` | 全プログラムで `false`（shell.nix でグローバル設定済み）。Zsh hooks は Sheldon が管理         |
-| `package = null`       | cask でインストールするアプリの programs モジュールに必要（nixpkgs ビルドをスキップ）         |
 | `cleanup`              | `"uninstall"` を使用。`"zap"` はアプリの設定データも削除してしまう                            |
 | pre-commit             | `nix develop` 内でコミットすること（hooks は devShell で提供）                                |
 
