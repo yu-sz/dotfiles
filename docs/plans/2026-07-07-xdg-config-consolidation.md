@@ -393,12 +393,14 @@ home.packages = with pkgs; [
 
 ### Phase 4: yazi 分割
 
-- [ ] 4-1: `config/yazi/{yazi.toml,theme.toml,init.lua}` を作成し、現行生成物と diff 確認
-- [ ] 4-2: `just lint-lua` で init.lua の lint 通過を確認
-- [ ] 4-3: `programs/yazi.nix` から `settings`・`initLua`・`theme` を削除(縮小後の設計を適用)
-- [ ] 4-4: `symlinks.nix` に yazi の個別 3 エントリを追加
-- [ ] 4-5: `git add` → `just check`
-- [ ] 4-6: `! nrs` 適用後、yazi 起動で tokyo-night flavor・full-border・隠しファイル表示・smart-enter 動作を確認
+- [x] 4-1: `config/yazi/{yazi.toml,theme.toml,init.lua}` を作成し、現行生成物と diff 確認(3 ファイルとも完全一致)
+- [x] 4-2: `just lint-lua` で init.lua の lint 通過を確認(selene / stylua とも OK)
+- [x] 4-3: `programs/yazi.nix` から `settings`・`initLua`・`theme` を削除(縮小後の設計を適用)
+- [x] 4-4: `symlinks.nix` に yazi の個別 3 エントリを追加
+- [x] 4-5: `git add` → `just check`(all checks passed + darwin dry-run build OK)
+- [x] 4-6: `! nrs` 適用後、yazi 起動で tokyo-night flavor・full-border・隠しファイル表示・smart-enter 動作を確認(設定 3 ファイルは repo 解決、plugins/flavors は HM 管理継続)
+
+> **予実差異なし**(Phase 4 は計画どおり)。
 
 ### Phase 5: ドキュメント更新
 
