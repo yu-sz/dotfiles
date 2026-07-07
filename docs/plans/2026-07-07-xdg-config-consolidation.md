@@ -373,7 +373,9 @@ home.packages = with pkgs; [
 - [x] 2-6: `git add` → `just check`(all checks passed)
 - [x] 2-7: `! nrs` 適用後、`git config --get ghq.root`・`git config --get user.name`(config.local 経由)・`git diff` の delta 表示・`gh config get git_protocol` を確認(全項目 OK。gh 認証・hosts.yml も無傷)
 
-> **予実差異**: delta の git 統合は計画の `[core] pager` ではなく、HM 生成物と同じ `[pager]`(blame/diff/log/show)+ `[interactive] diffFilter` で再現した(実生成形に合わせ挙動差を排除)。また gh の生成物には計画になかった `editor: ''` があり、そのまま踏襲した。
+> **予実差異**: delta の git 統合は計画の `[core] pager` ではなく、HM 生成物と同じ `[pager]`(blame/diff/log/show)+ `[interactive] diffFilter` で再現した(実生成形に合わせ挙動差を排除)。
+> また gh の生成物には計画になかった `editor: ''` があり、そのまま踏襲した(pre-commit の prettier により `""` に正規化)。
+> 生成物を `cp` すると Nix store の読み取り専用パーミッション(444)を引き継ぎ pre-commit hook の書き込みが失敗するため、`chmod 644` が必要だった。
 
 ### Phase 3: lazygit / ghostty
 
