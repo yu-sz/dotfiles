@@ -26,6 +26,8 @@ in
     "git/config".source = mkLink "config/git/config";
     "git/ignore".source = mkLink "config/git/ignore";
     "gh/config.yml".source = mkLink "config/gh/config.yml";
+    "lazygit/config.yml".source = mkLink "config/lazygit/config.yml";
+    "ghostty".source = mkLink "config/ghostty";
   }
   // lib.optionalAttrs pkgs.stdenv.isDarwin {
     "karabiner".source = mkLink "config/karabiner";

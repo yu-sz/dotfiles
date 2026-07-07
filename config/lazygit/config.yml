@@ -1,0 +1,16 @@
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never
+gui:
+  language: ja
+  nerdFontsVersion: "3"
+  showIcons: true
+  sidePanelWidth: 0.15
+  theme:
+    selectedLineBgColor:
+      - underline
+os:
+  editPreset: nvim-remote
+refresher:
+  refreshInterval: 3

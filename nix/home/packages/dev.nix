@@ -14,6 +14,7 @@
     google-cloud-sdk
     hadolint
     lazydocker
+    lazygit
     mkcert
     pgcli
     postgresql

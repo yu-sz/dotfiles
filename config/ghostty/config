@@ -1,0 +1,30 @@
+background-blur-radius = 20
+background-opacity = 0.850000
+clipboard-read = allow
+clipboard-trim-trailing-spaces = true
+clipboard-write = allow
+command = zsh -lic 'if [[ -n $GHOSTTY_QUICK_TERMINAL ]]; then exec zsh -li; fi; ghostty +boo; herdr'
+cursor-color = #ffffff
+cursor-opacity = 0.800000
+cursor-style = block
+font-family = "Moralerspace Xenon HW"
+font-size = 18
+font-thicken = false
+keybind = shift+enter=text:\n
+keybind = global:f13=toggle_quick_terminal
+macos-icon = xray
+macos-titlebar-style = hidden
+quick-terminal-position = top
+quick-terminal-size = 60%,80%
+shell-integration = detect
+theme = tokyonight
+unfocused-split-opacity = 0.700000
+window-inherit-working-directory = true
+window-padding-balance = true
+window-padding-color = background
+window-padding-x = 2
+window-padding-y = 2
+window-save-state = default
+window-step-resize = false
+window-theme = auto
+window-title-font-family = "Moralerspace Xenon HW"
