@@ -41,11 +41,17 @@ lint-lua:
     selene config/ nix/
     stylua --check config/ nix/
 
+# シェルスクリプトの静的解析（sh では `**` が `*` 扱いのため find で列挙）
+lint-sh:
+    find scripts -name '*.sh' -exec shellcheck -x -e SC1091 {} +
+
+# Markdown / YAML の lint + フォーマットチェック（Git 追跡ファイルのみ）
+lint-docs:
+    git ls-files '*.md' | xargs markdownlint -c .markdownlint.yaml
+    git ls-files '*.md' '*.yaml' '*.yml' | xargs prettier --check
+
 # CI 用チェック（Nix 評価 + lint + dry-run build）
-ci:
-    nix flake check
-    just lint
-    shellcheck -x -e SC1091 scripts/**/*.sh
+ci: check lint lint-sh lint-docs
     just ci-{{ if os() == "macos" { "darwin" } else { "linux" } }}
 
 # Darwin 用 dry-run build
