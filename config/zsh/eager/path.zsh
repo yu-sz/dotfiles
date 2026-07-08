@@ -17,7 +17,8 @@ path=(
 	"${GHOSTTY_BIN_DIR}"(N-/)
 	"/opt/homebrew/bin"(N-/)
 	"/opt/homebrew/sbin"(N-/)
-	"$XDG_DATA_HOME/mise/shims"
+	# 非対話シェル用に shims を常置（対話シェルは .zshrc の mise activate が管理）
+	"$XDG_DATA_HOME/mise/shims"(N-/)
 	"/usr/local/bin"(N-/)
 	"/usr/local/sbin"(N-/)
 	"/usr/bin"(N-/)

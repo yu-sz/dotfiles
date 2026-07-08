@@ -21,19 +21,6 @@ install_nix() {
 	info "Nix installed."
 }
 
-install_mise() {
-	if command -v mise &>/dev/null; then
-		info "mise is already installed."
-		return
-	fi
-	info "Installing mise..."
-	curl -fsSL https://mise.run | sh
-	if [[ -x "${HOME}/.local/bin/mise" && ":${PATH}:" != *":${HOME}/.local/bin:"* ]]; then
-		export PATH="${HOME}/.local/bin:${PATH}"
-	fi
-	info "mise installed."
-}
-
 load_nix_env() {
 	if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
 		source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh

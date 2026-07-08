@@ -14,12 +14,13 @@ if [[ -d "${NIX_PROFILE}" && ":${PATH}:" != *":${NIX_PROFILE}:"* ]]; then
 	export PATH="${NIX_PROFILE}:${PATH}"
 fi
 
-# install_runtimes.sh を単独実行した場合に curl installer 経由 mise (~/.local/bin) を発見できるように
-LOCAL_BIN="${HOME}/.local/bin"
-if [[ -d "${LOCAL_BIN}" && ":${PATH}:" != *":${LOCAL_BIN}:"* ]]; then
-	export PATH="${LOCAL_BIN}:${PATH}"
+# standalone home-manager (Linux) の per-user profile は ~/.nix-profile になる
+HM_PROFILE="${HOME}/.nix-profile/bin"
+if [[ -d "${HM_PROFILE}" && ":${PATH}:" != *":${HM_PROFILE}:"* ]]; then
+	export PATH="${HM_PROFILE}:${PATH}"
 fi
 
+# mise は Nix (home.packages) で供給される。ADR 2026-03-28 参照
 if ! command -v mise &>/dev/null; then
 	warn "mise not found. Skipping runtime install."
 	exit 0

@@ -26,8 +26,6 @@ Linux) "${SETUP}/linux.sh" "${REPO_DIR}" ;;
 	;;
 esac
 
-install_mise
-
 "${SETUP}/install_runtimes.sh"
 
 info "Dotfiles setup complete."

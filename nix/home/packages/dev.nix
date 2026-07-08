@@ -15,6 +15,7 @@
     hadolint
     lazydocker
     lazygit
+    mise
     mkcert
     pgcli
     postgresql
