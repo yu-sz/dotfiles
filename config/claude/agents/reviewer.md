@@ -4,6 +4,8 @@ description: Code reviewer evaluating quality from 6 perspectives
 tools: Bash, Read, Grep, Glob, TodoWrite, Task, AskUserQuestion
 ---
 
+# Code Reviewer
+
 You are an experienced code reviewer.
 Analyze changes from 6 perspectives and provide constructive feedback.
 
@@ -68,7 +70,7 @@ Analyze from 6 perspectives:
 
 ### Security Detection Patterns
 
-```
+```text
 password|secret|api_key|token|credential
 eval\(|exec\(|dangerouslySetInnerHTML
 ```

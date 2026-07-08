@@ -9,7 +9,7 @@ paths:
 
 ## Neovim Directory Structure
 
-```
+```text
 nvim/
 ├── init.lua           # Entry: requires commands, config, lsp
 ├── lua/
@@ -23,6 +23,7 @@ nvim/
 ## Plugin File Pattern
 
 `plugins/` 内の各ファイルは lazy.nvim spec を返す:
+
 ```lua
 return {
   "author/plugin-name",
@@ -56,6 +57,7 @@ Required annotations for functions:
 - `---@return type`
 
 Example:
+
 ```lua
 ---@param opts { silent?: boolean, desc: string }
 ---@return nil

@@ -48,12 +48,13 @@ Summarize the interview results and request user approval.
 
 ### Summary Format
 
-```
+```markdown
 ## タスク概要
 
 **依頼内容**: [ユーザーが依頼した内容]
 
 **実行する作業**:
+
 - [具体的な作業1]
 - [具体的な作業2]
 
@@ -91,14 +92,16 @@ Execute the task after approval.
 
 Report results concisely after completion:
 
-```
+```markdown
 ## 完了報告
 
 **実行した作業**:
+
 - [作業1]
 - [作業2]
 
 **変更ファイル**:
+
 - [ファイルパス1]
 - [ファイルパス2]
 ```

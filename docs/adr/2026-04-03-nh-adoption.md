@@ -29,7 +29,7 @@ Status: Accepted
 
 既存の `drs` エイリアスと `just switch` を**両方残し、中身を nh に統一**する。
 
-```
+```text
 drs エイリアス → nh darwin switch ~/Projects/dotfiles  (どこからでも)
 just switch   → nh darwin switch .                     (dotfiles 内)
 ngc エイリアス → nh clean all --keep 5
