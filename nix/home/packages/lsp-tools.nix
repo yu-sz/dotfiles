@@ -7,11 +7,11 @@
     golangci-lint
     gopls
     lua-language-server
-    selene
     markdownlint-cli
     nixd
     prettier
     prisma-language-server
+    selene
     shellcheck
     shfmt
     stylua
