@@ -234,32 +234,39 @@ return M
 
 ### Phase 3: mise の Nix 管理化（ADR ドリフト解消）
 
-- [ ] 3-1: `nix/home/packages/dev.nix` に `mise` を追加、`git add` 後にユーザーが `! nrs` を実行
-- [ ] 3-2: `scripts/setup/prepare_env.sh` の `install_mise()`（curl インストーラ）と `scripts/install.sh:29` の呼び出しを削除し、`scripts/setup/install_runtimes.sh:17` の curl 前提コメント・PATH 追加も Nix 前提へ書き換え
+- [x] 3-1: `nix/home/packages/dev.nix` に `mise` を追加（dry-run で mise-2026.6.13 のキャッシュ取得を確認。`! nrs` は Phase 4 と合わせて下記で依頼）
+- [x] 3-2: `install_mise()` と `install.sh` の呼び出しを削除、`install_runtimes.sh` は `~/.local/bin` でなく `~/.nix-profile/bin`（standalone HM）を PATH に追加する形へ書き換え
 - [ ] 3-3: 既存マシンの `~/.local/bin/mise` を gomi で退避し、`mise doctor` で動作確認
-- [ ] 3-4: `config/zsh/eager/path.zsh` の shims 行に `(N-/)` と意図コメントを追加
+- [x] 3-4: `config/zsh/eager/path.zsh` の shims 行に `(N-/)` と意図コメントを追加
 - [ ] 3-5: 検証 — 新しいシェルで mise キャッシュが再生成され、`mise ls` が正常なこと
 
 ### Phase 4: Nix 整理
 
-- [ ] 4-1: `nix/overlays/sketchybar-app-font.nix` を削除し `nix/overlays/default.nix` から除去（nixpkgs 2.0.62 へ）
-- [ ] 4-2: `nix/overlays/default.nix` の `_final:` を規約どおり `_:` に変更
-- [ ] 4-3: devShell から重複の `prettier` / `selene` と未使用の `shfmt` を削除
-- [ ] 4-4: `nix/home/packages/lsp-tools.nix` のアルファベット順を修正
-- [ ] 4-5: 検証 — `nix flake check`、ユーザーが `! nrs`、sketchybar のアプリアイコン表示を確認
+- [x] 4-1: `nix/overlays/sketchybar-app-font.nix` を削除し `nix/overlays/default.nix` から除去（dry-run で nixpkgs の 2.0.62 取得を確認）
+- [x] 4-2: `nix/overlays/default.nix` の `_final:` を規約どおり `_:` に変更
+- [x] 4-3: devShell から重複の `prettier` / `selene` と未使用の `shfmt` を削除（`nix develop` 内で selene / prettier が enabledPackages から解決されることを実測）
+- [x] 4-4: `nix/home/packages/lsp-tools.nix` のアルファベット順を修正
+- [ ] 4-5: 検証 — `nix flake check` は PASS 済み。ユーザーが `! nrs` 後、sketchybar のアプリアイコン表示を確認
 
 ### Phase 5: CI / Justfile
 
-- [ ] 5-1: Justfile の shellcheck を find 方式へ（設計参照）、`ci` を `check` 依存に統一
-- [ ] 5-2: 4 workflow のキャッシュ primary-key に `${{ github.workflow }}` を追加
-- [ ] 5-3: `bump-herdr.yml` を env 経由参照 + 空値ガードへ（設計参照）
-- [ ] 5-4: `nix-build-darwin.yml` / `nix-build-linux.yml` の paths に `**/*.nix` を追加し、darwin にキャッシュを導入
-- [ ] 5-5: `actions/checkout` を v6 に統一
-- [ ] 5-6: lint / update 系 workflow に `timeout-minutes` を追加（nix-build 系は 15 分設定済み）、全 workflow に `concurrency`（cancel-in-progress）を追加
-- [ ] 5-7: markdownlint + prettier --check の `lint-docs` レシピを追加し、CI（nix-lint 相当）から実行。gitleaks も CI に追加
-- [ ] 5-8: `lua-lint.yml` の paths を `config/**/*.lua` / `nix/**/*.lua` に絞る
+- [x] 5-1: Justfile に `lint-sh`（find 方式）を追加し、`ci` を `check lint lint-sh lint-docs` 依存へ統一（OS 別 dry-run build は維持）
+- [x] 5-2: 4 workflow のキャッシュ primary-key を workflow ごとに分離（`github.workflow` は名前にスペースを含むためリテラルスラッグ `nix-lua-lint-` 等を採用）
+- [x] 5-3: `bump-herdr.yml` を env 経由参照 + 空値ガードへ
+- [x] 5-4: nix-build 両 workflow の paths に `**/*.nix` と workflow 自身を追加、darwin に cache-nix-action（`gc-max-store-size-darwin: 2G`）を導入し timeout を 30 分へ
+- [x] 5-5: `actions/checkout` を v6 に統一
+- [x] 5-6: timeout（lua-lint 15 / nix-lint 20 / update-flake 30 / bump-herdr 15 分）と concurrency を全 workflow に追加（bot 系は cancel-in-progress: false）
+- [x] 5-7: `lint-docs` レシピ（`git ls-files` ベースで追跡ファイルのみ）を追加し `just ci` 経由で CI 実行、nix-lint に gitleaks 全履歴スキャン（fetch-depth: 0）を追加
+- [x] 5-8: `lua-lint.yml` の paths を `config/**/*.lua` / `nix/**/*.lua` に絞る
 - [x] 5-9: cache-nix-action の値形式を確認 → `1G`（K/M/G suffix）も `P7D`（ISO 8601 duration）も公式サポート形式のため**修正不要**（README で確認済み）
 - [ ] 5-10: 検証 — PR を作成し全 workflow green、トップレベル scripts の shellcheck が CI ログに現れること
+
+> **予実差異**:
+>
+> 1. lint-docs 導入で pre-commit 未通過のレガシー docs の違反が顕在化し一括修正（raycast.md、ask.md、lua-standard / writing-adr-plans SKILL、nh-adoption / mason ADR、reviewer.md、gomi config の prettier 整形、markdownlint に details/summary 許可）。raycast.md の lint 修正と karabina typo は 9-7 から前倒し。
+> 2. mason ADR 44 行目に**実ファイルの UTF-8 破損バイト**（「得ない」の欠損）を発見し修復。レビューでは検出されていなかった問題。
+> 3. reviewer.md に MD041 対応の H1 を追加（agent prompt に見出し 1 行が入るが無害）。
+> 4. 5-2 は設計の `${{ github.workflow }}` でなくリテラルスラッグを採用（workflow 名にスペースを含むため）。
 
 ### Phase 6: Zsh
 
