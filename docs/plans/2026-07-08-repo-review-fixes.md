@@ -214,16 +214,23 @@ return M
 
 ### Phase 2: 新規マシン破損系
 
-- [ ] 2-1: `.claude-plugin/plugins/gopls-lsp/` と `rust-analyzer-lsp/` を README 付きで追加（marketplace.json の参照切れ解消）
-- [ ] 2-2: `scripts/bootstrap.sh` と `scripts/setup/linux.sh` のホスト名取得を `hostname -s` に統一
-- [ ] 2-3: `scripts/bootstrap.sh` の sed 挿入後に `grep -q` 検証を追加し、失敗時は exit 1
-- [ ] 2-4: `.claude/settings.json` のフックパスを `"$CLAUDE_PROJECT_DIR"/.claude/hooks/format.sh` に変更
-- [ ] 2-5: SessionStart の herdr フック行を `$HOME` ベースのパスに書き換え、herdr 再起動 + `herdr integration status` で巻き戻されないことを確認。巻き戻る場合は存在チェック付きラッパーに切替え、upstream へチルダパス対応を要望
+- [x] 2-1: `.claude-plugin/plugins/gopls-lsp/` と `rust-analyzer-lsp/` を README 付きで追加（marketplace.json の参照切れ解消）
+- [x] 2-2: ホスト名取得を `hostname -s` に統一（`linux.sh` のみ修正。bootstrap.sh は Darwin=scutil / Linux=-s で既に正しかった）
+- [x] 2-3: `scripts/bootstrap.sh` の sed 挿入後に `grep -q` 検証を追加（darwin/linux 両ブロック、`error()` ヘルパー追加、失敗握りつぶしの `if mv` も除去）
+- [x] 2-4: `.claude/settings.json` のフックパスを `"$CLAUDE_PROJECT_DIR"/.claude/hooks/format.sh` に変更
+- [x] 2-5: **`$HOME` 化は不成立** — herdr はフック行を完全一致で識別するため、書き換えると絶対パス行が二重登録される（`herdr integration install claude` で実証）。herdr 管理の絶対パス行を正に戻し、単一エントリでの冪等性を確認。根治は upstream 要望（チルダ対応 or 等価判定）
   - 調査済み: この行は herdr が起動時に自動インストールする管理行（`herdr integration install/uninstall claude`、バージョン管理付き。現在 v7）。新規マシンでは herdr 初回起動時に自己修復されるが、絶対パス書き込みのため home が異なるマシン間（yu-sz / yuta.suzuki）で settings.json が相互に書き換わり続ける
-- [ ] 2-6: `config/claude/statusline.sh` の bc 依存をシェル算術へ置換
-- [ ] 2-7: `config/claude/hooks/report-herdr-state.sh` の PATH に Linux HM のフォールバックを追加
-- [ ] 2-8: `extraKnownMarketplaces` の `path: "."` を絶対パスへ
-- [ ] 2-9: `config/claude/file-suggestion.sh` に `${CLAUDE_PROJECT_DIR:-.}` フォールバックと `--exclude .git` を追加
+- [x] 2-6: `config/claude/statusline.sh` の bc 依存を排除（シェル算術でなく既存依存の jq で秒換算）
+- [x] 2-7: `config/claude/hooks/report-herdr-state.sh` の PATH に `~/.nix-profile/bin`（standalone HM）を追加
+- [x] 2-8: `extraKnownMarketplaces` の `path: "."` を `~/Projects/dotfiles` へ（絶対パスは 2 マシン問題を再導入するため `~` 表記を採用）
+- [x] 2-9: `config/claude/file-suggestion.sh` に `${CLAUDE_PROJECT_DIR:-.}` フォールバックと `--exclude .git` を追加
+
+> **予実差異**:
+>
+> 1. 2-5 は計画の第 1 案（`$HOME` 化）が herdr の完全一致識別により不成立と実証され、フォールバック（herdr 管理行を正とする）へ切替。他マシンでは各マシンの行が並存し、存在しないパス側は無害に失敗する既知制約として受容。upstream への要望（チルダ対応・末尾改行保持）が根治で、ユーザー判断待ち。
+> 2. herdr の再書き込みで settings.json 全体がキーソートされたため、この形を正としてコミット。以後の herdr 書き込みで diff が出なくなり、9-2 の churn 解消を前倒しで達成（末尾改行の 1 byte flap のみ残存）。
+> 3. 2-2 の bootstrap.sh は指摘と異なり修正不要だった（Darwin は scutil、Linux は `-s` で正しかった）。
+> 4. 検証: shellcheck 5 ファイル PASS、statusline / file-suggestion は実データで動作確認。
 
 ### Phase 3: mise の Nix 管理化（ADR ドリフト解消）
 
