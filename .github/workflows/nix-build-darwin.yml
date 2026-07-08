@@ -5,21 +5,37 @@ on:
   pull_request:
     paths:
       - "flake.lock"
+      - "**/*.nix"
+      - ".github/workflows/nix-build-darwin.yml"
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: macos-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             access-tokens = github.com=${{ github.token }}
+
+      - uses: nix-community/cache-nix-action@v7
+        with:
+          primary-key: nix-build-darwin-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-build-darwin-${{ runner.os }}-
+          gc-max-store-size-darwin: 2G
+          purge: true
+          purge-prefixes: nix-build-darwin-${{ runner.os }}-
+          purge-last-accessed: P7D
+          purge-primary-key: never
 
       - name: Build darwin configuration
         run: nix build .#darwinConfigurations.yu-sz.system --print-build-logs
