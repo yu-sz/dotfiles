@@ -1,20 +1,149 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "fileSuggestion": {
-    "type": "command",
-    "command": "~/.claude/file-suggestion.sh"
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
   "cleanupPeriodDays": 30,
+  "effortLevel": "xhigh",
+  "enableAllProjectMcpServers": false,
+  "enabledPlugins": {
+    "bash-lsp@dotfiles-lsp": true,
+    "example-skills@anthropic-agent-skills": true,
+    "gopls-lsp@dotfiles-lsp": true,
+    "lua-lsp@claude-plugins-official": false,
+    "lua-lsp@dotfiles-lsp": true,
+    "nixd-lsp@dotfiles-lsp": true,
+    "rust-analyzer-lsp@dotfiles-lsp": true,
+    "terraform-lsp@dotfiles-lsp": true,
+    "vtsls-lsp@dotfiles-lsp": true
+  },
   "env": {
     "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
     "CLAUDE_CODE_EFFORT_LEVEL": "xhigh",
     "DISABLE_AUTOUPDATER": "1",
     "ENABLE_TOOL_SEARCH": "true"
   },
-  "attribution": {
-    "commit": "",
-    "pr": ""
+  "extraKnownMarketplaces": {
+    "anthropic-agent-skills": {
+      "source": {
+        "repo": "anthropics/skills",
+        "source": "github"
+      }
+    },
+    "dotfiles-lsp": {
+      "source": {
+        "path": "~/Projects/dotfiles",
+        "source": "directory"
+      }
+    }
   },
+  "feedbackSurveyState": {
+    "lastShownTime": 1754030471611
+  },
+  "fileSuggestion": {
+    "command": "~/.claude/file-suggestion.sh",
+    "type": "command"
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "(~/.claude/hooks/notify.sh 'Awaiting Confirmation...' &)",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/report-herdr-state.sh blocked",
+            "type": "command"
+          }
+        ],
+        "matcher": "permission_prompt"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "mkdir -p ~/.claude/logs && echo \"[$(date '+%H:%M:%S')] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/logs/command_history_$(date '+%Y-%m-%d').log",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/report-herdr-state.sh working",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "jq -r 'if .tool_input.command | test(\"rm -rf|dd if=|:\\\\(\\\\)\\\\{ :\\\\|:& \\\\};:\") then {\"decision\": \"block\", \"reason\": \"危険なコマンドは実行できません。別の方法を検討してください。\"} else empty end'",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/auto-approve-piped.sh",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/report-herdr-state.sh unknown",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bash '/Users/yu-sz/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "(~/.claude/hooks/notify.sh 'Task Completed!' &)",
+            "type": "command"
+          },
+          {
+            "command": "~/.claude/hooks/report-herdr-state.sh idle",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/hooks/report-herdr-state.sh working",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "claude-fable-5[1m]",
   "permissions": {
     "allow": [
       "Read(~/Projects/**/*)",
@@ -53,6 +182,20 @@
       "WebSearch",
       "WebFetch"
     ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(git rebase:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh pr close:*)",
+      "Bash(gh pr edit:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh repo create:*)"
+    ],
+    "defaultMode": "plan",
     "deny": [
       "Bash(sudo:*)",
       "Bash(rm:*)",
@@ -76,156 +219,13 @@
       "Bash(psql:*)",
       "Bash(mysql:*)",
       "Bash(mongod:*)"
-    ],
-    "ask": [
-      "Bash(git push:*)",
-      "Bash(git commit:*)",
-      "Bash(git rebase:*)",
-      "Bash(gh pr create:*)",
-      "Bash(gh pr merge:*)",
-      "Bash(gh pr close:*)",
-      "Bash(gh pr edit:*)",
-      "Bash(gh issue create:*)",
-      "Bash(gh issue close:*)",
-      "Bash(gh issue edit:*)",
-      "Bash(gh repo create:*)"
-    ],
-    "defaultMode": "plan"
-  },
-  "model": "claude-fable-5[1m]",
-  "enableAllProjectMcpServers": false,
-  "hooks": {
-    "Notification": [
-      {
-        "matcher": "permission_prompt",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "(~/.claude/hooks/notify.sh 'Awaiting Confirmation...' &)"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/report-herdr-state.sh blocked"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "mkdir -p ~/.claude/logs && echo \"[$(date '+%H:%M:%S')] $USER: $(jq -r '.tool_input.command')\" >> ~/.claude/logs/command_history_$(date '+%Y-%m-%d').log"
-          }
-        ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/report-herdr-state.sh working"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "jq -r 'if .tool_input.command | test(\"rm -rf|dd if=|:\\\\(\\\\)\\\\{ :\\\\|:& \\\\};:\") then {\"decision\": \"block\", \"reason\": \"危険なコマンドは実行できません。別の方法を検討してください。\"} else empty end'"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/auto-approve-piped.sh",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/report-herdr-state.sh unknown"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash '/Users/yu-sz/.claude/hooks/herdr-agent-state.sh' session",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "(~/.claude/hooks/notify.sh 'Task Completed!' &)"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/report-herdr-state.sh idle"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/report-herdr-state.sh working"
-          }
-        ]
-      }
     ]
   },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh"
-  },
-  "enabledPlugins": {
-    "bash-lsp@dotfiles-lsp": true,
-    "example-skills@anthropic-agent-skills": true,
-    "gopls-lsp@dotfiles-lsp": true,
-    "lua-lsp@claude-plugins-official": false,
-    "lua-lsp@dotfiles-lsp": true,
-    "nixd-lsp@dotfiles-lsp": true,
-    "rust-analyzer-lsp@dotfiles-lsp": true,
-    "terraform-lsp@dotfiles-lsp": true,
-    "vtsls-lsp@dotfiles-lsp": true
-  },
-  "extraKnownMarketplaces": {
-    "anthropic-agent-skills": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/skills"
-      }
-    },
-    "dotfiles-lsp": {
-      "source": {
-        "source": "directory",
-        "path": "."
-      }
-    }
-  },
-  "effortLevel": "xhigh",
   "showClearContextOnPlanAccept": true,
   "showThinkingSummaries": true,
   "skipAutoPermissionPrompt": true,
-  "feedbackSurveyState": {
-    "lastShownTime": 1754030471611
+  "statusLine": {
+    "command": "~/.claude/statusline.sh",
+    "type": "command"
   }
 }
