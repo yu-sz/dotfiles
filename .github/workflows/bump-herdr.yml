@@ -5,9 +5,14 @@ on:
   schedule:
     - cron: "0 0 * * 6"
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   bump:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: write
       pull-requests: write
@@ -32,10 +37,18 @@ jobs:
           echo "current=$current" >> "$GITHUB_OUTPUT"
           echo "current=$current latest=$latest"
 
+      # 外部リポジトリ由来のタグ名は ${{ }} で run: に直接展開せず env 経由で渡す
       - name: Bump herdr tag in flake.nix
         if: steps.latest.outputs.latest != steps.latest.outputs.current
+        env:
+          LATEST: ${{ steps.latest.outputs.latest }}
+          CURRENT: ${{ steps.latest.outputs.current }}
         run: |
-          sed -i "s|github:ogulcancelik/herdr/${{ steps.latest.outputs.current }}|github:ogulcancelik/herdr/${{ steps.latest.outputs.latest }}|" flake.nix
+          if [ -z "$LATEST" ] || [ -z "$CURRENT" ]; then
+            echo "tag detection failed (latest='$LATEST' current='$CURRENT')" >&2
+            exit 1
+          fi
+          sed -i "s|github:ogulcancelik/herdr/$CURRENT|github:ogulcancelik/herdr/$LATEST|" flake.nix
 
       - uses: cachix/install-nix-action@v31
         if: steps.latest.outputs.latest != steps.latest.outputs.current
