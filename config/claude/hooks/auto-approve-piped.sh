@@ -12,6 +12,15 @@ COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 # パイプ等を含まない場合はフォールスルー（permissions.allow が処理）
 echo "$COMMAND" | grep -qE '[|;]|&&' || exit 0
 
+# コマンド置換・プロセス置換・リダイレクトを含む場合は自動承認せず
+# 通常の permission フローに委ねる
+# shellcheck disable=SC2016 # リテラルの $( を検出したいだけで展開はしない
+case "$COMMAND" in
+*'$('* | *'`'* | *'<('* | *'>('* | *'>'*)
+	exit 0
+	;;
+esac
+
 # 危険な環境変数を含む場合はフォールスルー
 SENSITIVE_PATTERNS='(^|[;&|]\s*)(PATH|LD_PRELOAD|LD_LIBRARY_PATH|DYLD_LIBRARY_PATH|DYLD_INSERT_LIBRARIES|PYTHONPATH|PYTHONHOME|NODE_PATH|GEM_PATH|GEM_HOME|RUBYLIB|PERL5LIB|CLASSPATH|GOPATH)='
 echo "$COMMAND" | grep -qE "$SENSITIVE_PATTERNS" && exit 0
@@ -34,11 +43,24 @@ done < <(
 
 [ ${#ALLOWED_PREFIXES[@]} -eq 0 ] && exit 0
 
-matches_allowed() {
+# deny / ask リストの Bash プレフィックスも抽出し、一致時はフォールスルーさせる
+BLOCKED_PREFIXES=()
+while IFS= read -r line; do
+	[ -n "$line" ] && BLOCKED_PREFIXES+=("$line")
+done < <(
+	jq -r '(.permissions.deny[]? // empty), (.permissions.ask[]? // empty)' "$SETTINGS" |
+		grep '^Bash(' |
+		sed -n 's/^Bash(\(.*\))$/\1/p' |
+		sed 's/:*\*$//' |
+		sed 's/ \*$//' |
+		sort -u
+)
+
+# 前後空白と環境変数プレフィックスを除去 (e.g. CC=gcc make → make)
+normalize_cmd() {
 	local cmd="$1"
 	cmd="$(echo "$cmd" | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')"
 
-	# 環境変数プレフィックスを除去 (e.g. CC=gcc make → make)
 	while [[ "$cmd" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]]; do
 		if [[ "$cmd" =~ ^[A-Za-z_][A-Za-z0-9_]*=\"[^\"]*\"[[:space:]]+(.*) ]]; then
 			cmd="${BASH_REMATCH[1]}"
@@ -50,8 +72,24 @@ matches_allowed() {
 			break
 		fi
 	done
+	printf '%s' "$cmd"
+}
 
+matches_allowed() {
+	local cmd
+	cmd="$(normalize_cmd "$1")"
 	for prefix in "${ALLOWED_PREFIXES[@]}"; do
+		if [[ "$cmd" == "$prefix" || "$cmd" == "$prefix "* ]]; then
+			return 0
+		fi
+	done
+	return 1
+}
+
+matches_blocked() {
+	local cmd
+	cmd="$(normalize_cmd "$1")"
+	for prefix in "${BLOCKED_PREFIXES[@]}"; do
 		if [[ "$cmd" == "$prefix" || "$cmd" == "$prefix "* ]]; then
 			return 0
 		fi
@@ -135,15 +173,17 @@ while IFS= read -r seg; do
 done < <(split_stages "$COMMAND")
 
 for stage in "${STAGES[@]}"; do
-	# リダイレクトとコメント行を除去
+	# コメント行を除去（リダイレクトは冒頭のガードで到達しない）
 	clean="$(echo "$stage" |
 		sed '/^[[:space:]]*#/d; /^[[:space:]]*$/d' |
-		sed 's/[0-9]*>&[0-9]*//g' |
-		sed 's/[0-9]*>[>&]*[[:space:]]*[^ ]*//g' |
 		sed 's/^[[:space:]]*//' |
 		sed 's/[[:space:]]*$//')"
 
 	[ -z "$clean" ] && continue
+
+	if [ ${#BLOCKED_PREFIXES[@]} -gt 0 ] && matches_blocked "$clean"; then
+		exit 0
+	fi
 
 	if ! matches_allowed "$clean"; then
 		exit 0
