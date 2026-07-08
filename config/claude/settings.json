@@ -58,10 +58,12 @@
       "Bash(rm:*)",
       "Bash(git reset:*)",
       "Bash(gh repo delete:*)",
-      "Read(id_rsa)",
-      "Read(id_ed25519)",
-      "Read(**/*token*)",
-      "Read(**/*key*)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.token)",
+      "Read(**/*token*.json)",
       "Read(**/.env.*)",
       "Write(**/.env*)",
       "Write(**/secrets/**)",
@@ -90,7 +92,8 @@
     ],
     "defaultMode": "plan"
   },
-  "enableAllProjectMcpServers": true,
+  "model": "claude-fable-5[1m]",
+  "enableAllProjectMcpServers": false,
   "hooks": {
     "Notification": [
       {
@@ -132,7 +135,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r 'if .tool_input.command | test(\"rm -rf|dd if=|:(){ :|:& };:\") then {\"decision\": \"block\", \"reason\": \"危険なコマンドは実行できません。別の方法を検討してください。\"} else empty end'"
+            "command": "jq -r 'if .tool_input.command | test(\"rm -rf|dd if=|:\\\\(\\\\)\\\\{ :\\\\|:& \\\\};:\") then {\"decision\": \"block\", \"reason\": \"危険なコマンドは実行できません。別の方法を検討してください。\"} else empty end'"
           },
           {
             "type": "command",
@@ -224,6 +227,5 @@
   "skipAutoPermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754030471611
-  },
-  "model": "claude-fable-5[1m]"
+  }
 }
