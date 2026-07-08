@@ -15,8 +15,8 @@ USED_PERCENT=$(echo "$input" | jq -r '.context_window.used_percentage // 0')
 CTX_K=$((CURRENT_USAGE / 1000))
 CTX_MAX_K=$((CTX_SIZE / 1000))
 
-API_DURATION_MS=$(echo "$input" | jq -r '.cost.total_api_duration_ms // 0')
-API_DURATION_S=$(echo "scale=1; $API_DURATION_MS / 1000" | bc)
+# bc 非依存のため jq で秒へ換算（小数第 1 位まで）
+API_DURATION_S=$(echo "$input" | jq -r '((.cost.total_api_duration_ms // 0) / 100 | floor) / 10')
 
 EFFORT=$(echo "$input" | jq -r '.effort.level // "-"')
 

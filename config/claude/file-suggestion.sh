@@ -1,4 +1,4 @@
 #!/bin/bash
 query=$(cat | jq -r '.query')
-cd "$CLAUDE_PROJECT_DIR" || exit
-fd --hidden | fzf --filter="$query" | head -20
+cd "${CLAUDE_PROJECT_DIR:-.}" || exit
+fd --hidden --exclude .git | fzf --filter="$query" | head -20

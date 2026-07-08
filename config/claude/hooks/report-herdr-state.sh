@@ -12,7 +12,8 @@ cat >/dev/null 2>&1 || true
 [ "${HERDR_ENV:-}" = "1" ] || exit 0
 [ -n "${HERDR_PANE_ID:-}" ] || exit 0
 
-PATH="/etc/profiles/per-user/${USER}/bin:$PATH"
+# nix-darwin / NixOS は /etc/profiles、standalone home-manager は ~/.nix-profile
+PATH="/etc/profiles/per-user/${USER}/bin:${HOME}/.nix-profile/bin:$PATH"
 command -v herdr >/dev/null 2>&1 || exit 0
 
 herdr pane report-agent "$HERDR_PANE_ID" \
