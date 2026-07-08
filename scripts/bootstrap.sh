@@ -5,6 +5,7 @@ DOTFILES_DIR="$HOME/Projects/dotfiles"
 DOTFILES_REPO="https://github.com/yu-sz/dotfiles.git"
 
 info() { printf '\033[34m[INFO]\033[0m %s\n' "$*"; }
+error() { printf '\033[31m[ERROR]\033[0m %s\n' "$*" >&2; }
 
 if [[ -d "${DOTFILES_DIR}/.git" ]]; then
 	info "Dotfiles repo found. Pulling latest..."
@@ -40,7 +41,11 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
 		sed "/darwinConfigurations = {/a\\
 \\        \"${HOSTNAME}\" = mkDarwinConfig { username = \"${USERNAME}\"; };" \
 			"${FLAKE}" >"${TMP}"
-		if mv "${TMP}" "${FLAKE}"; then :; else rm -f "${TMP}"; fi
+		mv "${TMP}" "${FLAKE}"
+		if ! grep -q "\"${HOSTNAME}\" = mkDarwinConfig" "${FLAKE}"; then
+			error "Failed to add darwinConfiguration for ${HOSTNAME}. Check flake.nix structure."
+			exit 1
+		fi
 		git -C "${DOTFILES_DIR}" add flake.nix
 	fi
 fi
@@ -56,7 +61,11 @@ if [[ "$(uname -s)" == "Linux" ]]; then
 		sed "/homeConfigurations = {/a\\
 \\        \"${USERNAME}@${HOSTNAME}\" = mkHomeConfig { username = \"${USERNAME}\"; };" \
 			"${FLAKE}" >"${TMP}"
-		if mv "${TMP}" "${FLAKE}"; then :; else rm -f "${TMP}"; fi
+		mv "${TMP}" "${FLAKE}"
+		if ! grep -q "\"${USERNAME}@${HOSTNAME}\" = mkHomeConfig" "${FLAKE}"; then
+			error "Failed to add homeConfiguration for ${USERNAME}@${HOSTNAME}. Check flake.nix structure."
+			exit 1
+		fi
 		git -C "${DOTFILES_DIR}" add flake.nix
 	fi
 fi
