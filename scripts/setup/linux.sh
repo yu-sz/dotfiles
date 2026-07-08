@@ -17,7 +17,7 @@ fi
 
 # Apply config
 USERNAME="$(whoami)"
-HOSTNAME="$(hostname)"
+HOSTNAME="$(hostname -s)"
 info "Applying config for ${USERNAME}@${HOSTNAME} (home-manager switch)..."
 nix run home-manager -- switch --flake "${REPO_DIR}#${USERNAME}@${HOSTNAME}"
 info "Config applied."
