@@ -12,11 +12,19 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      # gitleaks の全履歴スキャンのため fetch-depth: 0
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - uses: cachix/install-nix-action@v31
         with:
@@ -25,11 +33,11 @@ jobs:
 
       - uses: nix-community/cache-nix-action@v7
         with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-
+          primary-key: nix-lint-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-lint-${{ runner.os }}-
           gc-max-store-size-linux: 1G
           purge: true
-          purge-prefixes: nix-${{ runner.os }}-
+          purge-prefixes: nix-lint-${{ runner.os }}-
           purge-last-accessed: P7D
           purge-primary-key: never
 
@@ -37,3 +45,6 @@ jobs:
 
       - name: CI check
         run: nix develop --command just ci
+
+      - name: Secret scan (full history)
+        run: nix develop --command gitleaks git --no-banner

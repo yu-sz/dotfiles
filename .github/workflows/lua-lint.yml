@@ -3,7 +3,9 @@ name: Lua Lint
 on:
   push:
     paths:
-      - "**/*.lua"
+      # just lint-lua の検査対象 (config/ nix/) に合わせる
+      - "config/**/*.lua"
+      - "nix/**/*.lua"
       - "selene.toml"
       - "vim.yml"
       - "stylua.toml"
@@ -12,11 +14,16 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: cachix/install-nix-action@v31
         with:
@@ -25,11 +32,11 @@ jobs:
 
       - uses: nix-community/cache-nix-action@v7
         with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-
+          primary-key: nix-lua-lint-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-lua-lint-${{ runner.os }}-
           gc-max-store-size-linux: 1G
           purge: true
-          purge-prefixes: nix-${{ runner.os }}-
+          purge-prefixes: nix-lua-lint-${{ runner.os }}-
           purge-last-accessed: P7D
           purge-primary-key: never
 
