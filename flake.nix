@@ -101,13 +101,12 @@
 
           devShells.default = pkgs.mkShell {
             inherit (config.pre-commit) shellHook;
+            # prettier / selene は hook 有効化により enabledPackages で供給される。
+            # gitleaks / stylua は language = "system" のカスタム hook のため明示追加が必要
             packages = config.pre-commit.settings.enabledPackages ++ [
               pkgs.just
               pkgs.gitleaks
-              pkgs.prettier
               pkgs.stylua
-              pkgs.shfmt
-              pkgs.selene
             ];
           };
         };
