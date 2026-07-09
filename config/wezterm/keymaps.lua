@@ -22,8 +22,8 @@ local keys = {
   { key = "]", mods = "LEADER", action = act.MoveTabRelative(1) },
   { key = "[", mods = "LEADER", action = act.MoveTabRelative(-1) },
 
-  -- create Pane
-  { key = "w", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
+  -- close Pane
+  { key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
   -- 下方向にPane分割
   { key = ",", mods = "LEADER", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
   -- 右方向にPane分割
