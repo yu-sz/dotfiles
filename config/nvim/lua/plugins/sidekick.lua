@@ -7,6 +7,7 @@ return {
     cli = {
       mux = {
         enabled = false,
+        -- TODO: sidekick.nvim#333 マージ後に "herdr" へ切替（tmux は撤去済みで未使用）
         backend = "tmux",
       },
       ---@class sidekick.win.Opts
@@ -32,11 +33,11 @@ return {
       function()
         -- if there is a next edit, jump to it, otherwise apply it if any
         if not require("sidekick").nes_jump_or_apply() then
-          return "<Tab>" -- fallback to normal tab
+          return "<cmd>tabnext<cr>" -- fallback: 旧 keymaps.lua の <tab> 動作を維持
         end
       end,
       expr = true,
-      desc = "Goto/Apply Next Edit Suggestion",
+      desc = "Goto/Apply Next Edit Suggestion (fallback: next tab)",
     },
     {
       "<c-.>",
