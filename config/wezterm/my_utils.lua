@@ -1,6 +1,13 @@
 --- @class WeztermMyUtils
 local M = {}
 
+-- update-status の高頻度発火で毎回 git を起動しないための cwd 単位キャッシュ
+-- 値が false のときは「リポジトリ外」を表す
+---@type table<string, string|false>
+local repo_cache = {}
+
+---@param pane any wezterm の Pane オブジェクト
+---@return string|nil
 local function get_cwd_path(pane)
   local wezterm = require("wezterm")
   local cwd_uri = pane:get_current_working_dir()
@@ -19,6 +26,8 @@ local function get_cwd_path(pane)
 end
 
 -- 現在のディレクトリ名を取得
+---@param pane any wezterm の Pane オブジェクト
+---@return string|nil
 function M.get_current_dir(pane)
   local cwd = get_cwd_path(pane)
   if not cwd then
@@ -29,14 +38,10 @@ function M.get_current_dir(pane)
   return current_dir
 end
 
--- gitブランチ名を取得
--- gitリポジトリ名を取得
-function M.get_git_repository(pane)
+---@param cwd string
+---@return string|nil
+local function resolve_git_repository(cwd)
   local wezterm = require("wezterm")
-  local cwd = get_cwd_path(pane)
-  if not cwd then
-    return nil
-  end
 
   -- まずリモートURLからリポジトリ名を取得
   local success, stdout = wezterm.run_child_process({
@@ -76,15 +81,32 @@ function M.get_git_repository(pane)
   if success then
     local toplevel = stdout:gsub("%s+", "")
     if toplevel ~= "" then
-      local repo_name = toplevel:match("^.*/(.*)$") or toplevel
-      return repo_name
+      return toplevel:match("^.*/(.*)$") or toplevel
     end
   end
 
   return nil
 end
 
+-- gitリポジトリ名を取得
+---@param pane any wezterm の Pane オブジェクト
+---@return string|nil
+function M.get_git_repository(pane)
+  local cwd = get_cwd_path(pane)
+  if not cwd then
+    return nil
+  end
+
+  if repo_cache[cwd] == nil then
+    repo_cache[cwd] = resolve_git_repository(cwd) or false
+  end
+  return repo_cache[cwd] or nil
+end
+
 -- merge tables
+---@param t1 table マージ先（破壊的に更新される）
+---@param t2 table マージ元
+---@return table
 function M.merge_tables(t1, t2)
   for k, v in pairs(t2) do
     if (type(v) == "table") and (type(t1[k] or false) == "table") then

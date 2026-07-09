@@ -20,7 +20,7 @@ wezterm.on("update-status", function(_win, pane)
   local pane_id = pane:pane_id()
   title_cache[pane_id] = title
 end)
--- cleenup cache
+-- cleanup cache
 wezterm.on("pane-destroyed", function(pane, _win)
   title_cache[pane:pane_id()] = nil
 end)
