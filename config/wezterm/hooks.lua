@@ -23,7 +23,8 @@ end)
 
 -- for zen-mode.nvim settings
 -- see: https://github.com/folke/zen-mode.nvim?tab=readme-ov-file#wezterm
-wezterm.on("toggle-zen-mode", function(window, pane, name, value)
+-- zen-mode.nvim は user var 変更で通知するため user-var-changed に登録する
+wezterm.on("user-var-changed", function(window, pane, name, value)
   local overrides = window:get_config_overrides() or {}
   if name == "ZEN_MODE" then
     local incremental = value:find("+")
