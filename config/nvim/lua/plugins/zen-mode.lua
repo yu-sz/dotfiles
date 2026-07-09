@@ -6,12 +6,12 @@ return {
       mode = "n",
       function()
         require("zen-mode").toggle({
-          -- @lua
           window = {
             width = 0.60,
           },
         })
       end,
+      desc = "Toggle zen mode",
     },
   },
   opts = {},

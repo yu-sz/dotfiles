@@ -4,9 +4,9 @@ return {
   event = "VimEnter",
   keys = {
     -- Will use Telescope if installed or a vim.ui.select picker otherwise
-    { "<leader>wr", "<cmd>SessionRestore<CR>" },
-    { "<leader>ws", "<cmd>SessionSave<CR>" },
-    { "<leader>wa", "<cmd>SessionToggleAutoSave<CR>" },
+    { "<leader>wr", "<cmd>SessionRestore<CR>", desc = "Restore session" },
+    { "<leader>ws", "<cmd>SessionSave<CR>", desc = "Save session" },
+    { "<leader>wa", "<cmd>SessionToggleAutoSave<CR>", desc = "Toggle session autosave" },
   },
   ---enables autocomplete for opts
   ---@module "auto-session"

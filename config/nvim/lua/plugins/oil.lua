@@ -3,7 +3,7 @@ return {
   -- Optional dependencies
   dependencies = { { "nvim-mini/mini.icons", opts = {} } },
   keys = {
-    { "<leader>o", ":Oil<CR>", silent = true },
+    { "<leader>o", ":Oil<CR>", silent = true, desc = "Open oil file explorer" },
   },
   cmd = "Oil",
   ---@module 'oil'
