@@ -21,6 +21,8 @@ local find_pr_query = ([[query='
         }'
   ]]):gsub("\n", "")
 
+---@param result table|nil json_decode 済みの GraphQL レスポンス
+---@return boolean
 local function is_valid_result(result)
   return result
     and result.data
@@ -34,11 +36,13 @@ local function is_valid_result(result)
     and result.data.repository.object.associatedPullRequests.edges[1].node.number
 end
 
+---@param cmd string
+---@return string|nil コマンド出力（失敗・空出力時は nil）
 local function run_command(cmd)
   local success, output = pcall(vim.fn.system, cmd)
 
   if not success then
-    vim.api.nvim_err_writeln("エラーが発生しました: " .. output)
+    vim.notify("エラーが発生しました: " .. output, vim.log.levels.ERROR)
     return nil -- エラー時にはnilを返す
   end
 
@@ -50,6 +54,7 @@ local function run_command(cmd)
 end
 
 -- 現在カーソルのある行のコミットハッシュをblameから取得する
+---@return string|nil
 local function get_commit_hash_at_cursor()
   local line_number = vim.fn.line(".")
   local file_path = vim.fn.expand("%:p")
@@ -59,7 +64,7 @@ local function get_commit_hash_at_cursor()
   local output = run_command(cmd)
 
   if not output then
-    vim.api.nvim_err_writeln("not found commit")
+    vim.notify("not found commit", vim.log.levels.WARN)
     return
   end
 
@@ -72,7 +77,7 @@ local function get_commit_hash_at_cursor()
     return line
   end
 
-  vim.api.nvim_err_writeln("not found commit hash")
+  vim.notify("not found commit hash", vim.log.levels.WARN)
 end
 
 --[[
@@ -81,7 +86,7 @@ end
   ]]
 local function open_pr_from_hash()
   if vim.fn.executable(gh) == 0 then
-    vim.api.nvim_err_writeln("not installed gh command")
+    vim.notify("not installed gh command", vim.log.levels.ERROR)
     return
   end
 
@@ -95,14 +100,14 @@ local function open_pr_from_hash()
 
   local output = run_command(get_pr_cmd)
   if not output then
-    vim.api.nvim_err_writeln("GraphQL API 呼び出しに失敗しました")
+    vim.notify("GraphQL API 呼び出しに失敗しました", vim.log.levels.ERROR)
     return
   end
 
   local result = vim.fn.json_decode(output)
 
   if not is_valid_result(result) then
-    vim.api.nvim_err_writeln("not found pull request number")
+    vim.notify("not found pull request number", vim.log.levels.WARN)
     return
   end
 

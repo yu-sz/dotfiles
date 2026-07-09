@@ -33,7 +33,7 @@ return {
         local open_pull_request_diffview = function()
           local handle = io.popen("gh pr view --json baseRefName --jq .baseRefName")
           if not handle then
-            print("PR情報の取得に失敗しました")
+            vim.notify("PR情報の取得に失敗しました", vim.log.levels.ERROR)
             return
           end
           local base_branch = handle:read("*a"):gsub("%s+", "")
@@ -41,9 +41,9 @@ return {
 
           if base_branch ~= "" then
             vim.cmd("DiffviewOpen origin/" .. base_branch .. "...HEAD")
-            print("Opening Diffview against: origin/" .. base_branch .. "...HEAD")
+            vim.notify("Opening Diffview against: origin/" .. base_branch .. "...HEAD")
           else
-            print("PR情報が見つかりません")
+            vim.notify("PR情報が見つかりません", vim.log.levels.WARN)
           end
         end
 
