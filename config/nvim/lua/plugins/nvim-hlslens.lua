@@ -21,15 +21,15 @@ return {
         render.setVirt(0, lnum - 1, col - 1, chunks, nearest)
       end,
     })
-    local kopts = { noremap = true, silent = true }
+    local kopts = { silent = true }
 
-    vim.api.nvim_set_keymap(
+    vim.keymap.set(
       "n",
       "n",
       [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
       kopts
     )
-    vim.api.nvim_set_keymap(
+    vim.keymap.set(
       "n",
       "N",
       [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
@@ -40,16 +40,16 @@ return {
       require("lasterisk").search()
       require("hlslens").start()
     end)
+    -- g* は lasterisk 版に一本化（部分一致検索 + lens 表示）
     vim.keymap.set({ "n", "x" }, "g*", function()
       require("lasterisk").search({ is_whole = false, silent = true })
       require("hlslens").start()
     end)
 
-    vim.api.nvim_set_keymap("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-    vim.api.nvim_set_keymap("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
-    vim.api.nvim_set_keymap("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+    vim.keymap.set("n", "#", [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+    vim.keymap.set("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
 
-    vim.api.nvim_set_keymap("n", "<Leader>l", "<Cmd>noh<CR>", kopts)
+    vim.keymap.set("n", "<Leader>l", "<Cmd>noh<CR>", kopts)
 
     vim.cmd([[
         highlight HlSearchLensNear guifg=white guibg=olive
