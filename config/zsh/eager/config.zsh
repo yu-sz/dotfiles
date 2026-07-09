@@ -6,9 +6,6 @@ typeset -g RPS1=""
 
 ### history ###
 [[ -d "$XDG_STATE_HOME/zsh" ]] || mkdir -p "$XDG_STATE_HOME/zsh"
-if [[ -f "$XDG_STATE_HOME/history" && ! -f "$XDG_STATE_HOME/zsh/history" ]]; then
-	mv "$XDG_STATE_HOME/history" "$XDG_STATE_HOME/zsh/history"
-fi
 export HISTFILE="$XDG_STATE_HOME/zsh/history"
 export HISTSIZE=12000
 export SAVEHIST=10000
@@ -17,10 +14,9 @@ export SAVEHIST=10000
 # 履歴管理系
 setopt APPEND_HISTORY
 setopt EXTENDED_HISTORY
-setopt HIST_IGNORE_ALL_DUPS # HIST_SAVE_NO_DUPS を削除
+setopt HIST_IGNORE_ALL_DUPS # 重複履歴は古い方を削除（SAVE_NO_DUPS を包含）
 setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
-setopt HIST_SAVE_NO_DUPS # 履歴保存時に重複を削除 (削除)
 # ディレクトリ操作系
 setopt AUTO_PUSHD
 setopt INTERACTIVE_COMMENTS
@@ -34,5 +30,6 @@ setopt NO_FLOW_CONTROL
 ### hooks ###
 zshaddhistory() {
 	local line="${1%%$'\n'}"
-	[[ ! "$line" =~ "^(cd|history|jj?|lazygit|lazydocker|la|ll|ls|rm|rmdir|trash|z|zi)($| )" ]]
+	# 導入済みコマンドと実 alias（eza 系）に合わせた除外リスト
+	[[ ! "$line" =~ "^(cd|history|lazygit|lazydocker|ei|ea|ee|et|eta|ls|la|ll|lt|lta|rm|rmdir|z|zi)($| )" ]]
 }

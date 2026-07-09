@@ -50,7 +50,8 @@ github = "zsh-users/zsh-completions"
 dir = "src"
 apply = ["fpath"]
 
-# compinitより後（lazy/completion.zsh）、他プラグインより前に読み込まれる
+# zsh-defer の FIFO 順で compinit（lazy/completion.zsh）より前に source される。
+# fzf-tab 側の pre-compinit フォールバック（builtin widget の先回り複製）で動作している
 [plugins.fzf-tab]
 github = "Aloxaf/fzf-tab"
 
