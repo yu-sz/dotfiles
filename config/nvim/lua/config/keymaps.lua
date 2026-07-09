@@ -5,7 +5,7 @@ local opts = { noremap = true, silent = true }
 
 -- Disable default key
 keymap.set("n", "s", "<NOP>", opts)
--- jamp start or end
+-- jump start or end
 keymap.set({ "n", "v", "x", "s", "o" }, "gg", "gg0", opts)
 keymap.set({ "n", "v", "x", "s", "o" }, "G", "G$", opts)
 

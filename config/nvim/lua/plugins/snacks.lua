@@ -42,6 +42,7 @@ return {
         Snacks.bufdelete()
       end,
       silent = true,
+      desc = "Delete buffer",
     },
 
     -- picker
@@ -116,7 +117,7 @@ return {
         Snacks.picker.keymaps()
       end,
       silent = true,
-      desc = "find Keymaps",
+      desc = "Find Keymaps",
     },
 
     -- gh
@@ -159,7 +160,7 @@ return {
       desc = "Open File Explorer",
     },
 
-    -- smart file searvh
+    -- smart file search
     {
       "<leader><leader>",
       function()

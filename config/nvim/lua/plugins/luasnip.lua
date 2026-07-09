@@ -1,4 +1,4 @@
--- extends snipet
+-- extends snippet
 return {
   "L3MON4D3/LuaSnip",
   lazy = true,

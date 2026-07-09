@@ -1,4 +1,4 @@
--- tarminal
+-- terminal
 -- float形式のターミナルはToggle操作したいためグローバル管理
 local float_term
 local right_term
@@ -26,7 +26,7 @@ return {
       desc = "open lazygit",
     },
 
-    -- floot
+    -- float
     {
       "<leader>tf",
       function()
@@ -79,7 +79,7 @@ return {
         end
       end,
       mode = { "n", "t" },
-      desc = "Smart Toggle Right Terminals",
+      desc = "Toggle Bottom Terminals",
     },
     {
       "<leader>tab",
@@ -93,7 +93,7 @@ return {
         new_term:toggle()
       end,
       mode = { "n", "t" },
-      desc = "Add New Right Terminal",
+      desc = "Add New Bottom Terminal",
     },
   },
 }
