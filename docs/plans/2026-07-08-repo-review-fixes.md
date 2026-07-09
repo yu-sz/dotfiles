@@ -270,19 +270,24 @@ return M
 
 ### Phase 6: Zsh
 
-- [ ] 6-1: `config/zsh/lazy/function.zsh` の `y()` を `command rm -f --` に変更
-- [ ] 6-2: `config/zsh/lazy/repo.zsh` を `command rm` / `builtin cd` に変更
-- [ ] 6-3: `.zshrc:54` の glob に `(N)` を付与、eager/lazy ファイル削除時は `sheldon lock` が必要な旨をコメント追記
-- [ ] 6-4: `config/zsh/eager/config.zsh` — `HIST_SAVE_NO_DUPS` 削除とコメント整理、履歴除外パターンのデッドエントリ（j/jj/trash）を実 alias に合わせて整理、旧 history 移行コードを削除
-- [ ] 6-5: `config/zsh/eager/path.zsh` の `zsh/bin` デッドエントリを削除
-- [ ] 6-6: `config/zsh/lazy/completion.zsh` — LS_COLORS 行の削除（または vivid 導入）、`local dir` 追加、古い zcompdump の掃除
-- [ ] 6-7: `config/zsh/lazy/repo.zsh` — 補完へ `new`/`r`/`h` 追加、trailing whitespace 削除
-- [ ] 6-8: `config/zsh/plugins/workspace/bin/workspace` — 未知サブコマンドは usage + exit 1、repo 解決の grep を `-F` 完全一致へ
-- [ ] 6-9: `config/zsh/lazy/git.zsh` のコマンド置換をクォート
-- [ ] 6-10: `config/zsh/lazy/fzf.zsh` の `fkill` デフォルトを SIGTERM へ
-- [ ] 6-11: `.zshrc` の brew 検出に `/usr/local` フォールバックを追加
-- [ ] 6-12: `config/zsh/sheldon/plugins.toml` の fzf-tab コメントを実態（compinit 前でもフォールバックで動作）に修正
-- [ ] 6-13: 検証 — `zsh -i` 起動エラーなし、`y` で tmp がゴミ箱に入らないこと、`repo remove` が実削除になること
+- [x] 6-1: `config/zsh/lazy/function.zsh` の `y()` を `command rm -f --` に変更
+- [x] 6-2: `config/zsh/lazy/repo.zsh` を `command rm` / `builtin cd` に変更
+- [x] 6-3: `.zshrc` の glob に `(N)` + `command rm` を付与、削除時は `sheldon lock` が必要な旨をコメント追記
+- [x] 6-4: `config/zsh/eager/config.zsh` — `HIST_SAVE_NO_DUPS` 削除、履歴除外パターンを実 alias（eza 系）に更新、旧 history 移行コードを削除
+- [x] 6-5: `config/zsh/eager/path.zsh` の `zsh/bin` デッドエントリを削除
+- [x] 6-6: `config/zsh/lazy/completion.zsh` — LS_COLORS 行を削除、`local dir` 追加、30 日超の zcompdump-\* を find で掃除
+- [x] 6-7: `config/zsh/lazy/repo.zsh` — 補完へ `new`/`r`/`h` 追加（trailing whitespace は shfmt が自動解消）
+- [x] 6-8: workspace — 未知サブコマンドは usage + exit 1、repo 解決は zsh の `(r)*/${(b)repo}` 添字（完全一致 glob）へ
+- [x] 6-9: `config/zsh/lazy/git.zsh` のコマンド置換をクォート
+- [x] 6-10: `config/zsh/lazy/fzf.zsh` の `fkill` デフォルトを SIGTERM へ
+- [x] 6-11: `.zshrc` の brew 検出に `/usr/local` フォールバックを追加
+- [x] 6-12: `config/zsh/sheldon/plugins.toml` の fzf-tab コメントを実態（compinit 前・フォールバックで動作）に修正
+- [x] 6-13: 検証 — `zsh -i -c exit` が exit=0（sheldon の mtime 検知で再 lock も確認）、alias → function の順で source した `functions y` / `functions repo` に `command rm` / `builtin cd` が現れることを実証
+
+> **予実差異**:
+>
+> 1. format.sh（shfmt）は「zsh 非対応で毎回失敗」というレビュー認識に反し、POSIX 互換の zsh ファイル（repo / git / fzf / function.zsh）は実際にパース・再整形される（4 スペース → タブ）。zsh 固有構文を含むファイル（.zshrc / path.zsh 等）のみ silent fail。
+> 2. 6-8 は grep -F でなく zsh ネイティブの配列添字を採用（外部プロセス削減 + 完全一致）。
 
 ### Phase 7: Neovim / WezTerm 動作バグ
 
