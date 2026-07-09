@@ -244,7 +244,7 @@ return {
     },
     explorer = { enabled = true },
     git = { enabled = true },
-    gh = { enable = true },
+    gh = { enabled = true },
     dashboard = {
       preset = {
         ---@type snacks.dashboard.Item[]

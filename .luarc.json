@@ -1,7 +1,9 @@
 {
   "diagnostics": {
     "globals": ["vim", "Snacks"],
-    "disable": ["undefined-doc-name"],
-    "hint.enable": true
+    "disable": ["undefined-doc-name"]
+  },
+  "hint": {
+    "enable": true
   }
 }

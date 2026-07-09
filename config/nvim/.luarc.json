@@ -1,6 +1,8 @@
 {
   "diagnostics": {
-    "globals": ["vim", "Snacks"],
-    "hint.enable": true
+    "globals": ["vim", "Snacks"]
+  },
+  "hint": {
+    "enable": true
   }
 }

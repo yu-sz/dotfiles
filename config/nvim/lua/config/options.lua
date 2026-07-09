@@ -15,8 +15,6 @@ opt.autoindent = true
 opt.smartindent = true
 opt.backspace = "indent,eol,start"
 
--- Status line
-opt.laststatus = 3
 -- Max syntax highlight columns
 opt.synmaxcol = 240
 

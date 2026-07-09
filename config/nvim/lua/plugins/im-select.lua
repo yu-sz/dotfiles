@@ -10,7 +10,7 @@ return {
       -- 以下のイベント時に、デフォルトのIMEになる
       set_default_events = { "VimEnter", "InsertEnter", "InsertLeave" },
       -- 以下のイベント時に、前回使われていたIMEになる（無効にしている）
-      set_previous_events = { "InsertEnter" },
+      set_previous_events = {},
     })
   end,
 }

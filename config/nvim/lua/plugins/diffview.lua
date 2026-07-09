@@ -59,11 +59,11 @@ return {
     keymaps = {
       view = {
         ["<tab>"] = false,
-        ["<setab>"] = false,
+        ["<s-tab>"] = false,
       },
       file_panel = {
         ["<tab>"] = false,
-        ["<setab>"] = false,
+        ["<s-tab>"] = false,
         ["s"] = false,
       },
     },

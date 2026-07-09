@@ -29,8 +29,9 @@ return {
         {
           filter = {
             any = {
-              { event = "msg_show", error = true, find = "e486:" },
-              { event = "msg_show", find = "no lines in buffer" },
+              -- NOTE: noice の find は大文字小文字を区別するため実メッセージ表記で書く
+              { event = "msg_show", error = true, find = "E486:" },
+              { event = "msg_show", find = "No lines in buffer" },
               { event = "msg_show", find = "%d+ lines? yanked" },
               { event = "msg_show", find = "%d+ more lines?" },
               { event = "msg_show", find = "%d+ less lines?" },
@@ -45,12 +46,12 @@ return {
         {
           filter = {
             any = {
-              { event = "msg_show", error = true, find = "e20:" },
-              { event = "msg_show", error = true, find = "e42:" },
-              { event = "msg_show", error = true, find = "e492:" },
-              { event = "msg_show", error = true, find = "e5107:" },
-              { event = "msg_show", warning = true, find = "search hit bottom, continuing at top" },
-              { event = "msg_show", warning = true, find = "search hit top, continuing at bottom" },
+              { event = "msg_show", error = true, find = "E20:" },
+              { event = "msg_show", error = true, find = "E42:" },
+              { event = "msg_show", error = true, find = "E492:" },
+              { event = "msg_show", error = true, find = "E5107:" },
+              { event = "msg_show", warning = true, find = "search hit BOTTOM, continuing at TOP" },
+              { event = "msg_show", warning = true, find = "search hit TOP, continuing at BOTTOM" },
               { event = "notify", warning = true, find = "aborted" },
               { event = "notify", kind = "info", find = "cwd: " },
               { event = "notify", kind = "info", find = "was properly created" },
