@@ -17,8 +17,8 @@ keymap.set("n", "<leader>n", ":nohlsearch<CR>", opts)
 keymap.set("x", "p", '"_dP', opts)
 
 -- Tab control
+-- NOTE: <tab> (tabnext) は sidekick.lua の fallback として定義している
 keymap.set("n", "te", ":tabedit<CR>", opts)
-keymap.set("n", "<tab>", ":tabnext<CR>", opts)
 keymap.set("n", "<s-tab>", ":tabprev<CR>", opts)
 keymap.set("n", "tl", ":tabmove -1<CR>")
 keymap.set("n", "tr", ":tabmove +1<CR>")
@@ -37,8 +37,7 @@ keymap.set("n", "sj", "<C-w>j", opts)
 keymap.set("n", "sl", "<C-w>l", opts)
 
 -- Resize window
-keymap.set("n", ">", "<C-w><", opts)
-keymap.set("n", "<", "<C-w>>", opts)
+-- NOTE: 横方向リサイズはインデント演算子 (>>/<<) を潰さないよう winresizer に委譲
 keymap.set("n", "+", "<C-w>+", opts)
 keymap.set("n", "-", "<C-w>-", opts)
 
