@@ -236,9 +236,9 @@ return M
 
 - [x] 3-1: `nix/home/packages/dev.nix` に `mise` を追加（dry-run で mise-2026.6.13 のキャッシュ取得を確認。`! nrs` は Phase 4 と合わせて下記で依頼）
 - [x] 3-2: `install_mise()` と `install.sh` の呼び出しを削除、`install_runtimes.sh` は `~/.local/bin` でなく `~/.nix-profile/bin`（standalone HM）を PATH に追加する形へ書き換え
-- [ ] 3-3: 既存マシンの `~/.local/bin/mise` を gomi で退避し、`mise doctor` で動作確認
+- [x] 3-3: `nrs` 適用後、nix 版 mise（/nix/store/...-mise-2026.6.13）の動作を確認し `~/.local/bin/mise` を gomi で退避
 - [x] 3-4: `config/zsh/eager/path.zsh` の shims 行に `(N-/)` と意図コメントを追加
-- [ ] 3-5: 検証 — 新しいシェルで mise キャッシュが再生成され、`mise ls` が正常なこと
+- [x] 3-5: 検証 — 新しいシェルでキャッシュ先頭がストアパスに自動再生成され、`mise ls` で全ランタイム（bun/go/node/pnpm）が無傷なことを確認
 
 ### Phase 4: Nix 整理
 
@@ -246,7 +246,7 @@ return M
 - [x] 4-2: `nix/overlays/default.nix` の `_final:` を規約どおり `_:` に変更
 - [x] 4-3: devShell から重複の `prettier` / `selene` と未使用の `shfmt` を削除（`nix develop` 内で selene / prettier が enabledPackages から解決されることを実測）
 - [x] 4-4: `nix/home/packages/lsp-tools.nix` のアルファベット順を修正
-- [ ] 4-5: 検証 — `nix flake check` は PASS 済み。ユーザーが `! nrs` 後、sketchybar のアプリアイコン表示を確認
+- [x] 4-5: 検証 — `nix flake check` PASS、`nrs` 適用後に `/Library/Fonts/Nix Fonts/` へ 2.0.62 のみが配置され（旧 2.0.60 は除去）、sketchybar プロセス稼働を確認。アイコンの見た目はユーザー目視に委ねる
 
 ### Phase 5: CI / Justfile
 
