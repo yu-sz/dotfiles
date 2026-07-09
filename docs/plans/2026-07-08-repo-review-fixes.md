@@ -311,23 +311,29 @@ return M
 
 ### Phase 8: Lua 規約・リファクタ・typo
 
-- [ ] 8-1: keymap の `desc` を一括追加（`config/keymaps.lua`、`lsp/init.lua`、auto-session / overseer / oil / snacks / zen-mode 等）
-- [ ] 8-2: `print()` / `nvim_err_writeln` を `vim.notify` へ置換（diffview 含む）
-- [ ] 8-3: LuaCATS アノテーション追加（`config/wezterm/my_utils.lua`、sketchybar helpers、commands）、`sidekick.lua` の `@class` を `@type` へ
-- [ ] 8-4: ファイル名リネーム — `nvim-sorround.lua`→`nvim-surround.lua`、`schemaStore.lua`→`schemastore.lua`
-- [ ] 8-5: `lsp/init.lua` — コメントアウト済み HACK 約 50 行を削除、`vim.diagnostic.config` を autocmd 外へ移動
-- [ ] 8-6: `config/init.lua` の読み込み順を options → keymaps → lazy に変更
-- [ ] 8-7: `plugins/mode.lua` の重複カラーテーブルを統合
-- [ ] 8-8: `nvim-treesitter.lua` から textobjects 依存を削除（決定事項参照）
-- [ ] 8-9: `after/lsp/terraform-ls.lua` を `terraformls` 命名に揃え lspconfig デフォルトを継承
-- [ ] 8-10: wezterm — act 形式の統一、`tab_bar.lua` の git 結果キャッシュ追加、コメント / typo 修正
-- [ ] 8-11: noice / dial / nvim-autopairs の `opts` と `config` の併存を opts に一本化
-- [ ] 8-12: sketchybar — `volume.lua` の同一アイコン分岐修正、`date.lua` のフォントを `settings.font` 参照へ
-- [ ] 8-13: `config/autocmd.lua` の matchadd をウィンドウごと一回登録に修正
-- [ ] 8-14: `config/options.lua` — no-op の `compatible` 削除、`vim.wo.wrap` を `opt.wrap` へ
-- [ ] 8-15: `nvim-hlslens.lua` の `<leader>l` と `keymaps.lua` の `<leader>n` の機能重複を整理
-- [ ] 8-16: typo 一括修正（tarminal / floot / Right Terminals / searvh / jamp / snipet / complation / cleenup 等）
-- [ ] 8-17: 検証 — `just lint-lua`（selene + stylua）クリーン
+- [x] 8-1: keymap の `desc` を一括追加（lsp/init.lua は map ヘルパー化、auto-session / overseer / oil / snacks / zen-mode）
+- [x] 8-2: `print()` / `nvim_err_writeln` を `vim.notify` へ置換（diffview + open-pr 6 箇所）
+- [x] 8-3: LuaCATS 追加（my_utils 全関数、sketchybar aerospace / icons、open-pr、volume）、`sidekick.lua` の `@class` を `@type` へ（2 箇所）
+- [x] 8-4: ファイル名リネーム — `nvim-sorround.lua`→`nvim-surround.lua`、`schemaStore.lua`→`schemastore.lua`
+- [x] 8-5: `lsp/init.lua` — HACK 約 50 行を削除、`vim.diagnostic.config` を統合して autocmd 外へ
+- [x] 8-6: `config/init.lua` の読み込み順を options → keymaps → autocmd → lazy に変更
+- [x] 8-7: `plugins/mode.lua` の重複カラーテーブルを統合（COLORSCHEME 分岐ごと削除）
+- [x] 8-8: `nvim-treesitter.lua` から textobjects 依存を削除
+- [x] 8-9: `terraformls` 命名へ統一（after/lsp は root_markers のみに縮小し lspconfig 既定を継承）
+- [x] 8-10: wezterm — `act.X` 形式に統一、git 結果を cwd 単位でキャッシュ、cleenup typo 修正
+- [x] 8-11: noice / dial の `opts = {}` 併存と autopairs の `config = true` を解消
+- [x] 8-12: sketchybar — volume を 3 分岐に修正、date のフォントを `settings.font` 参照へ（`text_small` を追加）
+- [x] 8-13: `config/autocmd.lua` の matchadd を `vim.w` フラグで一回登録に修正
+- [x] 8-14: `config/options.lua` — no-op の `compatible` 削除、`vim.wo.wrap` を `opt.wrap` へ
+- [x] 8-15: `nvim-hlslens.lua` の `<Leader>l` を削除（`<leader>n` に一本化）
+- [x] 8-16: typo 一括修正（tarminal / floot / searvh / jamp / snipet / complation / cleenup / karabina 等）
+- [x] 8-17: 検証 — selene / stylua 0 エラー、headless nvim 起動で errmsg なし
+
+> **予実差異**:
+>
+> 1. tab_bar の git キャッシュは tab_bar 側でなく my_utils 側（cwd 単位、リポジトリ外は false を記憶）に実装。
+> 2. toggleterm の「Right Terminals」は typo でなく方向の誤記（bottom terminal 群）だったため desc を Bottom に修正。
+> 3. terraformls 化に伴い after/lsp の cmd / filetypes / settings は lspconfig 既定に委譲し root_markers のみ残した。
 
 ### Phase 9: ドキュメント・リポジトリ衛生・Claude 設定の低優先整理
 
