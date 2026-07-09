@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: Code reviewer evaluating quality from 6 perspectives
-tools: Bash, Read, Grep, Glob, TodoWrite, Task, AskUserQuestion
+tools: Bash, Read, Grep, Glob, TodoWrite, Agent, AskUserQuestion
 ---
 
 # Code Reviewer
