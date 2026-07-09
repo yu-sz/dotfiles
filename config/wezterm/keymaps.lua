@@ -15,7 +15,7 @@ local keys = {
   { key = "-", mods = "LEADER", action = act.DecreaseFontSize },
 
   -- create Tab
-  { key = "t", mods = "LEADER", action = act({ SpawnTab = "CurrentPaneDomain" }) },
+  { key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
   -- close Tab
   { key = "w", mods = "LEADER", action = act.CloseCurrentTab({ confirm = true }) },
   -- move Tab
@@ -23,18 +23,18 @@ local keys = {
   { key = "[", mods = "LEADER", action = act.MoveTabRelative(-1) },
 
   -- close Pane
-  { key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = true }) },
+  { key = "x", mods = "LEADER", action = act.CloseCurrentPane({ confirm = true }) },
   -- 下方向にPane分割
-  { key = ",", mods = "LEADER", action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }) },
+  { key = ",", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
   -- 右方向にPane分割
-  { key = ".", mods = "LEADER", action = wezterm.action({ SplitHorizontal = { domain = "CurrentPaneDomain" } }) },
+  { key = ".", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
   -- 中身を入れ替える
-  { key = "g", mods = "LEADER", action = wezterm.action.RotatePanes("Clockwise") },
+  { key = "g", mods = "LEADER", action = act.RotatePanes("Clockwise") },
   -- move on pane
-  { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Left") },
-  { key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Down") },
-  { key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Up") },
-  { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection("Right") },
+  { key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
+  { key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
+  { key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
+  { key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
 
   -- Shift + Enter で改行を送信（for Claude Code）
   { key = "Enter", mods = "SHIFT", action = act.SendString("\n") },
