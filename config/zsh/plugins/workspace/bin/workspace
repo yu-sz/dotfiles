@@ -7,9 +7,12 @@ shift 2>/dev/null
 
 _resolve_repo_dir() {
   local repo="$1" dir match
+  local -a repos
   dir="$(ghq root)/$repo"
   if [[ ! -d "$dir" ]]; then
-    match=$(ghq list | grep -E "/${repo}$" | head -1)
+    # repo 名の . 等を正規表現として解釈しないよう、glob の完全一致で解決する
+    repos=(${(f)"$(ghq list)"})
+    match="${repos[(r)*/${(b)repo}]}"
     [[ -z "$match" ]] && return 1
     dir="$(ghq root)/$match"
   fi
@@ -72,6 +75,8 @@ wt-rm)
   ;;
 
 *)
-  exec "$0" new
+  echo "Unknown subcommand: $subcmd" >&2
+  echo "Usage: workspace [new [repo] | wt [branch] | wt-rm]" >&2
+  exit 1
   ;;
 esac
