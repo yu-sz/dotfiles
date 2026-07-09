@@ -15,7 +15,17 @@ return {
     },
     completion = { documentation = { auto_show = true } },
     sources = {
-      default = { "snippets", "lsp", "path", "buffer" },
+      default = { "snippets", "lsp", "path", "buffer", "dictionary" },
+      providers = {
+        dictionary = {
+          module = "blink-cmp-dictionary",
+          name = "Dict",
+          min_keyword_length = 3,
+          opts = {
+            dictionary_files = { "/usr/share/dict/words" },
+          },
+        },
+      },
     },
     snippets = {
       preset = "luasnip",
