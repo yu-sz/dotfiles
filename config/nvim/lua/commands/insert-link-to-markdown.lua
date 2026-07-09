@@ -29,6 +29,9 @@ local function insert_markdown_link()
 
     -- Restore original register 9 content
     vim.fn.setreg("9", old)
+  else
+    -- URL でなければ通常のビジュアルペースト（レジスタ退避付き）にフォールバック
+    vim.cmd('normal! gv"_dP')
   end
 end
 

@@ -86,6 +86,9 @@ local function open_pr_from_hash()
   end
 
   local commit_hash = get_commit_hash_at_cursor()
+  if not commit_hash then
+    return
+  end
 
   local get_pr_cmd =
     string.format('%s api graphql -F owner=":owner" -F repo=":repo" -F hash=%s -f %s', gh, commit_hash, find_pr_query)
