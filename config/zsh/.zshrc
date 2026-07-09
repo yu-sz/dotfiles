@@ -1,5 +1,8 @@
 ### homebrew ###
-brew_path="/opt/homebrew/bin/brew"
+# Apple Silicon / Intel 両対応
+for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+  [[ -e "$brew_path" ]] && break
+done
 if [[ -e "$brew_path" ]]; then
   brew_cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/brew_shellenv.zsh"
   if [[ ! -f "$brew_cache" || "$brew_path" -nt "$brew_cache" ]]; then
@@ -29,6 +32,7 @@ sheldon::load() {
     local cache_file="$cache_dir/$profile.zsh"
     local lock_file="$XDG_DATA_HOME/sheldon/plugins.$profile.lock"
 
+    # NOTE: mtime 比較のためファイル「削除」は検知できない。削除時は手動で sheldon lock を実行する
     local newest_eager=("$ZDOTDIR"/eager/*.zsh(Nom[1]))
     local newest_lazy=("$ZDOTDIR"/lazy/*.zsh(Nom[1]))
     if [[ ! -f "$lock_file"
@@ -51,7 +55,7 @@ sheldon::update() {
     local profile="${1:-default}"
     local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/sheldon"
     sheldon --profile="$profile" lock --update
-    rm -f "$cache_dir/$profile.zsh"*
+    command rm -f "$cache_dir/$profile.zsh"*(N)
     sheldon::load "$profile"
 }
 
