@@ -1,5 +1,6 @@
 local sbar = require("sketchybar")
 local colors = require("colors")
+local settings = require("settings")
 
 return function(position)
   local accent_outer = {
@@ -42,7 +43,7 @@ return function(position)
     position = position,
     icon = {
       string = os.date("%H:%M"),
-      font = "Moralerspace Xenon HW:Bold:14.0",
+      font = settings.font.numbers,
       color = colors.fg,
       y_offset = 7,
       padding_left = 6,
@@ -50,7 +51,7 @@ return function(position)
     },
     label = {
       string = os.date("%b %d %a"),
-      font = "Moralerspace Xenon HW:Regular:12.0",
+      font = settings.font.text_small,
       color = colors.fg,
       y_offset = -7,
       padding_left = -40,
