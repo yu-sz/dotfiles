@@ -3,12 +3,12 @@ local colors = require("colors")
 local settings = require("settings")
 local nf = require("helpers.icons").nf
 
+---@param percent number 音量（0-100）
+---@return string Nerd Font アイコン
 local function pick_icon(percent)
   if percent == 0 then
     return nf(0xF026)
-  elseif percent <= 33 then
-    return nf(0xF027)
-  elseif percent <= 66 then
+  elseif percent <= 50 then
     return nf(0xF027)
   else
     return nf(0xF028)
