@@ -22,7 +22,8 @@ return {
       desc = "Flash Treesitter (visual)",
     },
     {
-      "<CR>",
+      -- o モードの <CR> は jump と重複するため慣例の r に割り当てる
+      "r",
       mode = "o",
       function()
         require("flash").remote()
