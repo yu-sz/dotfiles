@@ -291,23 +291,23 @@ return M
 
 ### Phase 7: Neovim / WezTerm 動作バグ
 
-- [ ] 7-1: `copy-buffer-name.lua` / `copy-buffer-path.lua` を setreg 共通化（設計参照。has("mac") バグ・print 使用も同時解消）
-- [ ] 7-2: `config/wezterm/keymaps.lua` — `LEADER+w` の二重定義を解消（タブ閉じ復活、ペイン閉じは `x`）、コメント修正
-- [ ] 7-3: `config/wezterm/hooks.lua` のイベント名を `user-var-changed` に変更し zen-mode 連携を復活
-- [ ] 7-4: `plugins/sidekick.lua` — fallback を `<cmd>tabnext<cr>` に（設計参照）、`backend = "tmux"` に upstream PR #333 待ちの TODO コメントを追加。冗長になる `config/keymaps.lua` の `<tab>` → `:tabnext` 定義は削除
-- [ ] 7-5: `plugins/noice.lua` の skip パターンを実メッセージの大文字表記に修正
-- [ ] 7-6: `plugins/blink.cmp.lua` に dictionary provider を登録し blink-cmp-dictionary を有効化
-- [ ] 7-7: `plugins/im-select.lua` — `set_previous_events = {}` に修正しコメントと一致させる
-- [ ] 7-8: `plugins/nvim-hlslens.lua` — `g*` の二重定義を解消し `vim.keymap.set` に統一
-- [ ] 7-9: `commands/open-pr.lua` に commit hash の nil ガードを追加
-- [ ] 7-10: `commands/insert-link-to-markdown.lua` — 非 URL 時に `"_dP` フォールバック
-- [ ] 7-11: typo による無効設定の修正 — `nvim-autopairs.lua` の `javasctipt`、`snacks.lua:247` の `enable`→`enabled`、`diffview.lua` の `<setab>`→`<s-tab>`
-- [ ] 7-12: `markdown-preview.lua` / `overlook.lua` の keys spec を平坦形式に修正（desc/silent 復活）
-- [ ] 7-13: `.luarc.json` / `config/nvim/.luarc.json` の `hint.enable` をトップレベルへ移動
-- [ ] 7-14: `config/keymaps.lua` の `>` / `<` を削除（インデント演算子復活、リサイズは winresizer）
-- [ ] 7-15: `plugins/flash.lua` の o モード `<CR>` 重複を解消（remote を `r` へ）
-- [ ] 7-16: `config/options.lua` の dead な `laststatus = 3` を削除
-- [ ] 7-17: 検証 — `:checkhealth` クリーン、タブ切替 / zen-mode / dictionary 補完 / `>>` インデントの動作確認
+- [x] 7-1: copy-buffer 2 ファイルを `commands/copy-buffer.lua` に統合（setreg 化で has("mac") バグ・print・OS 分岐を同時解消、init.lua 更新）
+- [x] 7-2: `config/wezterm/keymaps.lua` — `LEADER+w` の二重定義を解消（タブ閉じ復活、ペイン閉じは `x`）、コメント修正
+- [x] 7-3: `config/wezterm/hooks.lua` のイベント名を `user-var-changed` に変更し zen-mode 連携を復活
+- [x] 7-4: `plugins/sidekick.lua` — fallback を `<cmd>tabnext<cr>` に、`backend = "tmux"` に TODO コメント追加、`config/keymaps.lua` の `<tab>` 定義を削除
+- [x] 7-5: `plugins/noice.lua` の skip パターンを実メッセージ表記に修正（E-code 大文字、BOTTOM/TOP、加えてレビュー指摘外の「No lines in buffer」も修正）
+- [x] 7-6: `plugins/blink.cmp.lua` に dictionary provider を登録（辞書は `/usr/share/dict/words`。Linux で無ければ無害に空）
+- [x] 7-7: `plugins/im-select.lua` — `set_previous_events = {}` に修正しコメントと一致させる
+- [x] 7-8: `plugins/nvim-hlslens.lua` — `g*` を lasterisk 版に一本化し `vim.keymap.set` に統一
+- [x] 7-9: `commands/open-pr.lua` に commit hash の nil ガードを追加
+- [x] 7-10: `commands/insert-link-to-markdown.lua` — 非 URL 時に `gv"_dP` フォールバック
+- [x] 7-11: typo による無効設定の修正 — `javasctipt`、`enable`→`enabled`、`<setab>`→`<s-tab>`
+- [x] 7-12: `markdown-preview.lua` / `overlook.lua` の keys spec を平坦形式に修正（desc/silent 復活）
+- [x] 7-13: `.luarc.json` / `config/nvim/.luarc.json` の `hint.enable` をトップレベルへ移動
+- [x] 7-14: `config/keymaps.lua` の `>` / `<` を削除（インデント演算子復活、リサイズは winresizer に委譲）
+- [x] 7-15: `plugins/flash.lua` の o モード remote を `r` へ移動
+- [x] 7-16: `config/options.lua` の dead な `laststatus = 3` を削除
+- [x] 7-17: 検証 — selene/stylua クリーン、headless nvim で起動エラーなし・Copy/OpenPr コマンド定義・`>` 解放・`<tab>` の sidekick stub 化を確認（IME / zen-mode / dictionary 補完の体感確認は実利用時）
 
 ### Phase 8: Lua 規約・リファクタ・typo
 
