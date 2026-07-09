@@ -1,6 +1,6 @@
 # Neovim/TUI DB クライアント 実装計画
 
-> **状態: 未着手**（2026-07-10 時点）。計画・実現可能性レビューは完了済みだが、全 Phase が実装前。紛失防止のため実装前にコミットしている。
+> **状態: Phase 1 完了**（2026-07-10 時点）。Phase 2 (zsh wrapper + カタログ) 以降が未着手。
 
 ## 概要
 
@@ -363,18 +363,20 @@ sqls
 
 ### Phase 1: 基盤 + Neovim スタック
 
-- [ ] 1-1: `nix/home/packages/dev.nix` に `duckdb`, `harlequin`, `sqlite`, `yq-go` を追加
-- [ ] 1-2: `nix/home/packages/lsp-tools.nix` に `sqls` を追加
-- [ ] 1-3: `git add` 後に `! nrs` をユーザーに依頼して反映 (Nix flake は git 追跡ファイルのみ参照)
-- [ ] 1-4: `which harlequin yq sqls duckdb sqlite3` で導入確認 (yq の `--version` 出力に "mikefarah" を含むこと)
-- [ ] 1-5: `config/nvim/lua/db/catalog.lua` を作成 (yq シェルアウト版、上記設計通り)
-- [ ] 1-6: `config/nvim/lua/db/picker.lua` を作成 (上記設計通り)
-- [ ] 1-7: `config/nvim/lua/plugins/dadbod.lua` を作成 (上記設計通り、blink.cmp の sources 注入を含む)
-- [ ] 1-8: `config/nvim/lua/commands/db.lua` を作成し `:DBPick` を登録
-- [ ] 1-9: `config/nvim/lua/commands/init.lua` に `require("commands.db")` を追加
-- [ ] 1-10: `config/nvim/lua/lsp/init.lua` の servers リストに `"sqls"` を追加
-- [ ] 1-11: `config/nvim/after/lsp/sqls.lua` を作成 (catalog → sqls 接続ブリッジ。空ファイルは runtime loader が `not a table` エラーを出すため不可)
-- [ ] 1-12: 新規ファイルを `git add` (config 配下は out-of-store symlink のため反映自体は即時・nrs 不要。VCS 管理用)
+- [x] 1-1: `nix/home/packages/dev.nix` に `duckdb`, `harlequin`, `sqlite`, `yq-go` を追加 (アルファベット順で挿入)
+- [x] 1-2: `nix/home/packages/lsp-tools.nix` に `sqls` を追加 (shfmt と stylua の間)
+- [x] 1-3: `git add` 後に `! nrs` をユーザーに依頼して反映 (Nix flake は git 追跡ファイルのみ参照)
+- [x] 1-4: `which harlequin yq sqls duckdb sqlite3` で導入確認 (全て PATH 解決。yq v4.53.3 mikefarah、harlequin 2.5.2 + duckdb/sqlite/postgres/bigquery アダプタ)
+- [x] 1-5: `config/nvim/lua/db/catalog.lua` を作成 (yq シェルアウト版、設計通り)
+- [x] 1-6: `config/nvim/lua/db/picker.lua` を作成 (設計通り)
+- [x] 1-7: `config/nvim/lua/plugins/dadbod.lua` を作成 (blink.cmp sources 注入含む。`Lazy! install` で 4 プラグイン導入済み)
+- [x] 1-8: `config/nvim/lua/commands/db.lua` を作成し `:DBPick` を登録
+- [x] 1-9: `config/nvim/lua/commands/init.lua` に `require("commands.db")` を追加
+- [x] 1-10: `config/nvim/lua/lsp/init.lua` の servers リストに `"sqls"` を追加
+- [x] 1-11: `config/nvim/after/lsp/sqls.lua` を作成 (catalog → sqls 接続ブリッジ)
+- [x] 1-12: 新規ファイルを `git add` (stylua --check パス、headless 起動でエラーなし・catalog 不在時 no-op を確認)
+
+> **予実差異**: `commands/init.lua` の既存 require 構成が計画時点と異なっていた (`copy-buffer-name`/`copy-buffer-path` が `copy-buffer` に統合済み)。挿入位置を調整したのみで影響なし。`lazy-lock.json` はこのリポジトリでは gitignore 対象のためコミット対象外。`harlequin --version` 実行時に click の UserWarning (アダプタ間の短縮フラグ重複、upstream 起因) が出るが動作に影響なし。
 
 ### Phase 2: zsh wrapper + カタログ整備
 

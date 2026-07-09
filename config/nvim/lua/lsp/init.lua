@@ -14,6 +14,7 @@ vim.lsp.enable({
   "rust_analyzer",
   "jsonls",
   "yamlls",
+  "sqls",
   "copilot",
 })
 

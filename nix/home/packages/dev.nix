@@ -8,11 +8,13 @@
   home.packages = with pkgs; [
     awscli2
     delta
+    duckdb
     gh
     ghq
     git
     google-cloud-sdk
     hadolint
+    harlequin
     lazydocker
     lazygit
     mise
@@ -21,7 +23,9 @@
     postgresql
     rustup
     sqldiff
+    sqlite
     ssm-session-manager-plugin
     tenv
+    yq-go
   ];
 }

@@ -14,6 +14,7 @@
     selene
     shellcheck
     shfmt
+    sqls
     stylua
     tailwindcss-language-server
     terraform-ls
