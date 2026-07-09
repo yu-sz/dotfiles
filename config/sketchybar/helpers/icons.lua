@@ -1,5 +1,8 @@
 local M = {}
 
+-- Unicode codepoint を UTF-8 バイト列へ変換（Nerd Font アイコン用）
+---@param codepoint integer
+---@return string
 function M.nf(codepoint)
   if codepoint < 0x10000 then
     return string.char(
