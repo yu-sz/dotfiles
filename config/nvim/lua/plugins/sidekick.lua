@@ -2,7 +2,7 @@
 -- After installation sign in with :LspCopilotSignIn
 return {
   "folke/sidekick.nvim",
-  ---@class sidekick.Config
+  ---@type sidekick.Config
   opts = {
     cli = {
       mux = {
@@ -10,7 +10,7 @@ return {
         -- TODO: sidekick.nvim#333 マージ後に "herdr" へ切替（tmux は撤去済みで未使用）
         backend = "tmux",
       },
-      ---@class sidekick.win.Opts
+      ---@type sidekick.win.Opts
       win = {
         layout = "right",
         ---@type vim.api.keyset.win_config

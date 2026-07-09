@@ -1,7 +1,6 @@
 -- expand increment/decrement
 return {
   "monaqa/dial.nvim",
-  opts = {},
   config = function()
     local augend = require("dial.augend")
     require("dial.config").augends:register_group({

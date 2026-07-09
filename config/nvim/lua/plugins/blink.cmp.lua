@@ -1,4 +1,4 @@
--- complations
+-- completions
 return {
   "saghen/blink.cmp",
   version = "*",
