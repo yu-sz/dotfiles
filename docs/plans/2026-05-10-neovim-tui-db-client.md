@@ -1,6 +1,6 @@
 # Neovim/TUI DB クライアント 実装計画
 
-> **状態: Phase 1 完了**（2026-07-10 時点）。Phase 2 (zsh wrapper + カタログ) 以降が未着手。
+> **状態: Phase 2 完了**（2026-07-10 時点）。Phase 3 (動作検証) が未着手。
 
 ## 概要
 
@@ -380,11 +380,13 @@ sqls
 
 ### Phase 2: zsh wrapper + カタログ整備
 
-- [ ] 2-1: `config/zsh/lazy/db.zsh` を作成 (上記設計通り。`sheldon/plugins.toml` の変更は不要)
-- [ ] 2-2: 新規シェル起動で `db` 関数 + 補完が読み込まれることを確認
-- [ ] 2-3: `~/.config/db-catalog/` を作成し `chmod 700`
-- [ ] 2-4: `connections.toml` を作成し最低 1 件 (例: SQLite ローカル) を記述、`chmod 600`
-- [ ] 2-5: `yq -e -o json -p toml '.connections' ~/.config/db-catalog/connections.toml` でパース成功を確認
+- [x] 2-1: `config/zsh/lazy/db.zsh` を作成 (設計通り。`sheldon/plugins.toml` の変更は不要)
+- [x] 2-2: `db` 関数 + 補完のロードを確認 (sheldon source 出力に completion.zsh → db.zsh の順で含まれることと、クリーン zsh での source + compdef 動作で確認)
+- [x] 2-3: `~/.config/db-catalog/` を作成し `chmod 700` (drwx------)
+- [x] 2-4: `connections.toml` を作成し `local-test` (SQLite, /tmp/test.sqlite) を記述、`chmod 600`
+- [x] 2-5: `yq -e -o json -p toml '.connections'` でパース成功、存在しない接続名で exit 1 になることも確認
+
+> **予実差異**: 2-2 の「新規シェル起動」は zsh-defer が pty シミュレーションでは発火しないため自動検証不可。sheldon のレンダリング出力と直接 source での動作確認で代替し、実シェルでの `type db` はユーザー確認とする。
 
 ### Phase 3: 動作検証
 
