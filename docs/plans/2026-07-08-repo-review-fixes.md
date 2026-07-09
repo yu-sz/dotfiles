@@ -337,18 +337,24 @@ return M
 
 ### Phase 9: ドキュメント・リポジトリ衛生・Claude 設定の低優先整理
 
-- [ ] 9-1: 未追跡の `docs/{adr,plans}/2026-05-10-neovim-tui-db-client.md` に未着手であることを明記してコミット
-- [ ] 9-2: `config/claude/settings.json` の未コミット差分（キー並び替え）を解消、`env.CLAUDE_CODE_EFFORT_LEVEL` と `effortLevel` の二重指定を後者に一本化
-- [ ] 9-3: README — mise 手順を「`mise install` を実行」に修正、docs/adr・docs/plans への導線を追加
-- [ ] 9-4: CLAUDE.md — symlinks.nix 更新ルールを「`config/` に top-level エントリ追加時」の一般則へ書き換え、GUI アプリ表に wezterm cask の例外理由を明記
-- [ ] 9-5: nix-guide — Flake Inputs 表に herdr / nix-claude-code を追加、Module Structure 図を実態に更新
-- [ ] 9-6: zsh-guide — mise キャッシュ判定の説明を Phase 3 後の実態に合わせ更新、plugins/（workspace）の節を追加
-- [ ] 9-7: `docs/raycast.md` — Warp / Ghostty の棚卸し、karabina typo 修正
-- [ ] 9-8: `config/claude/commands/review.md` を `review-diff.md` にリネーム
-- [ ] 9-9: `config/claude/agents/reviewer.md` の tools を現行ツール名（Agent）に更新
-- [ ] 9-10: drawio SKILL.md の詳細を references/ へ分割、Bash 履歴ログのローテーション追加
-- [ ] 9-11: `tmp/` 配下の旧 tmux 前提メモを gomi で整理
-- [ ] 9-12: 検証 — markdownlint / prettier がクリーン、`nix develop` 内でコミット
+- [x] 9-1: 未追跡の `docs/{adr,plans}/2026-05-10-neovim-tui-db-client.md` に「状態: 未着手」を明記してコミット
+- [x] 9-2: diff churn は Phase 2 で解消済み（herdr ソート形を採用）。本 Phase では `env.CLAUDE_CODE_EFFORT_LEVEL` を削除し `effortLevel` に一本化
+- [x] 9-3: README — mise 手順修正、Documentation 節（CLAUDE.md / adr / plans / raycast への導線）を追加
+- [x] 9-4: CLAUDE.md — symlinks.nix 更新ルールを top-level 一般則へ書き換え、GUI アプリ表に wezterm cask / ghostty-bin / vscode の例外を明記
+- [x] 9-5: nix-guide — Flake Inputs 表に herdr / nix-claude-code を追加、Module Structure 図を実態（darwin-aerospace / zabrze）に更新
+- [x] 9-6: zsh-guide — mise のストアパス判定を例外として明記、削除は sheldon lock が必要な旨を追記、Local Plugins 節を追加
+- [x] 9-7: `docs/raycast.md` — lint 修正と karabina typo は Phase 5 で対応済み。**Warp / Ghostty の内容棚卸しは Raycast 実設定がリポジトリ外のためユーザー確認事項として残す**
+- [x] 9-8: `config/claude/commands/review.md` を `review-diff.md` にリネーム（組み込み `/review` との衝突解消をスキル一覧で確認）
+- [x] 9-9: `config/claude/agents/reviewer.md` の tools を `Task` → `Agent` に更新
+- [x] 9-10: drawio SKILL.md を 515 行 → 205 行に分割（references/ に xml-structure / diagram-presets / aws-icons）、SessionStart に 30 日超ログの find -delete を追加
+- [x] 9-11: `tmp/` の旧 tmux 前提メモ（bootstrap-on-main-machine.md / terminal-workspace-manager/）を gomi で整理
+- [x] 9-12: 検証 — markdownlint / prettier 全通過、settings.json の JSON 妥当性確認、コミットは全て `nix develop` 内で実施
+
+> **予実差異**:
+>
+> 1. 9-2 の churn 解消と 9-7 の lint / typo 修正は先行 Phase で前倒し済みだった。
+> 2. ログローテーションは Bash フック毎でなく SessionStart フックとして追加（毎コマンド実行の find を回避）。
+> 3. db-client Plans のコミット前 lint で違反 2 件（322 字の長行・コード span 内末尾スペース）を追加修正。
 
 ---
 
