@@ -24,7 +24,13 @@ api.nvim_create_augroup("extra-whitespace", {})
 api.nvim_create_autocmd({ "VimEnter", "WinEnter" }, {
   group = "extra-whitespace",
   pattern = { "*" },
-  command = [[call matchadd('ExtraWhitespace', '[\u200B\u3000]')]],
+  callback = function()
+    -- WinEnter \u306E\u305F\u3073\u306B\u540C\u4E00\u30A6\u30A3\u30F3\u30C9\u30A6\u3078 match \u304C\u7D2F\u7A4D\u3057\u306A\u3044\u3088\u3046\u4E00\u5EA6\u3060\u3051\u767B\u9332
+    if vim.w.extra_whitespace_match then
+      return
+    end
+    vim.w.extra_whitespace_match = vim.fn.matchadd("ExtraWhitespace", "[\\u200B\\u3000]")
+  end,
 })
 api.nvim_create_autocmd({ "ColorScheme" }, {
   group = "extra-whitespace",

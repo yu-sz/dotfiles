@@ -27,8 +27,6 @@ opt.incsearch = true
 opt.clipboard:append({ "unnamedplus" })
 -- Enable mouse
 opt.mouse = "a"
--- Disable vi compatibility
-opt.compatible = false
 -- Do not generate swap files
 opt.swapfile = false
 
@@ -37,7 +35,7 @@ opt.splitright = true
 opt.splitbelow = true
 
 -- Do not wrap lines
-vim.wo.wrap = false
+opt.wrap = false
 -- Display invisible characters
 opt.list = true
 -- Enable 24-bit color
