@@ -24,9 +24,11 @@ nix/
 │   ├── packages/            # home.packages（shell / dev / editor / lsp-tools）
 │   └── programs/            # Nix が機構を提供するもののみ（nh / sketchybar / yazi）
 ├── hosts/
-│   └── darwin-shared.nix    # nix-darwin システム設定、Homebrew casks、fonts
+│   ├── darwin-shared.nix    # nix-darwin システム設定、Homebrew casks、fonts
+│   └── darwin-aerospace.nix # AeroSpace の launchd 設定（config は symlink 参照）
 └── overlays/
-    └── default.nix          # overlay エントリポイント
+    ├── default.nix          # overlay エントリポイント
+    └── zabrze.nix           # カスタムパッケージ（nixpkgs 未収載）
 ```
 
 **データフロー**: `flake.nix` の `mkDarwinConfig` → `darwin-shared.nix`（システム）+ `nix/home/`（ユーザー）。`specialArgs` で `username` を全モジュールに渡す。
@@ -35,14 +37,16 @@ nix/
 
 ### Flake Inputs（インフラ）
 
-| ツール                 | 役割                                            |
-| ---------------------- | ----------------------------------------------- |
-| nixpkgs unstable       | ベースパッケージセット                          |
-| nix-darwin             | macOS システム管理（`darwinSystem`）            |
-| home-manager           | ユーザー環境・ドットファイル管理                |
-| flake-parts            | Flake のモジュラー構成（`perSystem` / `flake`） |
-| nix-homebrew           | Homebrew cask と Nix の共存                     |
-| git-hooks.nix (cachix) | pre-commit フック自動化                         |
+| ツール                 | 役割                                                                       |
+| ---------------------- | -------------------------------------------------------------------------- |
+| nixpkgs unstable       | ベースパッケージセット                                                     |
+| nix-darwin             | macOS システム管理（`darwinSystem`）                                       |
+| home-manager           | ユーザー環境・ドットファイル管理                                           |
+| flake-parts            | Flake のモジュラー構成（`perSystem` / `flake`）                            |
+| nix-homebrew           | Homebrew cask と Nix の共存                                                |
+| git-hooks.nix (cachix) | pre-commit フック自動化                                                    |
+| nix-claude-code        | claude-code パッケージの overlay 供給                                      |
+| herdr                  | terminal workspace manager（stable タグに pin、bump-herdr.yml が自動更新） |
 
 ### 開発ツール
 

@@ -21,7 +21,7 @@ Special cases:
 - `config/claude/*` → `~/.claude/`
 - `config/zsh/.zshenv` → `~/.zshenv`
 
-When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
+Symlinks are declared individually in `nix/home/symlinks.nix`. When adding a new **top-level** file or directory under `config/` (including `config/claude/`), add an entry there. Files inside an already-linked directory need no change.
 
 ## Multi-Machine Strategy
 
@@ -40,6 +40,8 @@ When adding files to `config/claude/`, also update `nix/home/symlinks.nix`.
 | Fonts                 | `nix/hosts/darwin-shared.nix` (fonts.packages) | `nix/home/linux.nix`      |
 | System packages (apt) | —                                              | `config/apt/packages.txt` |
 | Custom packages       | `nix/overlays/`                                | ←                         |
+
+Exceptions: `wezterm` は macOS では Homebrew cask（aarch64-darwin の nixpkgs 版が未キャッシュで CI タイムアウトするため。09cb343 参照）。`ghostty-bin` / `vscode` は GUI アプリだが Nix 管理。
 
 ## Nix Flake Workflow
 
