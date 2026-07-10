@@ -1,6 +1,6 @@
 # Neovim/TUI DB クライアント 実装計画
 
-> **状態: Phase 2 完了**（2026-07-10 時点）。Phase 3 (動作検証) が未着手。
+> **状態: Phase 3 自動検証まで完了**（2026-07-10 時点）。対話的検証 (3-4, 3-5, 3-6, 3-8, 3-9) のユーザー確認待ち。Phase 4 は条件付きで未着手。
 
 ## 概要
 
@@ -390,18 +390,26 @@ sqls
 
 ### Phase 3: 動作検証
 
-- [ ] 3-1: `sqlite3 /tmp/test.sqlite "create table t(id int, name text); insert into t values(1,'a'),(2,'b');"` でテスト DB 作成
-- [ ] 3-2: 上記を catalog に `[connections.local-test]` として追加
-- [ ] 3-3: Neovim 起動後 `:lua vim.print(vim.g.dbs)` で `local-test` を含むテーブルが返る
+- [x] 3-1: `sqlite3 /tmp/test.sqlite "create table t(id int, name text); insert into t values(1,'a'),(2,'b');"` でテスト DB 作成
+- [x] 3-2: catalog に `[connections.local-test]` を追加 (2-4 で実施済み)
+- [x] 3-3: headless Neovim で `vim.g.dbs` に `local-test` (`sqlite:/tmp/test.sqlite`) が入ることを確認
 - [ ] 3-4: `:DBPick` を実行し snacks picker に `local-test [sqlite]` が表示、選択で `:DBUI` ドロワーが開く
 - [ ] 3-5: ドロワーで `t` テーブルを展開、preview に行表示されることを確認 (`sqlite3` CLI 経由)
 - [ ] 3-6: `*.sql` バッファで `select * from t where` の直後にスペースを打ち、blink.cmp が `t` の column を補完することを確認 (出ない場合は DBUI の query buffer で再確認)
-- [ ] 3-7: `:checkhealth vim.lsp` で sqls の attach を確認し、`:SqlsExecuteQuery` で `select 1;` を実行、preview window に結果が出ることを確認 (コマンドが存在しない場合は sqls.nvim を `lazy = false` に変更して再検証)
+- [x] 3-7: headless で sqls attach・`:SqlsExecuteQuery` のバッファローカル登録・`select 1;` 実行 → `1 rows in set` を確認 (`ft = "sql"` の遅延ロードでも問題なし)
 - [ ] 3-8: `db local-test` で harlequin 起動、`t` テーブルがカタログに表示されることを確認
 - [ ] 3-9: `db <TAB>` で connection 名が補完されることを確認
-- [ ] 3-10: `ls -la ~/.config/db-catalog/connections.toml` が `-rw-------` であることを確認
-- [ ] 3-11: 一時的に `mv connections.toml connections.toml.bak`、Neovim を起動して `vim.g.dbs` が空でも error なく起動、`db <TAB>` も無補完になるだけで他のシェル機能が壊れないことを確認、戻す
-- [ ] 3-12: catalog に故意の TOML 構文エラーを入れ、Neovim が WARN 通知のみで正常起動することを確認、戻す
+- [x] 3-10: `ls -la ~/.config/db-catalog/connections.toml` が `-rw-------` であることを確認
+- [x] 3-11: catalog 退避時に `vim.g.dbs = nil` で error なく起動、`db` 関数も定義されたままであることを確認、復元
+- [x] 3-12: 故意の TOML 構文エラーで `db-catalog: TOML parse error` の WARN のみ・正常起動することを確認、復元
+
+> **予実差異**: sqls は initialize 時 (workspace/configuration 到着前) に一過性の `LSP[sqls] no database connection` ShowMessage を出す。接続注入後の実行は成功するため実害はないが、sql バッファ初回オープン時に通知が 1 回表示される。気になる場合は `after/lsp/sqls.lua` に `window/showMessage` ハンドラでの当該メッセージ抑制を追加する余地あり。
+>
+> **予実差異 (実装改良)**: 検証中に catalog 読み込みを起動時から初回使用時に遅延化した。
+> (1) dadbod spec の `load()` 呼び出しを `init` → `config` に移動、(2) picker と `sqls_connections()` に未ロード時ガードを追加、
+> (3) `after/lsp/sqls.lua` は settings 直書きだと `vim.lsp.enable` の config 解決が起動時に catalog を読んでしまうため `before_init` での注入に変更
+> (`client.settings` は構築時に `config.settings` の参照を取るため、テーブル置換ではなく in-place 書き込みが必須 — runtime `lsp/client.lua:409` で確認)。
+> (4) `build_url` に必須フィールド検証 (欠落時 WARN + エントリスキップ) を追加。設計セクションのコードと差分がある場合は実ファイルが正。
 
 ### Phase 4 (条件付き): Snowflake / ClickHouse overlay
 

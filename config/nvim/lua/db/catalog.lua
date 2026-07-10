@@ -2,27 +2,49 @@ local M = {}
 
 local CATALOG_PATH = "~/.config/db-catalog/connections.toml"
 
+---@param name string
+---@param fields string[]
+---@param conn table
+---@return boolean
+local function has_required_fields(name, fields, conn)
+  for _, field in ipairs(fields) do
+    if conn[field] == nil then
+      vim.notify(("db-catalog: %s: missing required field `%s`"):format(name, field), vim.log.levels.WARN)
+      return false
+    end
+  end
+  return true
+end
+
+---@param name string
 ---@param conn table
 ---@return string|nil
-local function build_url(conn)
+local function build_url(name, conn)
   if conn.url then
     return conn.url
   end
   local d = conn.driver
   if d == "postgres" then
+    if not has_required_fields(name, { "user", "host", "database" }, conn) then
+      return nil
+    end
     return string.format(
       "postgres://%s:%s@%s:%d/%s",
       conn.user,
-      conn.password,
+      conn.password or "",
       conn.host,
-      conn.port or 5432,
+      tonumber(conn.port) or 5432,
       conn.database
     )
-  elseif d == "duckdb" then
-    return "duckdb:" .. vim.fn.expand(conn.path)
-  elseif d == "sqlite" then
-    return "sqlite:" .. vim.fn.expand(conn.path)
+  elseif d == "duckdb" or d == "sqlite" then
+    if not has_required_fields(name, { "path" }, conn) then
+      return nil
+    end
+    return d .. ":" .. vim.fn.expand(conn.path)
   elseif d == "bigquery" then
+    if not has_required_fields(name, { "project" }, conn) then
+      return nil
+    end
     -- dadbod の bigquery スキームは `bigquery:project[:dataset]` (`//` なし)
     return "bigquery:" .. conn.project
   end
@@ -56,7 +78,7 @@ function M.load()
   end
   local dbs = {}
   for name, conn in pairs(data.connections or {}) do
-    local url = build_url(conn)
+    local url = build_url(name, conn)
     if url then
       table.insert(dbs, { name = name, url = url, _meta = conn })
     end
