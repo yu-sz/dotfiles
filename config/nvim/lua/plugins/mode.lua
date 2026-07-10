@@ -10,6 +10,7 @@ local colors = {
 return {
   "mvllow/modes.nvim",
   tag = "v0.2.1",
+  event = "VeryLazy",
   opts = {
     colors = colors,
     line_opacity = {
