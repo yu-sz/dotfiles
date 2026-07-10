@@ -1,6 +1,9 @@
 local M = {}
 
 function M.pick()
+  if not vim.g.dbs then
+    require("db.catalog").load()
+  end
   local items = vim.tbl_map(function(d)
     return { text = d.name, driver = (d._meta or {}).driver or "?", url = d.url }
   end, vim.g.dbs or {})
