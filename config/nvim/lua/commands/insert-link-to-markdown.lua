@@ -40,6 +40,11 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   group = "markdown_insert_link",
   callback = function()
-    vim.keymap.set("v", "p", insert_markdown_link, { buffer = true, silent = true })
+    vim.keymap.set(
+      "v",
+      "p",
+      insert_markdown_link,
+      { buffer = true, silent = true, desc = "Paste URL as markdown link" }
+    )
   end,
 })

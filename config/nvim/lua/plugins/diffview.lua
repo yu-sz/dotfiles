@@ -53,6 +53,9 @@ return {
           vim.cmd("DiffviewClose")
         end
       end,
+      silent = true,
+      mode = "n",
+      desc = "Toggle Diff View against PR base",
     },
   },
   opts = {
