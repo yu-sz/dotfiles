@@ -24,7 +24,8 @@ local find_pr_query = ([[query='
 ---@param result table|nil json_decode 済みの GraphQL レスポンス
 ---@return boolean
 local function is_valid_result(result)
-  return result
+  return (
+    result
     and result.data
     and result.data.repository
     and result.data.repository.object
@@ -34,6 +35,7 @@ local function is_valid_result(result)
     and result.data.repository.object.associatedPullRequests.edges[1]
     and result.data.repository.object.associatedPullRequests.edges[1].node
     and result.data.repository.object.associatedPullRequests.edges[1].node.number
+  ) ~= nil
 end
 
 ---@param cmd string
@@ -104,7 +106,11 @@ local function open_pr_from_hash()
     return
   end
 
-  local result = vim.fn.json_decode(output)
+  local ok, result = pcall(vim.json.decode, output)
+  if not ok then
+    vim.notify("GraphQL レスポンスの JSON 解析に失敗しました", vim.log.levels.ERROR)
+    return
+  end
 
   if not is_valid_result(result) then
     vim.notify("not found pull request number", vim.log.levels.WARN)
@@ -119,4 +125,4 @@ local function open_pr_from_hash()
   run_command(open_pr_cmd)
 end
 
-vim.api.nvim_create_user_command("OpenPr", open_pr_from_hash, {})
+vim.api.nvim_create_user_command("OpenPr", open_pr_from_hash, { desc = "Open PR associated with the commit at cursor" })
