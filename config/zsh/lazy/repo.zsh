@@ -27,7 +27,7 @@ repo() {
 			echo "Are you sure you want to remove $selected_repo? [y/N]"
 			read -r confirm
 			if [[ "$confirm" =~ ^[Yy]$ ]]; then
-				# alias rm=gomi の焼き込みを避け、確認済みの実削除を行う
+				# alias rm（trash 系）の焼き込みを避け、確認済みの実削除を行う
 				command rm -rf "$(ghq root)/$selected_repo"
 				echo "Removed: $selected_repo"
 			else

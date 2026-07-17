@@ -4,5 +4,6 @@ lib.mkIf pkgs.stdenv.isDarwin {
     ghostty-bin
     terminal-notifier
     macism
+    darwin.trash
   ];
 }

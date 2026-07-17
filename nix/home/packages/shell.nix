@@ -8,7 +8,6 @@
     eza
     fd
     fzf
-    gomi
     hyperfine
     jq
     lolcat

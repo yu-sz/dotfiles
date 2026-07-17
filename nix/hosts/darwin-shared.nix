@@ -89,5 +89,6 @@
       _HIHideMenuBar = true;
     };
     dock.expose-animation-duration = 0.0;
+    finder.FXRemoveOldTrashItems = true;
   };
 }

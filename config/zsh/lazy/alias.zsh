@@ -13,5 +13,9 @@ alias ll=ee
 alias lt=et
 alias lta=eta
 
-### gomi ###
-alias rm=gomi
+### trash ###
+if [[ $OSTYPE == darwin* ]]; then
+	alias rm=trash
+else
+	alias rm=trash-put
+fi
