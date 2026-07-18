@@ -19,7 +19,7 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     nix-claude-code.url = "github:ryoppippi/nix-claude-code";
     herdr = {
-      url = "github:ogulcancelik/herdr/v0.7.1";
+      url = "github:ogulcancelik/herdr/v0.7.4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
