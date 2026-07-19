@@ -2,7 +2,6 @@
 {
   home.packages = with pkgs; [
     bash-language-server
-    copilot-language-server
     delve
     golangci-lint
     gopls

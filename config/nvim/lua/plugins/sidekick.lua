@@ -1,9 +1,9 @@
 -- ai integration
--- After installation sign in with :LspCopilotSignIn
 return {
   "folke/sidekick.nvim",
   ---@type sidekick.Config
   opts = {
+    nes = { enabled = false },
     cli = {
       mux = {
         enabled = false,
@@ -28,17 +28,6 @@ return {
     },
   },
   keys = {
-    {
-      "<tab>",
-      function()
-        -- if there is a next edit, jump to it, otherwise apply it if any
-        if not require("sidekick").nes_jump_or_apply() then
-          return "<cmd>tabnext<cr>" -- fallback: 旧 keymaps.lua の <tab> 動作を維持
-        end
-      end,
-      expr = true,
-      desc = "Goto/Apply Next Edit Suggestion (fallback: next tab)",
-    },
     {
       "<c-.>",
       function()

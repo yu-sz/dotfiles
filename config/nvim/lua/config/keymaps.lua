@@ -20,7 +20,7 @@ map("n", "<leader>n", ":nohlsearch<CR>", "Clear search highlights")
 map("x", "p", '"_dP', "Paste without overwriting register")
 
 -- Tab control
--- NOTE: <tab> (tabnext) は sidekick.lua の fallback として定義している
+map("n", "<tab>", ":tabnext<CR>", "Next tab")
 map("n", "te", ":tabedit<CR>", "Open new tab")
 map("n", "<s-tab>", ":tabprev<CR>", "Previous tab")
 map("n", "tl", ":tabmove -1<CR>", "Move tab left")

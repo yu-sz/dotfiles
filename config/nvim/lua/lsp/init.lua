@@ -15,7 +15,6 @@ vim.lsp.enable({
   "jsonls",
   "yamlls",
   "sqls",
-  "copilot",
 })
 
 -- 深刻度が高い方を優先して表示し、サインを ● に統一
