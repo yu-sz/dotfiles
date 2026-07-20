@@ -10,8 +10,9 @@ return {
     -- command
     default_command = "macism",
     -- 以下のイベント時に、デフォルトのIMEになる
-    set_default_events = { "VimEnter", "InsertEnter", "InsertLeave" },
-    -- 以下のイベント時に、前回使われていたIMEになる（無効にしている）
-    set_previous_events = {},
+    -- FocusGained: 他アプリ/ペインで日本語入力したままノーマルモードに戻るケースを補足
+    set_default_events = { "VimEnter", "FocusGained", "InsertLeave", "CmdlineLeave" },
+    -- 以下のイベント時に、前回使われていたIMEになる
+    set_previous_events = { "InsertEnter" },
   },
 }
