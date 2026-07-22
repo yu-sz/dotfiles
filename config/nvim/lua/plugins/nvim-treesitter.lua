@@ -25,6 +25,7 @@ local ensure_installed = {
   "prisma",
   "terraform",
   "hcl",
+  "dockerfile",
   "regex",
 }
 
