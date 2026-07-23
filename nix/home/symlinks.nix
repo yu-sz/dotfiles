@@ -14,6 +14,7 @@ in
     "btop".source = mkLink "config/btop";
     "nvim".source = mkLink "config/nvim";
     "herdr".source = mkLink "config/herdr";
+    "hunk".source = mkLink "config/hunk";
     "lazydocker".source = mkLink "config/lazydocker";
     "zabrze".source = mkLink "config/zabrze";
     "vim".source = mkLink "config/vim";

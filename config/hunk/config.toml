@@ -1,0 +1,7 @@
+mode = "split"     # side-by-side（delta の嗜好に合わせる。有効値: auto / split / stack）
+line_numbers = true
+agent_notes = true # Claude のインライン注釈を表示（既定は false）
+
+# 組み込み theme は github 系のみで tokyo-night は無い。
+# auto は端末背景を検出して github-light/dark-default を自動選択する。
+theme = "auto"

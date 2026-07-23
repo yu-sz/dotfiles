@@ -15,6 +15,7 @@
     google-cloud-sdk
     hadolint
     harlequin
+    hunk
     lazydocker
     lazygit
     mise
