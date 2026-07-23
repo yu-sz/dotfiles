@@ -1,4 +1,4 @@
--- 独自実装: herdr workspace 一覧と agent 状態を表示。
+-- herdr workspace 一覧と agent 状態を表示。
 -- herdr plugin (config/herdr/plugins/sketchybar-sync) が発火する herdr_update
 -- イベント駆動で再描画する (ポーリングなし)。
 -- SLOT_COUNT 個の slot を起動時に確保し、drawing で表示制御する。
