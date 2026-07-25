@@ -18,10 +18,6 @@
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
     nix-claude-code.url = "github:ryoppippi/nix-claude-code";
-    herdr = {
-      url = "github:ogulcancelik/herdr/v0.7.5";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     # nixpkgs は follows しない: unstable(26.11)が x86_64-darwin を落としており、
     # hunk 内部の flake-parts が全 system を評価すると throw するため（hunk 自前の lock を使う）
     hunk.url = "github:modem-dev/hunk/v0.17.3";
@@ -119,7 +115,6 @@
           sharedOverlays = [
             inputs.nix-claude-code.overlays.default
             (import ./nix/overlays)
-            inputs.herdr.overlays.default
             # hunk は overlay 未 export のためインライン overlay で pkgs.hunk へ橋渡しする
             (_: prev: {
               hunk = inputs.hunk.packages.${prev.stdenv.hostPlatform.system}.hunk;

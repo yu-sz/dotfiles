@@ -37,16 +37,15 @@ nix/
 
 ### Flake Inputs（インフラ）
 
-| ツール                 | 役割                                                                       |
-| ---------------------- | -------------------------------------------------------------------------- |
-| nixpkgs unstable       | ベースパッケージセット                                                     |
-| nix-darwin             | macOS システム管理（`darwinSystem`）                                       |
-| home-manager           | ユーザー環境・ドットファイル管理                                           |
-| flake-parts            | Flake のモジュラー構成（`perSystem` / `flake`）                            |
-| nix-homebrew           | Homebrew cask と Nix の共存                                                |
-| git-hooks.nix (cachix) | pre-commit フック自動化                                                    |
-| nix-claude-code        | claude-code パッケージの overlay 供給                                      |
-| herdr                  | terminal workspace manager（stable タグに pin、bump-herdr.yml が自動更新） |
+| ツール                 | 役割                                            |
+| ---------------------- | ----------------------------------------------- |
+| nixpkgs unstable       | ベースパッケージセット                          |
+| nix-darwin             | macOS システム管理（`darwinSystem`）            |
+| home-manager           | ユーザー環境・ドットファイル管理                |
+| flake-parts            | Flake のモジュラー構成（`perSystem` / `flake`） |
+| nix-homebrew           | Homebrew cask と Nix の共存                     |
+| git-hooks.nix (cachix) | pre-commit フック自動化                         |
+| nix-claude-code        | claude-code パッケージの overlay 供給           |
 
 ### 開発ツール
 
