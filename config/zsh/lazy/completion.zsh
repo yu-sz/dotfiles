@@ -1,20 +1,38 @@
 ### setup ###
 [[ -d "$XDG_CACHE_HOME/zsh" ]] || mkdir -p "$XDG_CACHE_HOME/zsh"
 autoload -Uz compinit
-compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+
+# XDG_DATA_DIRS 由来の site-functions を fpath へ集約（direnv の devShell 分を含む）
+_comp_add_xdg_fpath() {
+	local dir p
+	for dir in ${(s.:.)XDG_DATA_DIRS}; do
+		p="$dir/zsh/site-functions"
+		[[ -d "$p" ]] && ((!${fpath[(I)$p]})) && fpath+=("$p")
+	done
+}
+
+# fpath 構成をキーにした dump を使う。存在すれば監査(compaudit)と再構築を省く(-C)。
+# fpath が変化したときだけ hash が変わり dump が無くなるので、その時のみフル compinit で再生成する。
+_comp_init() {
+	local dump="$XDG_CACHE_HOME/zsh/zcompdump-$(echo "${(j.:.)fpath}" | cksum | cut -d' ' -f1)"
+	if [[ -s "$dump" ]]; then
+		compinit -C -d "$dump"
+	else
+		compinit -d "$dump"
+	fi
+}
+
+_comp_add_xdg_fpath
+_comp_init
+_comp_sync_old_xdg="$XDG_DATA_DIRS"
 
 # direnv による XDG_DATA_DIRS の変更を検知し、fpath と zcompdump を同期する
 # cd でdevShellに出入りするたびに発火し、変更がなければ即 return
 _comp_sync_xdg() {
 	[[ "$_comp_sync_old_xdg" == "$XDG_DATA_DIRS" ]] && return
 	_comp_sync_old_xdg="$XDG_DATA_DIRS"
-	local dir
-	for dir in ${(s.:.)XDG_DATA_DIRS}; do
-		local p="$dir/zsh/site-functions"
-		[[ -d "$p" ]] && ((!${fpath[(I)$p]})) && fpath+=("$p")
-	done
-	local fpath_hash=$(echo "${(j.:.)fpath}" | cksum | cut -d' ' -f1)
-	compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$fpath_hash"
+	_comp_add_xdg_fpath
+	_comp_init
 }
 precmd_functions+=(_comp_sync_xdg)
 
