@@ -39,7 +39,7 @@ apply = ["source"]
 
 [plugins.starship]
 inline = """
-eval "$(starship init zsh)"
+zsh_cache_eval starship starship init zsh
 """
 
 ############################
@@ -70,12 +70,12 @@ github = "momo-lab/zsh-replace-multiple-dots"
 [plugins.zoxide]
 inline = """
 export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
-zsh-defer -a -t0.01 eval "$(zoxide init zsh)"
+zsh-defer -a -t0.01 zsh_cache_eval zoxide zoxide init zsh
 """
 
 [plugins.zabrze]
 inline = """
-zsh-defer -a -t0.01 eval "$(zabrze init --bind-keys)"
+zsh-defer -a -t0.01 zsh_cache_eval zabrze zabrze init --bind-keys
 """
 
 [plugins.lazy]

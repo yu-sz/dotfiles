@@ -24,6 +24,22 @@ if mise_path="$(command -v mise)" 2>/dev/null; then
   source "$mise_cache"
 fi
 
+### init cache ###
+# init 系コマンドの出力を write-through キャッシュし、毎起動のプロセス起動を省く。
+# キーはバイナリ実パス（Nix store ハッシュ）+ 引数。ツール更新・引数変更で自動再生成。
+zsh_cache_eval() {
+  local name="$1" bin="$2"; shift 2
+  local src; src="$(command -v "$bin")" || return 0
+  local key="$(readlink -f "$src") $*"
+  local cache="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/${name}.zsh"
+  if [[ ! -f "$cache" || "$(head -1 "$cache")" != "# $key" ]]; then
+    mkdir -p "${cache:h}"
+    local tmp="$cache.$$"
+    { echo "# $key"; "$src" "$@"; } > "$tmp" && mv "$tmp" "$cache"
+  fi
+  source "$cache"
+}
+
 ### sheldon ###
 sheldon::load() {
     local profile="${1:-default}"

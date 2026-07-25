@@ -1,5 +1,5 @@
 ### Config ###
-source <(fzf --zsh)
+zsh_cache_eval fzf fzf --zsh
 bindkey "ç" fzf-cd-widget
 
 export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
