@@ -1,7 +1,6 @@
-# Nix 環境変数 (NIX_SSL_CERT_FILE, NIX_PROFILES 等) を設定
-# GLOBAL_RCS=off で /etc/zshrc がスキップされるため、ここで明示的に source する
-# NOTE: PATH は下の path=() で再定義するため、nix-daemon.sh による PATH 追加は実質無効
-if [[ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+# Linux: nix installer のフックは /etc/zshrc にあり GLOBAL_RCS=off で読まれないため補う
+# macOS: nix-darwin が /etc/zshenv で設定済み。重ねると NIX_PROFILES が縮む
+if [[ -z "${__NIX_DARWIN_SET_ENVIRONMENT_DONE:-}" && -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
 	source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 

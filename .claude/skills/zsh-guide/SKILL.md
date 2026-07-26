@@ -41,7 +41,7 @@ Sheldon 固有: `sheldon::load` が設定/スクリプトの mtime 変更を検�
 
 ## Gotchas
 
-- `GLOBAL_RCS` が off — `/etc/zshrc` は実行されない。Nix 環境は `eager/path.zsh` で明示的に source する必要がある
+- `GLOBAL_RCS` が off — `/etc/zshrc` は実行されない。ただし `/etc/zshenv` は対象外で必ず読まれる。macOS は nix-darwin が `/etc/zshenv` で Nix 環境を設定するため `eager/path.zsh` の `nix-daemon.sh` source は Linux 専用
 - パスエントリは `(N-/)` glob 修飾子で存在しないディレクトリを無視している
 - Sheldon キャッシュは `sheldon::load` が mtime 比較で自動再構築する。手動削除（`rm ~/.cache/sheldon/*.zsh*`）は外部プラグインの更新が反映されない場合のみ
 
