@@ -4,12 +4,12 @@
   fetchurl,
 }:
 let
-  version = "0.7.4";
+  version = "0.7.5";
   hashes = {
-    aarch64-darwin = "sha256-JJkuFiXb3LGDVKWeKZ5LJjwxJACzE5bNwHzUbtV/JKc=";
-    x86_64-darwin = "sha256-3fQwEzNS4XEkE9XYZbNKSFVG9GWIk/yJmGJX1lp1hag=";
-    x86_64-linux = "sha256-vA/ALUulAPnKwjU6Q+Z/4DZ4Xsym61U3jgUPrDwQMFk=";
-    aarch64-linux = "sha256-VE4AAt5CgG0atkzN7zp+dBTyRxewtrAivJ5X0u79JqI=";
+    aarch64-darwin = "sha256-NzUFRrABJVWUO5Lq+WJmXeTiZDlbrrRCJ7gBXo/1sNY=";
+    x86_64-darwin = "sha256-P+UMSmPcgQIwaxMiF4Yo3bNlXNOuVteE8JQVNAjWnmI=";
+    x86_64-linux = "sha256-PcgyiAc+TC08Z5ow576XvMqRQcb9F9u7khkULpXFklM=";
+    aarch64-linux = "sha256-MudjoUmaa2lLHXCOTwYrdDvh2p80/PpNIS1ttv4JqLk=";
   };
   assets = {
     aarch64-darwin = "herdr-macos-aarch64";
