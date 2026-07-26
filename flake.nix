@@ -48,6 +48,11 @@
           ...
         }:
         {
+          packages = {
+            herdr = pkgs.callPackage ./nix/overlays/herdr.nix { };
+            zabrze = pkgs.callPackage ./nix/overlays/zabrze.nix { };
+          };
+
           formatter = pkgs.nixfmt-tree;
 
           pre-commit.check.enable = false;

@@ -1,0 +1,127 @@
+name: Bump overlays
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 6"
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  # 標準形 (fetchFromGitHub / buildRustPackage 等) のパッケージは matrix に追加する
+  nix-update:
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [zabrze]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v6
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ steps.app-token.outputs.token }}
+
+      - name: Update ${{ matrix.package }}
+        run: nix run --inputs-from . nixpkgs#nix-update -- --flake "${{ matrix.package }}" --version=stable
+
+      - name: Read new version
+        id: version
+        run: |
+          new=$(grep -oE 'version = "[0-9]+\.[0-9]+\.[0-9]+"' "nix/overlays/${{ matrix.package }}.nix" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "new=$new" >> "$GITHUB_OUTPUT"
+
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: bump-${{ matrix.package }}
+          commit-message: "chore(nix): bump ${{ matrix.package }} to v${{ steps.version.outputs.new }}"
+          title: "chore(nix): bump ${{ matrix.package }} to v${{ steps.version.outputs.new }}"
+          labels: dependencies
+          body: |
+            Automated bump of the ${{ matrix.package }} overlay package to the latest stable release (nix-update).
+
+  # herdr はマルチプラットフォームのリリースバイナリを fetch する非標準形のため
+  # nix-update 不可 (クロスシステム FOD をビルドできない)。prefetch-file + sed で全 hash を更新する
+  herdr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.AUTOMATION_CLIENT_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v6
+
+      # releases/latest は draft / pre-release を含まないため stable のみ拾う
+      - name: Check latest stable release
+        id: latest
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          latest=$(gh api repos/ogulcancelik/herdr/releases/latest --jq .tag_name)
+          current=v$(grep -oE 'version = "[0-9]+\.[0-9]+\.[0-9]+"' nix/overlays/herdr.nix | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "current=$current latest=$latest"
+
+      - uses: cachix/install-nix-action@v31
+        if: steps.latest.outputs.latest != steps.latest.outputs.current
+        with:
+          github_access_token: ${{ steps.app-token.outputs.token }}
+
+      # 外部リポジトリ由来のタグ名は ${{ }} で run: に直接展開せず env 経由で渡し、形式を検証する
+      - name: Bump version and hashes in herdr.nix
+        if: steps.latest.outputs.latest != steps.latest.outputs.current
+        env:
+          LATEST: ${{ steps.latest.outputs.latest }}
+        run: |
+          if [[ ! "$LATEST" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "unexpected tag format: '$LATEST'" >&2
+            exit 1
+          fi
+          sed -i -E "s|version = \"[0-9.]+\";|version = \"${LATEST#v}\";|" nix/overlays/herdr.nix
+          declare -A assets=(
+            [aarch64-darwin]=herdr-macos-aarch64
+            [x86_64-darwin]=herdr-macos-x86_64
+            [x86_64-linux]=herdr-linux-x86_64
+            [aarch64-linux]=herdr-linux-aarch64
+          )
+          for platform in "${!assets[@]}"; do
+            url="https://github.com/ogulcancelik/herdr/releases/download/$LATEST/${assets[$platform]}"
+            hash=$(nix store prefetch-file --json "$url" | jq -r .hash)
+            sed -i -E "s|($platform = \")sha256-[A-Za-z0-9+/=]+(\";)|\1$hash\2|" nix/overlays/herdr.nix
+          done
+          git diff nix/overlays/herdr.nix
+
+      - uses: peter-evans/create-pull-request@v7
+        if: steps.latest.outputs.latest != steps.latest.outputs.current
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: bump-herdr
+          commit-message: "chore(nix): bump herdr to ${{ steps.latest.outputs.latest }}"
+          title: "chore(nix): bump herdr to ${{ steps.latest.outputs.latest }}"
+          labels: dependencies
+          body: |
+            Automated bump of the herdr release binaries to the latest stable release.
+
+            ${{ steps.latest.outputs.current }} -> ${{ steps.latest.outputs.latest }}
+
+            Release notes: https://github.com/ogulcancelik/herdr/releases/tag/${{ steps.latest.outputs.latest }}

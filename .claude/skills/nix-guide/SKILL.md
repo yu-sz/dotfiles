@@ -28,7 +28,9 @@ nix/
 │   └── darwin-aerospace.nix # AeroSpace の launchd 設定（config は symlink 参照）
 └── overlays/
     ├── default.nix          # overlay エントリポイント
-    └── zabrze.nix           # カスタムパッケージ（nixpkgs 未収載）
+    ├── herdr.nix            # 公式リリースバイナリを fetch（bump-overlays.yml が prefetch+sed で自動更新）
+    ├── sqlfmt.nix           # nixpkgs バグの一時 workaround（assertion で self-expire）
+    └── zabrze.nix           # カスタムパッケージ（nixpkgs 未収載、bump-overlays.yml が nix-update で自動更新）
 ```
 
 **データフロー**: `flake.nix` の `mkDarwinConfig` → `darwin-shared.nix`（システム）+ `nix/home/`（ユーザー）。`specialArgs` で `username` を全モジュールに渡す。
