@@ -1,5 +1,4 @@
 ### homebrew ###
-# Apple Silicon / Intel 両対応
 for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew; do
   [[ -e "$brew_path" ]] && break
 done
@@ -25,8 +24,8 @@ if mise_path="$(command -v mise)" 2>/dev/null; then
 fi
 
 ### init cache ###
-# init 系コマンドの出力を write-through キャッシュし、毎起動のプロセス起動を省く。
-# キーはバイナリ実パス（Nix store ハッシュ）+ 引数。ツール更新・引数変更で自動再生成。
+# init 系コマンドの出力を write-through キャッシュし、毎起動のプロセス起動を省く
+# キーはバイナリ実パス（Nix store ハッシュ）+ 引数。ツール更新・引数変更で自動再生成
 zsh_cache_eval() {
   local name="$1" bin="$2"; shift 2
   local src; src="$(command -v "$bin")" || return 0

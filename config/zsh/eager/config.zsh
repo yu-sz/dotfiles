@@ -1,7 +1,6 @@
 export EDITOR=nvim
 
 # zsh-defer が defer タスク投入時に未定義の RPS1 を空に設定するのを防ぐ
-# (RPS1 と RPROMPT は値が連動するため、starship の RPROMPT が消える)
 typeset -g RPS1=""
 
 ### history ###

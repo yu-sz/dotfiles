@@ -3,7 +3,6 @@ background-opacity = 0.850000
 clipboard-read = allow
 clipboard-trim-trailing-spaces = true
 clipboard-write = allow
-command = zsh -lic 'if [[ -n $GHOSTTY_QUICK_TERMINAL ]]; then exec zsh -li; fi; ghostty +boo; herdr'
 cursor-color = #ffffff
 cursor-opacity = 0.800000
 cursor-style = block
@@ -28,3 +27,6 @@ window-save-state = default
 window-step-resize = false
 window-theme = auto
 window-title-font-family = "Moralerspace Xenon HW"
+
+command = zsh -lic 'if [[ -n $GHOSTTY_QUICK_TERMINAL ]]; then exec zsh -li; fi; ghostty +boo; herdr'
+

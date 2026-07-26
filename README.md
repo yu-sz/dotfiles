@@ -10,7 +10,6 @@ curl -fsSL https://raw.githubusercontent.com/yu-sz/dotfiles/main/scripts/bootstr
 
 ### Post-install (manual)
 
-- Run `mise install` to install runtimes (`config/mise/config.toml` is tracked in this repo)
 - Configure Raycast manually (see [docs/raycast.md](docs/raycast.md))
 
 ## Documentation

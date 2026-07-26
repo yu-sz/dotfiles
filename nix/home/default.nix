@@ -10,8 +10,6 @@
   ];
 
   xdg.enable = true;
-
   home.stateVersion = "25.11";
-
   programs.home-manager.enable = true;
 }

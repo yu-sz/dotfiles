@@ -4,6 +4,7 @@ lib.mkIf pkgs.stdenv.isLinux {
 
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
+    # gui
     ghostty
     trash-cli
     wezterm
