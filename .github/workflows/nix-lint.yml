@@ -31,16 +31,6 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ github.token }}
 
-      - uses: nix-community/cache-nix-action@v7
-        with:
-          primary-key: nix-lint-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
-          restore-prefixes-first-match: nix-lint-${{ runner.os }}-
-          gc-max-store-size-linux: 1G
-          purge: true
-          purge-prefixes: nix-lint-${{ runner.os }}-
-          purge-last-accessed: P7D
-          purge-primary-key: never
-
       - uses: DeterminateSystems/flake-checker-action@v9
 
       - name: CI check

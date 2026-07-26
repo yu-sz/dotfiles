@@ -30,15 +30,5 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ github.token }}
 
-      - uses: nix-community/cache-nix-action@v7
-        with:
-          primary-key: nix-lua-lint-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
-          restore-prefixes-first-match: nix-lua-lint-${{ runner.os }}-
-          gc-max-store-size-linux: 1G
-          purge: true
-          purge-prefixes: nix-lua-lint-${{ runner.os }}-
-          purge-last-accessed: P7D
-          purge-primary-key: never
-
       - name: Lua lint & format check
         run: nix develop --command just lint-lua
