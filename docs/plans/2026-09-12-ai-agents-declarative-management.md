@@ -1026,12 +1026,12 @@ local.*
 
 ### Phase 4: 運用導線とドキュメント
 
-- [ ] 4-1: `Justfile` に `agents-sync` / `agents-diff` / `agents-plugins`（marketplace は `extraKnownMarketplaces` から導出して冪等 add）を追加
-- [ ] 4-2: `CLAUDE.md`（repo）の Symlink Strategy に `config/agents/skills` → `~/.agents/skills` の特例、「`config/{claude,codex,gemini}` の base は agents-sync が合成する」旨、ロールバック注意（`darwin-rebuild rollback` では agents-sync の生成物は戻らず、旧世代の activation 再実行で戻る）を追記
-- [ ] 4-3: `README.md` に AI エージェント管理の節を追加（ADR へのリンク）
-- [ ] 4-4: `just ci` を通す。`docs/plans` の予実差異を追記
-- [ ] 4-5: 新マシン相当の検証: `~/.claude.json` を退避した状態で `just agents-plugins` → plugin が有効化されることを確認（user スコープの enabledPlugins が 2.1.195 以降どう扱われるかの実測。結果を予実差異に記録）。`extraKnownMarketplaces` の `source` スキーマは現 settings.json の実測で確定済み（github 型 `source.repo` / directory 型 `source.path`）のため `agents-plugins` の jq は変更不要
-- [ ] 4-6: 2 台目 darwin ホスト（`yutasuzukinoMacBook-Pro`）で `nrs` を適用し、Phase 1-6 / 3-8 / 3-9 相当の確認を行う
+- [x] 4-1: `Justfile` に `agents-sync` / `agents-diff` / `agents-plugins`（marketplace は `extraKnownMarketplaces` から導出して冪等 add）を追加
+- [x] 4-2: `CLAUDE.md`（repo）の Symlink Strategy に `config/agents/skills` → `~/.agents/skills` の特例、「`config/{claude,codex,gemini}` の base は agents-sync が合成する」旨、ロールバック注意（`darwin-rebuild rollback` では agents-sync の生成物は戻らず、旧世代の activation 再実行で戻る）を追記（AI Agents 節として追加）
+- [x] 4-3: `README.md` に AI エージェント管理の節を追加（ADR へのリンク）（`just agents-plugins` は Post-install (manual) ではなく AI Agents 節内に記載 — 宣言管理の文脈に置く）
+- [x] 4-4: `just ci` を通す。`docs/plans` の予実差異を追記
+- [x] 4-5: 新マシン相当の検証: `~/.claude.json` を退避した状態で `just agents-plugins` → plugin が有効化されることを確認（隔離 `CLAUDE_CONFIG_DIR` で新マシンを模擬。marketplace 2 件が「declared in user settings」として冪等 add され、`enabledPlugins: true` の 8 plugin 全てが user スコープで install 成功、`false` の plugin は除外。jq は変更不要）
+- [ ] 4-6: 2 台目 darwin ホスト（`yutasuzukinoMacBook-Pro`）で `nrs` を適用し、Phase 1-6 / 3-8 / 3-9 相当の確認を行う（別マシンでの作業。2-8 の予実差異のとおり `~/.claude/skills` の旧 symlink を事前に手動削除すること）
 
 ---
 
