@@ -8,9 +8,9 @@
         "nix-command"
         "flakes"
       ];
-      extra-substituters = [ "https://ryoppippi.cachix.org" ];
+      extra-substituters = [ "https://cache.numtide.com" ];
       extra-trusted-public-keys = [
-        "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms="
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       ];
       warn-dirty = false;
     };

@@ -50,6 +50,23 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
 	fi
 fi
 
+# Linux は standalone home-manager のため daemon の substituter を Nix で書けない。
+# cache.numtide.com（llm-agents.nix のキャッシュ）を /etc/nix/nix.conf に追記する
+if [[ "$(uname -s)" == "Linux" ]]; then
+	NIX_CONF="/etc/nix/nix.conf"
+	if ! sudo grep -qs "cache\.numtide\.com" "${NIX_CONF}"; then
+		info "Adding cache.numtide.com substituter to ${NIX_CONF}..."
+		sudo mkdir -p "$(dirname "${NIX_CONF}")"
+		printf '%s\n' \
+			"extra-substituters = https://cache.numtide.com" \
+			"extra-trusted-public-keys = niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" |
+			sudo tee -a "${NIX_CONF}" >/dev/null
+		if systemctl is-active --quiet nix-daemon 2>/dev/null; then
+			sudo systemctl restart nix-daemon
+		fi
+	fi
+fi
+
 # homeConfiguration の自動追加
 if [[ "$(uname -s)" == "Linux" ]]; then
 	HOSTNAME="$(hostname -s)"
