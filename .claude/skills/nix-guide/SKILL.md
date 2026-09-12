@@ -29,7 +29,6 @@ nix/
 └── overlays/
     ├── default.nix          # overlay エントリポイント
     ├── herdr.nix            # 公式リリースバイナリを fetch（bump-overlays.yml が prefetch+sed で自動更新）
-    ├── sqlfmt.nix           # nixpkgs バグの一時 workaround（assertion で self-expire）
     └── zabrze.nix           # カスタムパッケージ（nixpkgs 未収載、bump-overlays.yml が nix-update で自動更新）
 ```
 

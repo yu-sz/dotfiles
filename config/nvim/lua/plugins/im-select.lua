@@ -10,8 +10,11 @@ return {
     -- command
     default_command = "macism",
     -- 以下のイベント時に、デフォルトのIMEになる
-    -- FocusGained: 他アプリ/ペインで日本語入力したままノーマルモードに戻るケースを補足
-    set_default_events = { "VimEnter", "FocusGained", "InsertLeave", "CmdlineLeave" },
+    -- TermLeave: terminal-mode では InsertLeave が発火しないため、
+    -- sidekick の CLI 等から抜けた際はこれで英数へ戻す
+    -- FocusGained は入れない。日本語変換中に入力ソースを奪って未確定文字列を壊すうえ、
+    -- InsertLeave 直後に発火すると復帰用の保存値が ABC で上書きされ、英数しか入らなくなる
+    set_default_events = { "VimEnter", "InsertLeave", "CmdlineLeave", "TermLeave" },
     -- 以下のイベント時に、前回使われていたIMEになる
     set_previous_events = { "InsertEnter" },
   },

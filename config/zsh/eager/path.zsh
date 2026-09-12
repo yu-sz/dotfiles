@@ -30,5 +30,6 @@ path=(
 
 fpath=(
 	"$XDG_DATA_HOME/zsh/completions"(N-/)
+	"$HOME/.orbstack/shell/completions/zsh"(N-/)
 	"$fpath[@]"
 )

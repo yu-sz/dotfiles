@@ -12,7 +12,7 @@ end
 
 local function format_bps(bytes_per_sec)
   if bytes_per_sec < 1024 then
-    return string.format("%dB", bytes_per_sec)
+    return string.format("%dB", math.floor(bytes_per_sec))
   elseif bytes_per_sec < 1024 * 1024 then
     return string.format("%dK", math.floor(bytes_per_sec / 1024))
   else

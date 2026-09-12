@@ -38,9 +38,9 @@
       "cursor"
       "cursor-cli"
       "dbeaver-community"
-      "docker-desktop"
       "google-japanese-ime"
       "karabiner-elements"
+      "orbstack"
       "raycast"
       "wezterm"
     ];
