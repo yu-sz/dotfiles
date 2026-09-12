@@ -62,6 +62,21 @@ ci-darwin:
 ci-linux:
     nix build .#homeConfigurations.ci@linux.activationPackage --dry-run
 
+# エージェント設定（settings.json / config.toml）を base ⊕ MCP ⊕ local から再生成
+agents-sync:
+    agents-sync
+
+# 生成結果と現在のファイルの差分を表示（エージェントの実行時変更を確認）
+agents-diff:
+    agents-sync --diff
+
+# settings.json で有効化した Claude plugin を新マシンに導入（冪等）
+agents-plugins:
+    jq -r '.extraKnownMarketplaces // {} | to_entries[] | .value.source | .repo // .path' config/claude/settings.json \
+      | xargs -I{} sh -c 'claude plugin marketplace add "{}" || true'
+    jq -r '.enabledPlugins | to_entries[] | select(.value) | .key' config/claude/settings.json \
+      | xargs -I{} sh -c 'claude plugin install "{}" || true'
+
 # シェル起動時間のベンチマーク
 bench:
     hyperfine --warmup 3 'zsh -i -c exit'
