@@ -32,7 +32,7 @@ in
     "yazi/theme.toml".source = mkLink "config/yazi/theme.toml";
     "yazi/init.lua".source = mkLink "config/yazi/init.lua";
   }
-  // lib.optionalAttrs pkgs.stdenv.isDarwin {
+  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
     "karabiner".source = mkLink "config/karabiner";
     "aerospace".source = mkLink "config/aerospace";
   };

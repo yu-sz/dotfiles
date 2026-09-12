@@ -76,10 +76,10 @@ nix/
 
 ```nix
 # モジュールオプション内 → lib.mkIf
-home.packages = lib.mkIf pkgs.stdenv.isDarwin [ pkgs.terminal-notifier ];
+home.packages = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [ pkgs.terminal-notifier ];
 
 # 通常の attrset マージ → lib.optionalAttrs
-xdg.configFile = { ... } // lib.optionalAttrs pkgs.stdenv.isDarwin { ... };
+xdg.configFile = { ... } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin { ... };
 ```
 
 ### シンボリックリンク
