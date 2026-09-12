@@ -1,0 +1,9 @@
+# base（tracked）。mcp_servers は Nix 生成、秘匿値・マシン固有値は config.local.toml へ
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+# AGENTS.md がないリポジトリでは CLAUDE.md を読む
+project_doc_fallback_filenames = ["CLAUDE.md"]
+
+[tui]
+notifications = true

@@ -66,6 +66,9 @@
 
           formatter = pkgs.nixfmt-tree;
 
+          # merge ロジックの回帰テスト（just check / CI で毎回実行）
+          checks.agents-merge = pkgs.callPackage ./nix/home/agents/tests { };
+
           pre-commit.check.enable = false;
           pre-commit.settings.hooks = {
             nixfmt.enable = true;

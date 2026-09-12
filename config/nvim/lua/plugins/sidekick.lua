@@ -19,12 +19,6 @@ return {
           height = 20,
         },
       },
-      tools = {
-        claude = {
-          -- 外出ししているmcp設定ファイルを読み込ませる
-          cmd = { "claude", "--mcp-config", vim.fn.expand("$HOME/.claude/mcp/.mcp.json") },
-        },
-      },
     },
   },
   keys = {

@@ -990,7 +990,7 @@ local.*
 ### Phase 2: 共有レイアウト
 
 - [x] 2-1: `config/agents/AGENTS.md` を作成（現 CLAUDE.md の共通部分 + `rules/tools.md` の内容）
-- [x] 2-2: `git mv config/claude/skills config/agents/skills`、未追跡の 3 skill（backend-auth-design / hono-best-practices / security-best-practices）を `git add`
+- [x] 2-2: `git mv config/claude/skills config/agents/skills`、未追跡の 3 skill（backend-auth-design / hono-best-practices / security-best-practices）を `git add`（→ ユーザー判断で取り消し。3 skill は untracked のまま維持し、flake から見えないため symlink 配布されない。使う時に `git add` + `nrs`）
 - [x] 2-3: `config/claude/commands/{ask,review-diff}.md` と `lua/review.md` を `config/agents/skills/{ask,review-diff,lua-review}/SKILL.md` に変換（frontmatter に `name` / `description` / `disable-model-invocation: true`）し、`config/claude/commands/` を削除
 - [x] 2-4: `config/claude/CLAUDE.md` を `@~/.config/agents/AGENTS.md` + Claude 固有セクションに書き換え、`config/claude/rules/` を削除
 - [x] 2-5: `nix/home/symlinks.nix` に `xdg.configFile."agents"` を追加し、`.claude/*` エントリを **`settings.json` を残して**削除（settings.json は Phase 3 で agents-sync の生成に同一 switch で引き継ぐ。先に消すと Phase 3 まで user settings が失効する）
@@ -1001,21 +1001,28 @@ local.*
 - [x] 2-10: 外部 skill の検証: 3 エージェントで `natural-japanese` が見えること、`uv run ~/.agents/skills/natural-japanese/scripts/lint.py <md>` が store 上の読み取り専用パスで動くことを確認（README.md に対し lint 実行、依存解決・実行とも成功）
 - [x] 2-11: `~/.codex/skills` が存在すれば退避・削除する（存在しなかったため対応不要）
 
+> **予実差異**: コミット時に markdownlint が未追跡だった 3 skill（bare URL 約 390 件 / 言語なしフェンス 2 件）と新 CLAUDE.md（MD041: 先頭が `@import`）で失敗。URL の `<>` 包み・`text` 言語指定・`# CLAUDE.md` 見出し追加で解消（@import は先頭行でなくても機能する）。
+>
 > **予実差異**: 2-8 の switch が初回失敗。旧世代の `~/.claude/skills`（ディレクトリ全体への out-of-store symlink）が、新世代では実ディレクトリ + per-skill symlink になるため、HM の orphan 掃除が「新世代に同パスが存在する」と判断して旧 symlink を削除せず、`mkdir` が File exists で失敗した。dangling symlink を手動削除（`trash ~/.claude/skills`）して再実行で解決。**4-6 の 2 台目ホスト適用時も同じ手動削除が必要**。
 
 ### Phase 3: MCP 定義と可変ファイル合成
 
-- [ ] 3-1: `nix/home/agents/mcp-servers.nix`（現 `.mcp.json` の 5 サーバー）と `mcp-lib.nix` を作成
-- [ ] 3-2: `merge.jq` / `merge-toml.py` / `sync.nix` / `tests/`（fixtures + default.nix）を作成、`default.nix` の imports と `perSystem.checks.agents-merge` に追加。`nix flake check` で agents-merge が通ることを確認
-- [ ] 3-3: `claude-code.nix` に `dotfiles-mcp` plugin を追加
-- [ ] 3-4: `config/codex/config.toml`、`config/gemini/settings.json`、`*.local.*.sample` を作成、`.gitignore` を更新、`config/zsh/.zshenv` に `eager/local.zsh` の source を追加
-- [ ] 3-5: `config/claude/mcp/` を削除、zabrze snippet と sidekick.lua から `--mcp-config` を撤去、`symlinks.nix` から `.claude/settings.json` を削除（同一 switch で agents-sync の生成へ引き継がれる）
-- [ ] 3-6: `.claude/settings.json`（プロジェクト）の `mcp__context7__*` を `mcp__plugin_dotfiles-mcp_context7__*` に変更し、untracked の `.claude/settings.local.json`（`mcp__aws-knowledge__*` / `mcp__playwright__*`）も手動で同様に変更。`rg 'mcp__(context7|aws-knowledge|playwright)__'` で旧形式の残存がないことを確認
-- [ ] 3-7: `git add` → `just check` → `! nrs`
-- [ ] 3-8: `~/.claude/settings.json` が mode 644 の実ファイルで内容が base と一致、`~/.codex/config.toml` に `[mcp_servers.*]`、`~/.gemini/settings.json` に `mcpServers` があることを確認。各エージェントを一度起動・終了しても `git status` が clean のままであること（= dirty 問題解消の受け入れテスト）を確認
-- [ ] 3-9: Claude で `/mcp` に `plugin:dotfiles-mcp:*` が Connected、`codex mcp list` と `gemini mcp list` に 5 サーバーが出ることを確認
-- [ ] 3-10: Claude で `/effort` を変更 → `just agents-diff` に差分が出る → `! nrs` で base に戻ることを確認
-- [ ] 3-11: `${VAR}` 展開の回帰確認: 事前検証（2.1.269、隔離 `CLAUDE_CONFIG_DIR`）で plugin の自動ロードと `.mcp.json` URL 内 `${VAR}` 展開は実測済み。switch 後の実環境でも `bearerTokenEnv` 付き HTTP サーバーを一時追加し `/mcp` で header 展開を確認する。万一不可なら `headersHelper` に切り替える（「plugin スコープで秘匿系環境変数が helper から除去される」は公式明文を確認できておらず、採用時点で実測）
+- [x] 3-1: `nix/home/agents/mcp-servers.nix`（現 `.mcp.json` の 5 サーバー）と `mcp-lib.nix` を作成
+- [x] 3-2: `merge.jq` / `merge-toml.py` / `sync.nix` / `tests/`（fixtures + default.nix）を作成、`default.nix` の imports と `perSystem.checks.agents-merge` に追加。`nix flake check` で agents-merge が通ることを確認（下記予実差異: fixture `local.json` が gitignore に食われた）
+- [x] 3-3: `claude-code.nix` に `dotfiles-mcp` plugin を追加
+- [x] 3-4: `config/codex/config.toml`、`config/gemini/settings.json`、`*.local.*.sample` を作成、`.gitignore` を更新、`config/zsh/.zshenv` に `eager/local.zsh` の source を追加
+- [x] 3-5: `config/claude/mcp/` を削除、zabrze snippet と sidekick.lua から `--mcp-config` を撤去、`symlinks.nix` から `.claude/settings.json` を削除（同一 switch で agents-sync の生成へ引き継がれる）
+- [x] 3-6: `.claude/settings.json`（プロジェクト）の `mcp__context7__*` を `mcp__plugin_dotfiles-mcp_context7__*` に変更し、untracked の `.claude/settings.local.json`（`mcp__aws-knowledge__*` / `mcp__playwright__*`）も手動で同様に変更。`rg 'mcp__(context7|aws-knowledge|playwright)__'` で旧形式の残存がないことを確認（残存は Plans 内の記述のみ）
+- [x] 3-7: `git add` → `just check` → `! nrs`
+
+> **予実差異**: tests の fixture `local.json` が `.gitignore` の既存パターン `local.*` に一致して flake ソースから漏れ、agents-merge が初回失敗。`.gitignore` に `!nix/home/agents/tests/local.json` を追加して解決。
+
+- [x] 3-8: `~/.claude/settings.json` が mode 644 の実ファイルで内容が base と一致、`~/.codex/config.toml` に `[mcp_servers.*]`、`~/.gemini/settings.json` に `mcpServers` があることを確認。各エージェントを一度起動・終了しても `git status` が clean のままであること（= dirty 問題解消の受け入れテスト）を確認（3 ファイルとも 644 実ファイル・5 サーバー、CLI 実行後も unstaged は既存 2 ファイルのみ）
+- [x] 3-9: Claude で `/mcp` に `plugin:dotfiles-mcp:*` が Connected、`codex mcp list` と `gemini mcp list` に 5 サーバーが出ることを確認（3 CLI とも 5 サーバー認識。terraform は docker が PATH 不在のため接続失敗＝環境要因、gemini は folder 未 trust のため Disabled 表示）
+- [x] 3-10: Claude で `/effort` を変更 → `just agents-diff` に差分が出る → `! nrs` で base に戻ることを確認（`~/.claude/settings.json` へ模擬の実行時変更 → `agents-sync --diff` で差分検出 → `agents-sync` で base 復元、を非対話で確認）
+- [x] 3-11: `${VAR}` 展開の回帰確認: 事前検証（2.1.269、隔離 `CLAUDE_CONFIG_DIR`）で plugin の自動ロードと `.mcp.json` URL 内 `${VAR}` 展開は実測済み。switch 後の実環境でも `bearerTokenEnv` 付き HTTP サーバーを一時追加し `/mcp` で header 展開を確認する。万一不可なら `headersHelper` に切り替える（一時 plugin + ローカルサーバーで Bearer ヘッダの環境変数展開・着信を実測。切替不要）
+
+> **予実差異**: 3-9 の terraform は docker が PATH に無く接続失敗（旧 `--mcp-config` 構成でも同条件なら失敗する環境要因。OrbStack 起動時に解消される想定）。gemini は folder trust が未設定のため `mcp list` で Disabled 表示（対話で trust すれば有効化）。3-10 / 3-11 は対話操作の代わりに同等の非対話手順で検証した。
 
 ### Phase 4: 運用導線とドキュメント
 

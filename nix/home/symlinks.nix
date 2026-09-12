@@ -39,9 +39,8 @@ in
   };
 
   home.file = {
-    # .claude/* の静的ファイルは nix/home/agents/claude-code.nix が管理する。
-    # settings.json は Phase 3 で agents-sync の生成に引き継ぐまでここに残す
-    ".claude/settings.json".source = mkLink "config/claude/settings.json";
+    # .claude/* は nix/home/agents/ が管理する（静的 symlink は claude-code.nix、
+    # settings.json は sync.nix の agents-sync が実ファイルとして生成）
     ".zshenv".source = mkLink "config/zsh/.zshenv";
   };
 }

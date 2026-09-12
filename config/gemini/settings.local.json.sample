@@ -1,0 +1,3 @@
+{
+  "$comment": "コピーして settings.local.json に。base と深マージされる（配列は和集合・scalar は local 勝ち）"
+}

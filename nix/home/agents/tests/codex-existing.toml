@@ -1,0 +1,8 @@
+[projects."/tmp/x"]
+trust_level = "trusted"
+
+[notice]
+seen = true
+
+[tui]
+notifications = false

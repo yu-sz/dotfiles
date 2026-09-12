@@ -34,4 +34,10 @@ export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
 ### herdr ###
 export HERDR_SOCKET_PATH="${HERDR_SOCKET_PATH:-${XDG_RUNTIME_DIR}/herdr.sock}"
 
+### local secrets ###
+# GLOBAL_RCS 無効でも .zshenv は全 zsh 起動で読まれるため、zsh -c 等の非インタラクティブ起動でも
+# MCP の ${VAR} / env_vars が解決される。sheldon の eager glob と二重 source になるが export のみで冪等。
+# zsh を経由しない GUI 直接起動では解決されない（必要になったら launchctl setenv / keychain helper へ移行）
+[[ -f "$XDG_CONFIG_HOME/zsh/eager/local.zsh" ]] && source "$XDG_CONFIG_HOME/zsh/eager/local.zsh"
+
 

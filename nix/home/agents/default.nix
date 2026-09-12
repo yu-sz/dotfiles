@@ -5,6 +5,7 @@
     ./codex.nix
     ./gemini-cli.nix
     ./skills.nix
+    ./sync.nix
   ];
 
   home.packages = with pkgs.llm-agents; [

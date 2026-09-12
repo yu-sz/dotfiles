@@ -1,0 +1,6 @@
+{
+  "$comment": "base（tracked）。mcpServers は Nix 生成、マシン固有値は settings.local.json へ",
+  "context": {
+    "fileName": ["AGENTS.md", "GEMINI.md"]
+  }
+}
