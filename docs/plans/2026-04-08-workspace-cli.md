@@ -556,9 +556,8 @@ Claude Code hooks はイベント種別を環境変数で渡さない（stdin JS
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [
-          /* 既存: 危険コマンドブロック */
-        ],
+        // 既存: 危険コマンドブロック
+        "hooks": [],
       },
       {
         "hooks": [
