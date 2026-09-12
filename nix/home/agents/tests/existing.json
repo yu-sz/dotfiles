@@ -1,0 +1,4 @@
+{
+  "security": { "auth": { "type": "oauth" } },
+  "feedbackSurveyState": { "x": 1 }
+}

@@ -31,24 +31,16 @@ in
     "yazi/yazi.toml".source = mkLink "config/yazi/yazi.toml";
     "yazi/theme.toml".source = mkLink "config/yazi/theme.toml";
     "yazi/init.lua".source = mkLink "config/yazi/init.lua";
+    "agents".source = mkLink "config/agents";
   }
-  // lib.optionalAttrs pkgs.stdenv.isDarwin {
+  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
     "karabiner".source = mkLink "config/karabiner";
     "aerospace".source = mkLink "config/aerospace";
   };
 
   home.file = {
-    ".claude/CLAUDE.md".source = mkLink "config/claude/CLAUDE.md";
-    ".claude/agents".source = mkLink "config/claude/agents";
-    ".claude/commands".source = mkLink "config/claude/commands";
-    ".claude/file-suggestion.sh".source = mkLink "config/claude/file-suggestion.sh";
-    ".claude/hooks".source = mkLink "config/claude/hooks";
-    ".claude/keybindings.json".source = mkLink "config/claude/keybindings.json";
-    ".claude/mcp".source = mkLink "config/claude/mcp";
-    ".claude/rules".source = mkLink "config/claude/rules";
-    ".claude/settings.json".source = mkLink "config/claude/settings.json";
-    ".claude/skills".source = mkLink "config/claude/skills";
-    ".claude/statusline.sh".source = mkLink "config/claude/statusline.sh";
+    # .claude/* は nix/home/agents/ が管理する（静的 symlink は claude-code.nix、
+    # settings.json は sync.nix の agents-sync が実ファイルとして生成）
     ".zshenv".source = mkLink "config/zsh/.zshenv";
   };
 }

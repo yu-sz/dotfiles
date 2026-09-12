@@ -38,8 +38,8 @@
       "Read(/nix/store/**)",
       "Read(/etc/nix/**)",
       "Read(/run/current-system/**)",
-      "mcp__context7__resolve-library-id",
-      "mcp__context7__query-docs"
+      "mcp__plugin_dotfiles-mcp_context7__resolve-library-id",
+      "mcp__plugin_dotfiles-mcp_context7__query-docs"
     ]
   }
 }

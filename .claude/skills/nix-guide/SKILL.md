@@ -29,7 +29,6 @@ nix/
 └── overlays/
     ├── default.nix          # overlay エントリポイント
     ├── herdr.nix            # 公式リリースバイナリを fetch（bump-overlays.yml が prefetch+sed で自動更新）
-    ├── sqlfmt.nix           # nixpkgs バグの一時 workaround（assertion で self-expire）
     └── zabrze.nix           # カスタムパッケージ（nixpkgs 未収載、bump-overlays.yml が nix-update で自動更新）
 ```
 
@@ -77,10 +76,10 @@ nix/
 
 ```nix
 # モジュールオプション内 → lib.mkIf
-home.packages = lib.mkIf pkgs.stdenv.isDarwin [ pkgs.terminal-notifier ];
+home.packages = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [ pkgs.terminal-notifier ];
 
 # 通常の attrset マージ → lib.optionalAttrs
-xdg.configFile = { ... } // lib.optionalAttrs pkgs.stdenv.isDarwin { ... };
+xdg.configFile = { ... } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin { ... };
 ```
 
 ### シンボリックリンク

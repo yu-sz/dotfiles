@@ -5,7 +5,7 @@
   dotfilesRelPath,
   ...
 }:
-lib.mkIf pkgs.stdenv.isDarwin {
+lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   programs.sketchybar = {
     enable = true;
 

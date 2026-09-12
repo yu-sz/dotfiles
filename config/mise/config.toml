@@ -1,2 +1,5 @@
 [tools]
 node = "latest"
+
+[settings]
+trusted_config_paths = ["~/.herdr/worktrees"]

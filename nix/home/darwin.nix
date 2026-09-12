@@ -1,5 +1,5 @@
 { pkgs, lib, ... }:
-lib.mkIf pkgs.stdenv.isDarwin {
+lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
   home.packages = with pkgs; [
     ghostty-bin
     terminal-notifier

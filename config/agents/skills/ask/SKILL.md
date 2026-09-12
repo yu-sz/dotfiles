@@ -1,6 +1,8 @@
 ---
+name: ask
 description: "Conduct an interview before starting work to align understanding, then execute"
 argument-hint: "[task description]"
+disable-model-invocation: true
 ---
 
 # /ask - Interactive Task Execution Command

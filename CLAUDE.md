@@ -18,10 +18,20 @@ All configs follow the [XDG Base Directory Specification](https://specifications
 
 Special cases:
 
-- `config/claude/*` → `~/.claude/`
+- `config/claude/*` → `~/.claude/`（`nix/home/agents/claude-code.nix` が管理）
+- `config/agents/skills/*` → `~/.agents/skills/` と `~/.claude/skills/`（`nix/home/agents/skills.nix` が skill 単位で symlink。新規 skill は `git add` + `nrs` が必要）
+- `config/agents/AGENTS.md` → `~/.codex/AGENTS.md`, `~/.gemini/AGENTS.md`
 - `config/zsh/.zshenv` → `~/.zshenv`
 
-Symlinks are declared individually in `nix/home/symlinks.nix`. When adding a new **top-level** file or directory under `config/` (including `config/claude/`), add an entry there. Files inside an already-linked directory need no change.
+Symlinks are declared individually in `nix/home/symlinks.nix`. When adding a new **top-level** file or directory under `config/`, add an entry there. Files inside an already-linked directory need no change.
+
+## AI Agents
+
+- `config/agents/` が Claude Code / Codex / Gemini CLI 共通の正（AGENTS.md / skills）。詳細は [ADR](docs/adr/2026-09-12-ai-agents-declarative-management.md)
+- `config/{claude,codex,gemini}` の base（`settings.json` / `config.toml`）は symlink ではなく、`agents-sync` が base ⊕ Nix 生成 MCP ⊕ `*.local.*` を深マージした実ファイルを `~/.claude` 等へ生成する（`nrs` の activation / `just agents-sync`）
+- エージェントの実行時変更（`/model` 等）は `just agents-diff` で確認でき、次の `nrs` で base に戻る
+- MCP サーバー定義は `nix/home/agents/mcp-servers.nix` に集約（秘匿値は `config/zsh/eager/local.zsh` で export し `${VAR}` 参照）
+- ロールバック注意: `darwin-rebuild rollback` では agents-sync の生成物は戻らない。旧世代の activation を再実行すると戻る
 
 ## Multi-Machine Strategy
 

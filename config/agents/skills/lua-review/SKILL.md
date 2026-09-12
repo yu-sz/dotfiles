@@ -1,6 +1,8 @@
 ---
-allowed-tools: "Bash(git diff:*), Bash(git status:*), Read, Grep"
+name: lua-review
 description: Review uncommitted Lua changes using Neovim coding standards
+allowed-tools: "Bash(git diff:*), Bash(git status:*), Read, Grep"
+disable-model-invocation: true
 ---
 
 # Lua Code Review

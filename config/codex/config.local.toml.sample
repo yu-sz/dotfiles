@@ -1,0 +1,2 @@
+# コピーして config.local.toml に。base と深マージされる（scalar は local 勝ち）
+# model = "gpt-5.5"

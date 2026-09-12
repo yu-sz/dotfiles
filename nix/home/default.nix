@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./agents
     ./shell.nix
     ./symlinks.nix
     ./darwin.nix

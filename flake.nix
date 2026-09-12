@@ -17,16 +17,27 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
-    nix-claude-code.url = "github:ryoppippi/nix-claude-code";
+    # nixpkgs は follows しない: codex は Rust ソースビルドで、follows すると
+    # cache.numtide.com のヒットが nixpkgs rev 一致時に限られ darwin でフルビルドになる
+    llm-agents.url = "github:numtide/llm-agents.nix";
     # nixpkgs は follows しない: unstable(26.11)が x86_64-darwin を落としており、
     # hunk 内部の flake-parts が全 system を評価すると throw するため（hunk 自前の lock を使う）
     hunk.url = "github:modem-dev/hunk/v0.17.3";
+
+    # 外部 skills（flake = false で pin。nix/home/agents/skills.nix の external から参照）
+    natural-japanese = {
+      url = "github:coji/natural-japanese";
+      flake = false;
+    };
   };
 
+  # 本機では効かない（daemon の trusted-users = root のため無視される）。
+  # 実効的な配布は darwin-shared.nix の nix.settings と CI の extra_nix_config。
+  # 他者がこの flake を使う場合への案内として維持する
   nixConfig = {
-    extra-substituters = [ "https://ryoppippi.cachix.org" ];
+    extra-substituters = [ "https://cache.numtide.com" ];
     extra-trusted-public-keys = [
-      "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
   };
 
@@ -54,6 +65,9 @@
           };
 
           formatter = pkgs.nixfmt-tree;
+
+          # merge ロジックの回帰テスト（just check / CI で毎回実行）
+          checks.agents-merge = pkgs.callPackage ./nix/home/agents/tests { };
 
           pre-commit.check.enable = false;
           pre-commit.settings.hooks = {
@@ -118,16 +132,16 @@
       flake =
         let
           sharedOverlays = [
-            inputs.nix-claude-code.overlays.default
             (import ./nix/overlays)
             # hunk は overlay 未 export のためインライン overlay で pkgs.hunk へ橋渡しする
             (_: prev: {
               hunk = inputs.hunk.packages.${prev.stdenv.hostPlatform.system}.hunk;
+              # llm-agents は packages.${system} を直接参照する（overlay 経由だと自前 nixpkgs で再ビルドされキャッシュが効かない）
+              llm-agents = inputs.llm-agents.packages.${prev.stdenv.hostPlatform.system};
             })
           ];
 
           allowedUnfree = [
-            "claude"
             "copilot-language-server"
             "vscode"
           ];
@@ -156,7 +170,7 @@
                     backupFileExtension = "hm-backup";
                     users.${username} = import ./nix/home;
                     extraSpecialArgs = {
-                      inherit username;
+                      inherit inputs username;
                       dotfilesRelPath = "Projects/dotfiles";
                     };
                   };
@@ -183,7 +197,7 @@
                 }
               ];
               extraSpecialArgs = {
-                inherit username;
+                inherit inputs username;
                 dotfilesRelPath = "Projects/dotfiles";
               };
             };

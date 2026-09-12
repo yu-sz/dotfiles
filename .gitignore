@@ -1,7 +1,11 @@
 ### Local settings ###
 *.local
 local.*
+*.local.*
 !local.*.sample
+!*.local.*.sample
+# agents-merge テストの fixture（local 層のマージ検証用で untracked 設定ではない）
+!nix/home/agents/tests/local.json
 
 ### Zsh cache ###
 *.zwc
@@ -23,6 +27,9 @@ config/karabiner/automatic_backups/
 
 ### Neovim ###
 .netrwhist
+
+### Hunk ###
+config/hunk/state.json
 
 ### Playwright MCP ###
 .playwright-mcp/

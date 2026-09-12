@@ -161,12 +161,12 @@ context = '^tenv\s'
 [[snippets]]
 name = "claude"
 trigger = "cl"
-snippet = "claude --mcp-config=$HOME/.claude/mcp/.mcp.json"
+snippet = "claude"
 
 [[snippets]]
 name = "claude yolo mode (skip command permission)"
 trigger = "cly"
-snippet = "claude --mcp-config=$HOME/.claude/mcp/.mcp.json --dangerously-skip-permissions"
+snippet = "claude --dangerously-skip-permissions"
 
 [[snippets]]
 name = "(claude) --dangerously-skip-permissions"
