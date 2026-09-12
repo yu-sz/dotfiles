@@ -23,6 +23,12 @@
     # nixpkgs は follows しない: unstable(26.11)が x86_64-darwin を落としており、
     # hunk 内部の flake-parts が全 system を評価すると throw するため（hunk 自前の lock を使う）
     hunk.url = "github:modem-dev/hunk/v0.17.3";
+
+    # 外部 skills（flake = false で pin。nix/home/agents/skills.nix の external から参照）
+    natural-japanese = {
+      url = "github:coji/natural-japanese";
+      flake = false;
+    };
   };
 
   # 本機では効かない（daemon の trusted-users = root のため無視される）。
@@ -161,7 +167,7 @@
                     backupFileExtension = "hm-backup";
                     users.${username} = import ./nix/home;
                     extraSpecialArgs = {
-                      inherit username;
+                      inherit inputs username;
                       dotfilesRelPath = "Projects/dotfiles";
                     };
                   };
@@ -188,7 +194,7 @@
                 }
               ];
               extraSpecialArgs = {
-                inherit username;
+                inherit inputs username;
                 dotfilesRelPath = "Projects/dotfiles";
               };
             };

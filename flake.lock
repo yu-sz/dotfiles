@@ -247,6 +247,22 @@
         "type": "github"
       }
     },
+    "natural-japanese": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788522342,
+        "narHash": "sha256-9n8BMG6f10sYibw8qhZ5YWHpYhTtjAlwZVmI4DCVPm0=",
+        "owner": "coji",
+        "repo": "natural-japanese",
+        "rev": "9a78a42964096da509b8f3e011f0085a5f080151",
+        "type": "github"
+      },
+      "original": {
+        "owner": "coji",
+        "repo": "natural-japanese",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -370,6 +386,7 @@
         "home-manager": "home-manager",
         "hunk": "hunk",
         "llm-agents": "llm-agents",
+        "natural-japanese": "natural-japanese",
         "nix-darwin": "nix-darwin",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_3"

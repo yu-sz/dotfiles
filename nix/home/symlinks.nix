@@ -31,6 +31,7 @@ in
     "yazi/yazi.toml".source = mkLink "config/yazi/yazi.toml";
     "yazi/theme.toml".source = mkLink "config/yazi/theme.toml";
     "yazi/init.lua".source = mkLink "config/yazi/init.lua";
+    "agents".source = mkLink "config/agents";
   }
   // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
     "karabiner".source = mkLink "config/karabiner";
@@ -38,17 +39,9 @@ in
   };
 
   home.file = {
-    ".claude/CLAUDE.md".source = mkLink "config/claude/CLAUDE.md";
-    ".claude/agents".source = mkLink "config/claude/agents";
-    ".claude/commands".source = mkLink "config/claude/commands";
-    ".claude/file-suggestion.sh".source = mkLink "config/claude/file-suggestion.sh";
-    ".claude/hooks".source = mkLink "config/claude/hooks";
-    ".claude/keybindings.json".source = mkLink "config/claude/keybindings.json";
-    ".claude/mcp".source = mkLink "config/claude/mcp";
-    ".claude/rules".source = mkLink "config/claude/rules";
+    # .claude/* の静的ファイルは nix/home/agents/claude-code.nix が管理する。
+    # settings.json は Phase 3 で agents-sync の生成に引き継ぐまでここに残す
     ".claude/settings.json".source = mkLink "config/claude/settings.json";
-    ".claude/skills".source = mkLink "config/claude/skills";
-    ".claude/statusline.sh".source = mkLink "config/claude/statusline.sh";
     ".zshenv".source = mkLink "config/zsh/.zshenv";
   };
 }

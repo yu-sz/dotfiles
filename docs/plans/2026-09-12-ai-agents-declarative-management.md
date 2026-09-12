@@ -985,19 +985,23 @@ local.*
 - [x] 1-5: `git add` → `nix flake lock` → `just check` → `! nrs`
 - [x] 1-6: `claude --version` / `codex --version` / `gemini --version` で 2.1.269 / 0.154.0 / 0.59.0 以上を確認。`nix log` で codex がキャッシュから来ていることを確認（3 つとも要件どおり。codex のビルドログが cache.numtide.com 由来 = substitute 成功）
 
+> **予実差異**: なし。全タスクが計画どおり完了（バージョン: claude-code 2.1.269 / codex 0.154.0 / gemini-cli 0.59.0、いずれも cache.numtide.com から substitute）。
+
 ### Phase 2: 共有レイアウト
 
-- [ ] 2-1: `config/agents/AGENTS.md` を作成（現 CLAUDE.md の共通部分 + `rules/tools.md` の内容）
-- [ ] 2-2: `git mv config/claude/skills config/agents/skills`、未追跡の 3 skill（backend-auth-design / hono-best-practices / security-best-practices）を `git add`
-- [ ] 2-3: `config/claude/commands/{ask,review-diff}.md` と `lua/review.md` を `config/agents/skills/{ask,review-diff,lua-review}/SKILL.md` に変換（frontmatter に `name` / `description` / `disable-model-invocation: true`）し、`config/claude/commands/` を削除
-- [ ] 2-4: `config/claude/CLAUDE.md` を `@~/.config/agents/AGENTS.md` + Claude 固有セクションに書き換え、`config/claude/rules/` を削除
-- [ ] 2-5: `nix/home/symlinks.nix` に `xdg.configFile."agents"` を追加し、`.claude/*` エントリを **`settings.json` を残して**削除（settings.json は Phase 3 で agents-sync の生成に同一 switch で引き継ぐ。先に消すと Phase 3 まで user settings が失効する）
-- [ ] 2-6: `flake.nix` の `extraSpecialArgs` に `inputs` を追加し、`natural-japanese` を `flake = false` の input として追加
-- [ ] 2-7: `nix/home/agents/skills.nix`（ローカル + 外部の per-skill symlink）、`claude-code.nix`（静的ファイル symlink。plugin は Phase 3）、`codex.nix`、`gemini-cli.nix` を作成
-- [ ] 2-8: `git add` → `nix flake lock` → `just check` → `! nrs`
-- [ ] 2-9: Claude で `/context` に AGENTS.md と skills が出ること、`/ask` が skill として呼べること、`codex` で `/skills` に共有 skills が出ること、`gemini` で `/skills list` に出ることを確認
-- [ ] 2-10: 外部 skill の検証: 3 エージェントで `natural-japanese` が見えること、`uv run ~/.agents/skills/natural-japanese/scripts/lint.py <md>` が store 上の読み取り専用パスで動くことを確認
-- [ ] 2-11: `~/.codex/skills` が存在すれば退避・削除する（deprecated パスとして読み込みが残っており、`~/.agents/skills` と同名 skill がセレクタに二重表示されるため）
+- [x] 2-1: `config/agents/AGENTS.md` を作成（現 CLAUDE.md の共通部分 + `rules/tools.md` の内容）
+- [x] 2-2: `git mv config/claude/skills config/agents/skills`、未追跡の 3 skill（backend-auth-design / hono-best-practices / security-best-practices）を `git add`
+- [x] 2-3: `config/claude/commands/{ask,review-diff}.md` と `lua/review.md` を `config/agents/skills/{ask,review-diff,lua-review}/SKILL.md` に変換（frontmatter に `name` / `description` / `disable-model-invocation: true`）し、`config/claude/commands/` を削除
+- [x] 2-4: `config/claude/CLAUDE.md` を `@~/.config/agents/AGENTS.md` + Claude 固有セクションに書き換え、`config/claude/rules/` を削除
+- [x] 2-5: `nix/home/symlinks.nix` に `xdg.configFile."agents"` を追加し、`.claude/*` エントリを **`settings.json` を残して**削除（settings.json は Phase 3 で agents-sync の生成に同一 switch で引き継ぐ。先に消すと Phase 3 まで user settings が失効する）
+- [x] 2-6: `flake.nix` の `extraSpecialArgs` に `inputs` を追加し、`natural-japanese` を `flake = false` の input として追加
+- [x] 2-7: `nix/home/agents/skills.nix`（ローカル + 外部の per-skill symlink）、`claude-code.nix`（静的ファイル symlink。plugin は Phase 3）、`codex.nix`、`gemini-cli.nix` を作成（default.nix の imports に 4 モジュールを追加）
+- [x] 2-8: `git add` → `nix flake lock` → `just check` → `! nrs`（初回 switch は失敗 → 下記予実差異のとおり旧 symlink を手動削除して再実行で成功）
+- [x] 2-9: Claude で `/context` に AGENTS.md と skills が出ること、`/ask` が skill として呼べること、`codex` で `/skills` に共有 skills が出ること、`gemini` で `/skills list` に出ることを確認（Claude はセッションの skill 一覧に反映、gemini は `gemini skills list` で 12 skill Enabled を確認。codex は非対話コマンドがないため対話 `/skills` の目視確認のみ残）
+- [x] 2-10: 外部 skill の検証: 3 エージェントで `natural-japanese` が見えること、`uv run ~/.agents/skills/natural-japanese/scripts/lint.py <md>` が store 上の読み取り専用パスで動くことを確認（README.md に対し lint 実行、依存解決・実行とも成功）
+- [x] 2-11: `~/.codex/skills` が存在すれば退避・削除する（存在しなかったため対応不要）
+
+> **予実差異**: 2-8 の switch が初回失敗。旧世代の `~/.claude/skills`（ディレクトリ全体への out-of-store symlink）が、新世代では実ディレクトリ + per-skill symlink になるため、HM の orphan 掃除が「新世代に同パスが存在する」と判断して旧 symlink を削除せず、`mkdir` が File exists で失敗した。dangling symlink を手動削除（`trash ~/.claude/skills`）して再実行で解決。**4-6 の 2 台目ホスト適用時も同じ手動削除が必要**。
 
 ### Phase 3: MCP 定義と可変ファイル合成
 

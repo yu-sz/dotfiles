@@ -1,11 +1,13 @@
 ---
+name: review-diff
 description: "Execute structured code review"
+argument-hint: "[--staged | --all | --base <branch> | PR# | commit | branch]"
 context: fork
 agent: reviewer
-argument-hint: "[--staged | --all | --base <branch> | PR# | commit | branch]"
+disable-model-invocation: true
 ---
 
-# /review - Code Review Command
+# /review-diff - Code Review Command
 
 Execute code review for PR or local changes using `reviewer` agent.
 
