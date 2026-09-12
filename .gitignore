@@ -24,6 +24,9 @@ config/karabiner/automatic_backups/
 ### Neovim ###
 .netrwhist
 
+### Hunk ###
+config/hunk/state.json
+
 ### Playwright MCP ###
 .playwright-mcp/
 
