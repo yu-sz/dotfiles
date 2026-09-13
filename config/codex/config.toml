@@ -1,9 +1,49 @@
 # base（tracked）。mcp_servers は Nix 生成、秘匿値・マシン固有値は config.local.toml へ
 model_reasoning_effort = "high"
 approval_policy = "on-request"
-sandbox_mode = "workspace-write"
 # AGENTS.md がないリポジトリでは CLAUDE.md を読む
 project_doc_fallback_filenames = ["CLAUDE.md"]
+# Claude の WebSearch / WebFetch 相当（cached は OpenAI の index 経由、live は直接取得）
+web_search = "live"
+
+# permission profile（sandbox_mode の後継。併用不可）。
+# :workspace = 作業ディレクトリと tmp のみ書き込み可・ネットワーク不可（旧 workspace-write 相当）
+# コマンド単位の allow / prompt / forbidden は rules/default.rules
+default_permissions = "dotfiles"
+
+[permissions.dotfiles]
+extends = ":workspace"
+
+[permissions.dotfiles.filesystem]
+"~/.ssh" = "deny"
+# Linux では unbounded glob の事前展開に深さ上限が必須
+glob_scan_max_depth = 6
+
+# Claude の Read / Edit deny 相当（deny は読み書き両方を塞ぐ）
+[permissions.dotfiles.filesystem.":workspace_roots"]
+"**/id_rsa*" = "deny"
+"**/id_ed25519*" = "deny"
+"**/*.pem" = "deny"
+"**/*.key" = "deny"
+"**/*.token" = "deny"
+"**/*token*.json" = "deny"
+"**/.env*" = "deny"
+"**/secrets" = "deny"
 
 [tui]
 notifications = true
+
+[features]
+hooks = true
+# 自動メモリは使わない（Claude の CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 と同じ方針）
+memories = false
+
+# 危険コマンドの hook（3 エージェント共通スクリプト）。rules で止まらない sandbox 内の実行も対象
+[[hooks.PreToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = "~/.agents/hooks/block-dangerous.sh"
+timeout = 10
+statusMessage = "Checking command"

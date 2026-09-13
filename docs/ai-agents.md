@@ -82,13 +82,17 @@ export EXAMPLE_TOKEN="xxx"
 
 ### settings / config を変える
 
-| 変えたいもの             | 編集するファイル              |
-| ------------------------ | ----------------------------- |
-| Claude の permissions 等 | `config/claude/settings.json` |
-| Codex の model / TUI 等  | `config/codex/config.toml`    |
-| Gemini の設定            | `config/gemini/settings.json` |
+| 変えたいもの             | 編集するファイル                               |
+| ------------------------ | ---------------------------------------------- |
+| Claude の permissions 等 | `config/claude/settings.json`                  |
+| Codex の model / TUI 等  | `config/codex/config.toml`                     |
+| Gemini の設定            | `config/gemini/settings.json`                  |
+| Codex のコマンド権限     | `config/codex/rules/default.rules`             |
+| 共通 hook スクリプト     | `config/agents/hooks/`（配線は各 base に書く） |
 
-編集後に `nrs` か `just agents-sync` で `~/` 側の実ファイルへ反映する（symlink ではないので保存だけでは反映されない）。
+- `settings.json` / `config.toml` は編集後に `nrs` か `just agents-sync` で `~/` 側の実ファイルへ反映する（symlink ではないので保存だけでは反映されない）
+- rules / hooks スクリプトは symlink なので保存で反映される（起動中のセッションは再起動）
+- コマンド権限は Claude の `permissions` を正とし、Codex の rules へ手で写す。検証は `codex execpolicy check --rules config/codex/rules/default.rules -- <command>`
 
 ### マシン固有の設定
 
