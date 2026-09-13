@@ -1,6 +1,6 @@
 # AI エージェント運用ガイド
 
-Claude Code / Codex CLI / Gemini CLI の具体的な運用手順。設計の背景は [ADR](adr/2026-09-12-ai-agents-declarative-management.md) を参照。
+Claude Code / Codex CLI / Gemini CLI の具体的な運用手順。
 
 ## 全体像
 
