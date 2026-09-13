@@ -12,7 +12,8 @@
   },
   "attribution": {
     "commit": "",
-    "pr": ""
+    "pr": "",
+    "sessionUrl": false
   },
   "permissions": {
     "allow": [
@@ -96,7 +97,7 @@
     ],
     "defaultMode": "plan"
   },
-  "model": "claude-fable-5[1m]",
+  "model": "claude-fable-5-1[1m]",
   "enableAllProjectMcpServers": false,
   "hooks": {
     "Notification": [
@@ -235,7 +236,12 @@
       }
     }
   },
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "xhigh"
+    }
+  },
   "showClearContextOnPlanAccept": true,
   "showThinkingSummaries": true,
   "skipWorkflowUsageWarning": true,
