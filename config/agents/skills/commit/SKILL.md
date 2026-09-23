@@ -42,7 +42,7 @@ background: false
 
 ## Workflow
 
-1. `git status` と `git diff` で変更を把握する。呼び出し時の指示があればそれに従い、なければ変更内容から自分でコミット単位を判断する。指示された対象以外（untracked 含む）は stage しない
+1. `git status` と `git diff` で変更を把握する。呼び出し時の指示があればそれに従い、なければ tracked ファイルの変更から自分でコミット単位を判断する。untracked ファイルは明示的に指示された場合のみ対象にする
 2. `git log --oneline -20` および `git log --follow -- <対象パス>` で、既存の scope 名とコミット慣習を確認する
 3. type を Types テーブルと照合する。挙動・設定内容が変わる変更に `refactor` / `style` を使わない
 4. Checklist を埋め、コミットを実行する
