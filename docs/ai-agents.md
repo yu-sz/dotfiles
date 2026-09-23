@@ -21,6 +21,8 @@ Claude Code / Codex CLI / Gemini CLI の具体的な運用手順。
 
 - 3 エージェント共通: `config/agents/AGENTS.md` を編集。保存した瞬間に反映される
 - Claude だけ: `config/claude/CLAUDE.md` の `## Claude Code` 以下に書く
+- リポジトリごとの指示: `AGENTS.md` に書く（Claude 2.1.277+ / Codex / Gemini が同じファイルを読む）。CLAUDE.md しか無い既存リポジトリはそのままでよい（Claude は従来どおり、Codex は `project_doc_fallback_filenames` で読める）
+- 注意: リポジトリに `CLAUDE.md` / `CLAUDE.local.md` を足すと Claude はそちらを優先して `AGENTS.md` を読まなくなる（併読したい場合は `/config` の Project instructions を `claude-md-and-agents-md` へ）
 
 ### skill を追加する
 

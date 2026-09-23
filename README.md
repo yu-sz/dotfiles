@@ -24,7 +24,7 @@ Claude Code / Codex CLI / Gemini CLI are managed declaratively:
 
 ## Documentation
 
-- [CLAUDE.md](CLAUDE.md) — repo conventions (symlink strategy, package management)
+- [AGENTS.md](AGENTS.md) — repo conventions (symlink strategy, package management)
 - [docs/ai-agents.md](docs/ai-agents.md) — AI agent operations guide
 - [docs/adr/](docs/adr/) — architecture decision records
 - [docs/plans/](docs/plans/) — implementation plans
