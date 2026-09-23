@@ -51,3 +51,11 @@ map("n", "sH", "<C-w>H", "Move window to far left")
 map("n", "sJ", "<C-w>J", "Move window to bottom")
 map("n", "sK", "<C-w>K", "Move window to top")
 map("n", "sL", "<C-w>L", "Move window to far right")
+
+-- herdr: 同一タブのエージェントペインへファイルパスを送る
+map("n", "<leader>ahf", function()
+  require("config.herdr").send_file_to_agent()
+end, "Send file path to herdr agent")
+map("x", "<leader>aht", function()
+  require("config.herdr").send_selection_to_agent()
+end, "Send file path + line range to herdr agent")

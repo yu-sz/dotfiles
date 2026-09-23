@@ -8,6 +8,7 @@ return {
       mux = {
         enabled = false,
         -- TODO: sidekick.nvim#333 マージ後に "herdr" へ切替（tmux は撤去済みで未使用）
+        -- 暫定: herdr ペインへの送信は config.herdr（<leader>ah 系）で直接統合済み
         backend = "tmux",
       },
       ---@type sidekick.win.Opts
