@@ -40,6 +40,13 @@ background: false
 - scope: トップレベルのコンポーネント名 1 語（小文字、サブパスまで掘らない）。複数領域にまたがる場合や自明な場合は省略可
 - SKILL.md は Claude の挙動を規定するため、テキスト変更でも `docs` 扱いせず変更性質に応じた type を使う
 
+## Workflow
+
+1. `git status` と `git diff` で変更を把握する。呼び出し時の指示があればそれに従い、なければ変更内容から自分でコミット単位を判断する。指示された対象以外（untracked 含む）は stage しない
+2. `git log --oneline -20` および `git log --follow -- <対象パス>` で、既存の scope 名とコミット慣習を確認する
+3. type を Types テーブルと照合する。挙動・設定内容が変わる変更に `refactor` / `style` を使わない
+4. Checklist を埋め、コミットを実行する
+
 ## Checklist
 
 - [ ] description に `and` が含まれない（含まれるならコミット分割）
