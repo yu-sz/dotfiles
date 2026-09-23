@@ -19,6 +19,18 @@ api.nvim_create_autocmd({ "WinEnter", "FocusGained", "BufEnter" }, {
   command = "checktime",
 })
 
+-- Edits from other panes (e.g. coding agents) trigger no events, so complement with polling
+local checktime_timer = vim.uv.new_timer()
+checktime_timer:start(
+  2000,
+  2000,
+  vim.schedule_wrap(function()
+    if vim.fn.mode() == "n" and vim.fn.getcmdwintype() == "" then
+      vim.cmd("silent! checktime")
+    end
+  end)
+)
+
 -- Highlight extra-whitespace
 api.nvim_create_augroup("extra-whitespace", {})
 api.nvim_create_autocmd({ "VimEnter", "WinEnter" }, {
