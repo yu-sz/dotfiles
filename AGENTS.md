@@ -51,7 +51,7 @@ Symlinks are declared individually in `nix/home/symlinks.nix`. When adding a new
 | System packages (apt) | —                                              | `config/apt/packages.txt` |
 | Custom packages       | `nix/overlays/`                                | ←                         |
 
-Exceptions: `wezterm` は macOS では Homebrew cask（aarch64-darwin の nixpkgs 版が未キャッシュで CI タイムアウトするため。09cb343 参照）。`ghostty-bin` / `vscode` は GUI アプリだが Nix 管理。
+Exceptions: `wezterm` は macOS では Homebrew cask（aarch64-darwin の nixpkgs 版が未キャッシュで CI タイムアウトするため。09cb343 参照）。`ghostty-bin` / `vscode` は GUI アプリだが Nix 管理。`codex` は `nix/overlays/codex.nix` で `--no-daemon` 固定の wrapper に差し替えている（llm-agents.nix#9887）。
 
 ## Nix Flake Workflow
 

@@ -127,6 +127,7 @@ just agents-sync   # nrs を待たずに base の状態へ戻す
 - 自動: 毎週土曜の `update-flake.yml` が flake.lock 更新 PR を作る → マージして `nrs`
 - 手動: `nix flake update llm-agents` → `nrs`
 - codex がソースビルドされ始めたら cache miss を疑う: `nix config show | grep numtide` で substituter を確認
+- codex は `nix/overlays/codex.nix` で `--no-daemon` を付けた wrapper に差し替えている。flake.lock を上げても upstream 側が直るまで外せない
 
 ## 新マシンのセットアップ
 
@@ -138,12 +139,13 @@ just agents-sync   # nrs を待たずに base の状態へ戻す
 
 ## トラブルシューティング
 
-| 症状                                       | 対処                                                                                     |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------- |
-| switch が `mkdir: File exists` で失敗      | 旧 `~/.claude/skills` symlink の残骸。`trash ~/.claude/skills` して再実行                |
-| 新しい skill が認識されない                | `git add` 忘れ。flake は Git 追跡ファイルのみ参照                                        |
-| terraform MCP が接続失敗                   | docker（OrbStack）が起動していない                                                       |
-| gemini の MCP が Disabled                  | フォルダ未 trust。gemini を対話起動して trust する                                       |
-| 設定変更が `~/` に反映されない             | base は symlink ではない。`just agents-sync` か `nrs` を実行                             |
-| `darwin-rebuild rollback` で設定が戻らない | agents-sync の生成物は rollback 対象外。旧世代の activation を再実行する                 |
-| マージ結果がおかしい                       | `nix flake check`（`checks.agents-merge`）で回帰確認。規則は上記「マシン固有の設定」参照 |
+| 症状                                                | 対処                                                                                                                                                                                                                  |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| switch が `mkdir: File exists` で失敗               | 旧 `~/.claude/skills` symlink の残骸。`trash ~/.claude/skills` して再実行                                                                                                                                             |
+| 新しい skill が認識されない                         | `git add` 忘れ。flake は Git 追跡ファイルのみ参照                                                                                                                                                                     |
+| terraform MCP が接続失敗                            | docker（OrbStack）が起動していない                                                                                                                                                                                    |
+| gemini の MCP が Disabled                           | フォルダ未 trust。gemini を対話起動して trust する                                                                                                                                                                    |
+| 設定変更が `~/` に反映されない                      | base は symlink ではない。`just agents-sync` か `nrs` を実行                                                                                                                                                          |
+| `darwin-rebuild rollback` で設定が戻らない          | agents-sync の生成物は rollback 対象外。旧世代の activation を再実行する                                                                                                                                              |
+| マージ結果がおかしい                                | `nix flake check`（`checks.agents-merge`）で回帰確認。規則は上記「マシン固有の設定」参照                                                                                                                              |
+| codex の `agents` / `queue` / `--remote` が使えない | `nix/overlays/codex.nix` が `--no-daemon` を固定しているため。upstream（[llm-agents.nix#9887](https://github.com/numtide/llm-agents.nix/issues/9887)）が codex-package.json を出すようになったら overlay ごと削除する |

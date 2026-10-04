@@ -137,7 +137,14 @@
             (_: prev: {
               hunk = inputs.hunk.packages.${prev.stdenv.hostPlatform.system}.hunk;
               # llm-agents は packages.${system} を直接参照する（overlay 経由だと自前 nixpkgs で再ビルドされキャッシュが効かない）
-              llm-agents = inputs.llm-agents.packages.${prev.stdenv.hostPlatform.system};
+              llm-agents =
+                let
+                  base = inputs.llm-agents.packages.${prev.stdenv.hostPlatform.system};
+                in
+                base
+                // {
+                  codex = prev.callPackage ./nix/overlays/codex.nix { inherit (base) codex; };
+                };
             })
           ];
 
