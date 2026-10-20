@@ -13,6 +13,11 @@ let
 
   mcpGeminiJson = pkgs.writeText "mcp.gemini.json" (builtins.toJSON (mcpLib.toGemini servers));
   mcpCodexToml = toml.generate "mcp.codex.toml" (mcpLib.toCodex servers);
+  # FIXME(openai/codex#40565): macOS Seatbelt は **/ を含む deny glob でディレクトリの rename / rmdir を EPERM にする
+  # - Issue: https://github.com/openai/codex/issues/40565
+  # 修正されるまで Codex の filesystem deny glob を OS 別レイヤーに分ける（内容は config/codex/config.{darwin,linux}.toml）
+  codexOsLayer =
+    if pkgs.stdenv.hostPlatform.isDarwin then "config.darwin.toml" else "config.linux.toml";
 
   python = pkgs.python3.withPackages (ps: [ ps.tomli-w ]);
 
@@ -24,7 +29,7 @@ let
     ];
     text = ''
       # 使い方: agents-sync [--diff]
-      #   tracked base ⊕ Nix 生成 MCP ⊕ untracked local を深マージし、実ファイルとして配置する。
+      #   tracked base ⊕ OS 別レイヤー（codex のみ）⊕ Nix 生成 MCP ⊕ untracked local を深マージし、実ファイルとして配置する。
       #   --diff は書き込まず現在のファイルとの差分を表示する（実行時変更の確認用）
       mode="''${1:-sync}"
 
@@ -82,6 +87,7 @@ let
 
       emit toml "$HOME/.codex/config.toml" "projects,notice,tui.model_availability_nux,tui.theme" \
         "${dotfiles}/config/codex/config.toml" \
+        "${dotfiles}/config/codex/${codexOsLayer}" \
         "${mcpCodexToml}" \
         "${dotfiles}/config/codex/config.local.toml"
     '';

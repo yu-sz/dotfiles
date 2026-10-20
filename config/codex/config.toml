@@ -21,21 +21,10 @@ extends = ":workspace"
 [permissions.dotfiles.network]
 enabled = true
 
+# 秘密ファイルの deny glob は OS で挙動が違うため config.darwin.toml / config.linux.toml に分離
+# （agents-sync が base の上に深マージ）。macOS は https://github.com/openai/codex/issues/40565 の回避版
 [permissions.dotfiles.filesystem]
 "~/.ssh" = "deny"
-# Linux では unbounded glob の事前展開に深さ上限が必須
-glob_scan_max_depth = 6
-
-# Claude の Read / Edit deny 相当（deny は読み書き両方を塞ぐ）
-[permissions.dotfiles.filesystem.":workspace_roots"]
-"**/id_rsa*" = "deny"
-"**/id_ed25519*" = "deny"
-"**/*.pem" = "deny"
-"**/*.key" = "deny"
-"**/*.token" = "deny"
-"**/*token*.json" = "deny"
-"**/.env*" = "deny"
-"**/secrets" = "deny"
 
 [tui]
 notifications = true

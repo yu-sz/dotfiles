@@ -1,0 +1,36 @@
+# macOS 用レイヤー（agents-sync が base の上に深マージ。Linux は config.linux.toml）
+#
+# Seatbelt は「ワイルドカード + パス区切り」を含む deny glob（**/x や */x）があると、
+# ワークスペース配下の全ディレクトリの rename / rmdir を EPERM にする（0.163.0 で再現）。
+# https://github.com/openai/codex/issues/40565
+# 0.158.0 で /**/<固定名> 形式だけ救済された（#47920）ため、ネストは固定名の列挙、
+# ワイルドカードはリポジトリ直下のみで妥協する。ネストした *.pem / *.key / *token*.json は守れない。
+# 修正されたら config.linux.toml と同じ **/ ルールに戻す
+
+# Claude の Read / Edit deny 相当（deny は読み書き両方を塞ぐ）。/**/<固定名> はディレクトリに一致した場合その配下も拒否
+[permissions.dotfiles.filesystem]
+"/**/.env" = "deny"
+"/**/.env.local" = "deny"
+"/**/.env.development" = "deny"
+"/**/.env.development.local" = "deny"
+"/**/.env.staging" = "deny"
+"/**/.env.qa" = "deny"
+"/**/.env.production" = "deny"
+"/**/.env.production.local" = "deny"
+"/**/.env.test" = "deny"
+"/**/.env.test.local" = "deny"
+"/**/id_rsa" = "deny"
+"/**/id_ed25519" = "deny"
+"/**/id_ecdsa" = "deny"
+"/**/secrets" = "deny"
+"/**/credentials.json" = "deny"
+
+# リポジトリ直下だけはワイルドカードで守れる（パス区切りを含まなければ安全）
+[permissions.dotfiles.filesystem.":workspace_roots"]
+".env*" = "deny"
+"*.pem" = "deny"
+"*.key" = "deny"
+"*.token" = "deny"
+"*token*.json" = "deny"
+"id_rsa*" = "deny"
+"id_ed25519*" = "deny"

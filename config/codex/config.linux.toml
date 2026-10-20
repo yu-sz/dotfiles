@@ -1,0 +1,16 @@
+# Linux 用レイヤー（agents-sync が base の上に深マージ。macOS は config.darwin.toml）。
+# bubblewrap は deny glob を起動時に rg で実体展開するため macOS の openai/codex#40565 は起きない。
+# 代わりに unbounded glob の事前展開には深さ上限が必須
+[permissions.dotfiles.filesystem]
+glob_scan_max_depth = 6
+
+# Claude の Read / Edit deny 相当（deny は読み書き両方を塞ぐ）
+[permissions.dotfiles.filesystem.":workspace_roots"]
+"**/id_rsa*" = "deny"
+"**/id_ed25519*" = "deny"
+"**/*.pem" = "deny"
+"**/*.key" = "deny"
+"**/*.token" = "deny"
+"**/*token*.json" = "deny"
+"**/.env*" = "deny"
+"**/secrets" = "deny"
