@@ -36,6 +36,7 @@
       "Bash(gh pr checks:*)",
       "Bash(gh issue list:*)",
       "Bash(gh issue view:*)",
+      "Bash(git commit:*)",
       "Bash(echo:*)",
       "Bash(touch:*)",
       "Bash(mkdir:*)",
@@ -84,7 +85,6 @@
     ],
     "ask": [
       "Bash(git push:*)",
-      "Bash(git commit:*)",
       "Bash(git rebase:*)",
       "Bash(gh pr create:*)",
       "Bash(gh pr merge:*)",

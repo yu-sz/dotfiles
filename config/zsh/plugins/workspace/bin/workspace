@@ -47,13 +47,31 @@ new)
   ;;
 
 wt)
-  local branch="$1"
+  local branch="$1" worktrees out rc wt_path
+  local -a lines
+  worktrees=$(herdr worktree list --cwd "$PWD" --json 2>/dev/null |
+    jq -r '.result.worktrees[] | select(.is_linked_worktree) | "\(.branch)\t\(.path)"')
   if [[ -z "$branch" ]]; then
-    printf "Branch name: "
-    read -r branch
+    # 一覧から選べば開き、一覧に無い名前を打てばその名前で作る
+    out=$(print -rn -- "$worktrees" | fzf --reverse --print-query --delimiter '\t' \
+      --header "Select worktree to open, or type a new branch name")
+    rc=$?
+    (( rc == 130 )) && exit 0
+    lines=("${(@f)out}")
+    if [[ -n "${lines[2]}" ]]; then
+      branch="${lines[2]%%$'\t'*}"
+    else
+      branch="${lines[1]}"
+    fi
   fi
   [[ -z "$branch" ]] && exit 0
-  herdr worktree create --cwd "$PWD" --branch "$branch" >/dev/null
+  # herdr の外（git worktree add など）で作った worktree も、同 branch があれば開く
+  wt_path=$(print -rn -- "$worktrees" | awk -F '\t' -v b="$branch" '$1 == b { print $2; exit }')
+  if [[ -n "$wt_path" ]]; then
+    herdr worktree open --cwd "$PWD" --path "$wt_path" --focus >/dev/null
+  else
+    herdr worktree create --cwd "$PWD" --branch "$branch" >/dev/null
+  fi
   ;;
 
 wt-rm)

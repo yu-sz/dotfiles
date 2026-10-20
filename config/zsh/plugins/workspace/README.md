@@ -14,11 +14,11 @@ workspace の一覧・切替・リネーム・削除は herdr native picker（`p
 
 ## サブコマンド
 
-| コマンド                | 用途                                                                                      |
-| ----------------------- | ----------------------------------------------------------------------------------------- |
-| `workspace new [repo]`  | workspace 起動（デフォルト）。同 label があれば focus、なければ ghq リポジトリから create |
-| `workspace wt [branch]` | worktree 作成 + workspace 起動（`herdr worktree create` 委譲）                            |
-| `workspace wt-rm`       | worktree と紐付く workspace を削除（`herdr worktree remove` 委譲）                        |
+| コマンド                | 用途                                                                                                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `workspace new [repo]`  | workspace 起動（デフォルト）。同 label があれば focus、なければ ghq リポジトリから create                                                                           |
+| `workspace wt [branch]` | 同 branch の worktree があれば開き、なければ作成して workspace 起動（`herdr worktree open` / `create` 委譲）。引数なしは fzf で既存から選ぶか新しい branch 名を入力 |
+| `workspace wt-rm`       | worktree と紐付く workspace を削除（`herdr worktree remove` 委譲）                                                                                                  |
 
 ## 呼び出し元
 
