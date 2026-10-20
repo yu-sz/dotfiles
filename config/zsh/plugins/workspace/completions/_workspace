@@ -3,7 +3,7 @@
 local -a commands
 commands=(
   'new:Open workspace from ghq repository'
-  'wt:Create worktree and open workspace'
+  'wt:Open or create worktree and its workspace'
   'wt-rm:Remove worktree and its workspace'
 )
 _describe -t commands 'workspace commands' commands
