@@ -17,6 +17,10 @@ extends = ":workspace"
 [permissions.dotfiles.workspace_roots]
 "/Users/yuta.suzuki/.local/share/pnpm/store" = true
 
+# gh 等のため sandbox 内でもネットワーク許可（network_proxy 無効のためドメイン制限なし）
+[permissions.dotfiles.network]
+enabled = true
+
 [permissions.dotfiles.filesystem]
 "~/.ssh" = "deny"
 # Linux では unbounded glob の事前展開に深さ上限が必須
