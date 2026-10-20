@@ -87,14 +87,7 @@
                 "SC1091"
               ];
             };
-            gitleaks = {
-              enable = true;
-              name = "gitleaks";
-              description = "Detect secrets in git commits";
-              entry = "${pkgs.gitleaks}/bin/gitleaks git --pre-commit --staged --verbose";
-              language = "system";
-              pass_filenames = false;
-            };
+            gitleaks.enable = true;
             markdownlint = {
               enable = true;
               entry = lib.mkForce "${pkgs.markdownlint-cli}/bin/markdownlint -c .markdownlint.yaml";
