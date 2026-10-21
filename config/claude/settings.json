@@ -95,7 +95,7 @@
       "Bash(gh issue edit:*)",
       "Bash(gh repo create:*)"
     ],
-    "defaultMode": "plan"
+    "defaultMode": "auto"
   },
   "model": "claude-fable-5-1[1m]",
   "enableAllProjectMcpServers": false,

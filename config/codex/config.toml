@@ -1,6 +1,7 @@
 # base（tracked）。mcp_servers は Nix 生成、秘匿値・マシン固有値は config.local.toml へ
 model_reasoning_effort = "high"
 approval_policy = "on-request"
+approvals_reviewer = "auto_review"
 # AGENTS.md がないリポジトリでは CLAUDE.md を読む
 project_doc_fallback_filenames = ["CLAUDE.md"]
 # Claude の WebSearch / WebFetch 相当（cached は OpenAI の index 経由、live は直接取得）
