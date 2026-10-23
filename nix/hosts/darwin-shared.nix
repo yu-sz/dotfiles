@@ -28,6 +28,10 @@
 
   homebrew = {
     enable = true;
+    brews = [
+      "curl"
+      "ca-certificates"
+    ];
     onActivation = {
       autoUpdate = false;
       cleanup = "uninstall";
@@ -35,8 +39,6 @@
     };
     casks = [
       "alt-tab"
-      "cursor"
-      "cursor-cli"
       "dbeaver-community"
       "google-japanese-ime"
       "karabiner-elements"
@@ -52,9 +54,28 @@
     autoMigrate = true;
   };
 
-  # nix-darwinのデフォルトはEDITOR=nano。/etc/zshenvのset-environment経由で
-  # ビルド時のzshサブプロセスにも伝播するため、zabrzeのテスト等に影響する
-  environment.variables.EDITOR = "vim";
+  security.pki.caCertificateBlacklist = [
+    "Comodo AAA Services root"
+    "emSign ECC Root CA - G3"
+  ];
+
+  environment = {
+    etc."homebrew/brew.env".text = ''
+      HOMEBREW_FORCE_BREWED_CURL=1
+      HOMEBREW_FORCE_BREWED_CA_CERTIFICATES=1
+    '';
+
+    variables = {
+      # nix-darwinのデフォルトはEDITOR=nano。/etc/zshenvのset-environment経由で
+      # ビルド時のzshサブプロセスにも伝播するため、zabrzeのテスト等に影響する
+      EDITOR = "vim";
+      SSL_CERT_FILE = "/etc/ssl/certs/ca-certificates.crt";
+      PIP_CERT = "/etc/ssl/certs/ca-certificates.crt";
+      AWS_CA_BUNDLE = "/etc/ssl/certs/ca-certificates.crt";
+      REQUESTS_CA_BUNDLE = "/etc/ssl/certs/ca-certificates.crt";
+      CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE = "/etc/ssl/certs/ca-certificates.crt";
+    };
+  };
 
   system = {
     primaryUser = username;
