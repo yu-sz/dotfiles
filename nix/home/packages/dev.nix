@@ -18,7 +18,7 @@
     duckdb
     gh
     ghq
-    git
+    gitWithPatchedBrotli # brotli CVE-2026-111497 対応の暫定差し替え（nix/overlays/git.nix）
     google-cloud-sdk
     hadolint
     harlequin
