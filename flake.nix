@@ -3,8 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    # eMudhra 修正のチャンネル到達まで、uv に修正版を使う。
-    nixpkgs-security.url = "github:NixOS/nixpkgs/fb122f52ed3bc13fb7dcfb217a437e19219a125e";
+    # eMudhra 修正のチャンネル到達まで、uv / rustup に修正版（master）を使う。
+    nixpkgs-security.url = "github:NixOS/nixpkgs/eb5a4245a565f1fdee46042a53b64bee33fc5898";
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -130,7 +130,7 @@
             (import ./nix/overlays)
             # hunk は overlay 未 export のためインライン overlay で pkgs.hunk へ橋渡しする
             (_: prev: {
-              inherit (inputs.nixpkgs-security.legacyPackages.${prev.stdenv.hostPlatform.system}) uv;
+              inherit (inputs.nixpkgs-security.legacyPackages.${prev.stdenv.hostPlatform.system}) uv rustup;
               hunk = inputs.hunk.packages.${prev.stdenv.hostPlatform.system}.hunk;
               # llm-agents は packages.${system} を直接参照する（overlay 経由だと自前 nixpkgs で再ビルドされキャッシュが効かない）
               llm-agents =
