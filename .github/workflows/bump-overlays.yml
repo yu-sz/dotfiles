@@ -28,7 +28,7 @@ jobs:
           client-id: ${{ vars.AUTOMATION_CLIENT_ID }}
           private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: cachix/install-nix-action@v31
         with:
@@ -43,7 +43,7 @@ jobs:
           new=$(grep -oE 'version = "[0-9]+\.[0-9]+\.[0-9]+"' "nix/overlays/${{ matrix.package }}.nix" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
           echo "new=$new" >> "$GITHUB_OUTPUT"
 
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.app-token.outputs.token }}
           branch: bump-${{ matrix.package }}
@@ -68,7 +68,7 @@ jobs:
           client-id: ${{ vars.AUTOMATION_CLIENT_ID }}
           private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # releases/latest は draft / pre-release を含まないため stable のみ拾う
       - name: Check latest stable release
@@ -111,7 +111,7 @@ jobs:
           done
           git diff nix/overlays/herdr.nix
 
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         if: steps.latest.outputs.latest != steps.latest.outputs.current
         with:
           token: ${{ steps.app-token.outputs.token }}

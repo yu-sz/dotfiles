@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 20
     steps:
       # gitleaks の全履歴スキャンのため fetch-depth: 0
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -31,7 +31,7 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ github.token }}
 
-      - uses: DeterminateSystems/flake-checker-action@v9
+      - uses: DeterminateSystems/flake-checker-action@v14
 
       - name: CI check
         run: nix develop --command just ci
