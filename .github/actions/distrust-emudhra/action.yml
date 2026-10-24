@@ -1,0 +1,53 @@
+name: Distrust compromised eMudhra CAs
+# ホストランナーイメージが鍵漏出した eMudhra 中間 CA（CVE-2026-111943）を信頼したままのため、
+# ジョブ内の TLS クライアントから到達経路のルート（emSign ECC Root CA - G3 / Comodo AAA）を外す。
+# 対象は curl / git / Go（gh）/ Python / Nix クライアントの取得。JS アクションが使うランナー同梱の
+# Node はワークフローから変更できない（runner 2.338.1 以降で Node 24.22.1）。
+# actions/runner-images#15018 が解決したら削除する。
+description: Remove compromised eMudhra trust paths from the runner's CA stores (runner-images#15018)
+
+runs:
+  using: composite
+  steps:
+    - name: Distrust roots in the system store (Linux)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        set -euo pipefail
+        for cert in mozilla/emSign_ECC_Root_CA_-_G3.crt mozilla/Comodo_AAA_Services_root.crt; do
+          sudo sed -i "s|^${cert}\$|!${cert}|" /etc/ca-certificates.conf
+        done
+        sudo update-ca-certificates --fresh >/dev/null
+
+    # Apple は /etc/ssl/cert.pem を更新しないため、該当ルートを除いたバンドルを作り環境変数で差し替える。
+    # NIX_SSL_CERT_FILE は install-nix-action より前に設定しておくと上書きされない
+    - name: Build a filtered CA bundle (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        set -euo pipefail
+        bundle="$RUNNER_TEMP/ca-bundle-distrust-emudhra.pem"
+        /usr/bin/awk '
+          BEGIN { RS = "-----END CERTIFICATE-----\n"; ORS = "" }
+          /CN=AAA Certificate Services|CN=emSign ECC Root CA - G3/ { next }
+          NF { print $0 RS }
+        ' /etc/ssl/cert.pem > "$bundle"
+        for var in SSL_CERT_FILE CURL_CA_BUNDLE GIT_SSL_CAINFO NIX_SSL_CERT_FILE REQUESTS_CA_BUNDLE; do
+          echo "$var=$bundle" >> "$GITHUB_ENV"
+        done
+
+    - name: Verify the compromised chains are rejected
+      shell: bash
+      run: |
+        set -uo pipefail
+        status=0
+        for host in dv-g3b-emudhra dv-g3b-aaa-emudhra; do
+          url="https://$host.we-have-a-problem.com/"
+          curl -sS -o /dev/null --max-time 20 "$url" 2>/dev/null
+          case $? in
+            0) echo "::error::$url is still trusted"; status=1 ;;
+            60) echo "$url rejected" ;;
+            *) echo "::warning::$url unreachable (exit $?), could not verify" ;;
+          esac
+        done
+        exit $status

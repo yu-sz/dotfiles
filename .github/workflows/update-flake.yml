@@ -25,6 +25,8 @@ jobs:
 
       - uses: actions/checkout@v7
 
+      - uses: ./.github/actions/distrust-emudhra
+
       - uses: cachix/install-nix-action@v31
         with:
           github_access_token: ${{ steps.app-token.outputs.token }}

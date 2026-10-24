@@ -10,6 +10,7 @@ on:
       - "vim.yml"
       - "stylua.toml"
       - ".github/workflows/lua-lint.yml"
+      - ".github/actions/**"
 
 permissions:
   contents: read
@@ -24,6 +25,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
+
+      - uses: ./.github/actions/distrust-emudhra
 
       - uses: cachix/install-nix-action@v31
         with:
