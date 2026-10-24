@@ -1,0 +1,16 @@
+version: 2
+updates:
+  # flake.lock は update-flake.yml が担当。ここは GitHub Actions のみ
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: saturday
+    labels:
+      - dependencies
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      actions:
+        patterns:
+          - "*"
