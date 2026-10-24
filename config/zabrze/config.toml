@@ -42,22 +42,21 @@ if = '[[ "$OSTYPE" =~ linux ]]'
 # ── AI ──
 
 [[snippets]]
-# TLS 暫定対応。上流修正後に削除: https://github.com/numtide/llm-agents.nix/pull/11169
 name = "claude"
 trigger = "cl"
-snippet = "CLAUDE_CODE_CERT_STORE=bundled,system claude"
+snippet = "claude"
 
 [[snippets]]
 name = "claude yolo mode (skip command permission)"
 trigger = "cly"
-snippet = "CLAUDE_CODE_CERT_STORE=bundled,system claude --dangerously-skip-permissions"
+snippet = "claude --dangerously-skip-permissions"
 
 [[snippets]]
 name = "(claude) --dangerously-skip-permissions"
 trigger = "y"
 snippet = "--dangerously-skip-permissions"
 global = true
-context = '^(CLAUDE_CODE_CERT_STORE=bundled,system\s+)?claude\s'
+context = '^claude\s'
 
 [[snippets]]
 name = "ccusage"
