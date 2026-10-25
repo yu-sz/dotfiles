@@ -43,11 +43,12 @@ runs:
         status=0
         for host in dv-g3b-emudhra dv-g3b-aaa-emudhra; do
           url="https://$host.we-have-a-problem.com/"
-          curl -sS -o /dev/null --max-time 20 "$url" 2>/dev/null
-          case $? in
+          rc=0
+          curl -sS -o /dev/null --max-time 20 "$url" 2>/dev/null || rc=$?
+          case $rc in
             0) echo "::error::$url is still trusted"; status=1 ;;
             60) echo "$url rejected" ;;
-            *) echo "::warning::$url unreachable (exit $?), could not verify" ;;
+            *) echo "::warning::$url unreachable (exit $rc), could not verify" ;;
           esac
         done
         exit $status
