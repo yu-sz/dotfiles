@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  username,
-  ...
-}:
+{ pkgs, username, ... }:
 {
   imports = [ ./darwin-aerospace.nix ];
 
@@ -58,13 +53,6 @@
     user = username;
     autoMigrate = true;
   };
-
-  # eMudhra 中間 CA 鍵漏出（CVE-2026-111943）対応。emSign ECC Root CA - G3 は NSS 3.131.1 で
-  # certdata から削除されたため、残っている版のみ載せる（存在しない名前は cacert のビルドが失敗する）
-  security.pki.caCertificateBlacklist = [
-    "Comodo AAA Services root"
-  ]
-  ++ lib.optional (lib.versionOlder pkgs.cacert.version "3.131.1") "emSign ECC Root CA - G3";
 
   environment = {
     etc."homebrew/brew.env".text = ''
