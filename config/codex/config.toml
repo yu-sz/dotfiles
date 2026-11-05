@@ -26,6 +26,8 @@ enabled = true
 # （agents-sync が base の上に深マージ）。macOS は https://github.com/openai/codex/issues/40565 の回避版
 [permissions.dotfiles.filesystem]
 "~/.ssh" = "deny"
+# git の SSH のホスト鍵の確認だけ許す（より深いパスが優先される。鍵と ~/.ssh/config は deny のまま）
+"~/.ssh/known_hosts" = "read"
 
 [tui]
 notifications = true
