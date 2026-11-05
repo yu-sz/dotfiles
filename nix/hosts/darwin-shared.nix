@@ -75,6 +75,33 @@
   system = {
     primaryUser = username;
     stateVersion = 6;
+
+    # eMudhra 中間 CA 鍵漏出（CVE-2026-111943）対応。/usr/bin/git や /usr/bin/python3（LibreSSL）は SSL_CERT_FILE を無視して
+    # Apple 同梱の /etc/ssl/cert.pem を使い、このファイルは macOS アップデートで元に戻るため、nrs のたびに該当ルートを外す。
+    # 手順は https://support.apple.com/en-us/149555 に準拠。Apple が修正版の cert.pem を同梱したら削除する
+    activationScripts.postActivation.text =
+      let
+        compromisedRoots = pkgs.writeText "emudhra-compromised-roots" ''
+          === /C=IN/OU=emSign PKI/O=eMudhra Technologies Limited/CN=emSign ECC Root CA - G3
+          === /C=GB/ST=Greater Manchester/L=Salford/O=Comodo CA Limited/CN=AAA Certificate Services
+        '';
+      in
+      ''
+        if /usr/bin/grep -qxFf ${compromisedRoots} /etc/ssl/cert.pem; then
+          echo "removing compromised eMudhra roots from /etc/ssl/cert.pem..." >&2
+          tmp=$(/usr/bin/mktemp)
+          if ! {
+            /usr/bin/awk 'NR == FNR { drop[$0]; next } /^(===|###) / { skip = 0 } ($0 in drop) { skip = 1 } !skip' \
+              ${compromisedRoots} /etc/ssl/cert.pem > "$tmp" \
+              && [ -s "$tmp" ] \
+              && /bin/cp -p /etc/ssl/cert.pem /etc/ssl/cert.pem.orig \
+              && /usr/bin/install -m 0644 -o root -g wheel "$tmp" /etc/ssl/cert.pem
+          }; then
+            echo "warning: failed to remove compromised eMudhra roots from /etc/ssl/cert.pem" >&2
+          fi
+          /bin/rm -f "$tmp"
+        fi
+      '';
   };
 
   users.users.${username}.home = "/Users/${username}";
